@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 1.3 问题领域 \begin{cases} \pmb{语言识别} \\ \pmb{字符识别} \\ \pmb{计算机视觉}（CV） \\ \pmb{自然语言处理}（NLP）\\ \pmb{知识推理}\\ \pmb{自动控制}\\ \pmb{游戏理论和人机对弈}\\ \pmb{数据挖掘} \end{cases}2 线性回归2.1 基本概念">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习基础总结">
+<meta property="og:url" content="https://zlkqz.github.io/2021/10/31/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 1.3 问题领域 \begin{cases} \pmb{语言识别} \\ \pmb{字符识别} \\ \pmb{计算机视觉}（CV） \\ \pmb{自然语言处理}（NLP）\\ \pmb{知识推理}\\ \pmb{自动控制}\\ \pmb{游戏理论和人机对弈}\\ \pmb{数据挖掘} \end{cases}2 线性回归2.1 基本概念">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="e:/Tencent_download/MobileFile/qq_pic_merged_1635482805011.jpg">
+<meta property="og:image" content="e:/Tencent_download/MobileFile/qq_pic_merged_1635482964705.jpg">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211029131504886.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030004640247.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030005138300.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030005121490.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030005818507.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030141251677.png">
+<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211030142019713.png">
+<meta property="article:published_time" content="2021-10-31T09:34:10.269Z">
+<meta property="article:modified_time" content="2021-10-31T09:34:43.250Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="e:/Tencent_download/MobileFile/qq_pic_merged_1635482805011.jpg">
+  
+  <title>深度学习基础总结 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="深度学习基础总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-31 17:34" pubdate>
+        2021年10月31日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">深度学习基础总结</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-行业知识体系"><a href="#1-行业知识体系" class="headerlink" title="1 行业知识体系"></a>1 行业知识体系</h1><h3 id="1-1-机器学习算法"><a href="#1-1-机器学习算法" class="headerlink" title="1.1 机器学习算法"></a>1.1 机器学习算法</h3><p><img src="E:\Tencent_download\MobileFile\qq_pic_merged_1635482805011.jpg" srcset="/img/loading.gif" lazyload alt="qq_pic_merged_1635482805011"></p>
+<h3 id="1-2-机器学习分类"><a href="#1-2-机器学习分类" class="headerlink" title="1.2 机器学习分类"></a>1.2 机器学习分类</h3><p><img src="E:\Tencent_download\MobileFile\qq_pic_merged_1635482964705.jpg" srcset="/img/loading.gif" lazyload alt="qq_pic_merged_1635482964705"></p>
+<h3 id="1-3-问题领域"><a href="#1-3-问题领域" class="headerlink" title="1.3 问题领域"></a>1.3 问题领域</h3><script type="math/tex; mode=display">
+\begin{cases}
+\pmb{语言识别} \\
+\pmb{字符识别} \\
+\pmb{计算机视觉}（CV） \\
+\pmb{自然语言处理}（NLP）\\
+\pmb{知识推理}\\
+\pmb{自动控制}\\
+\pmb{游戏理论和人机对弈}\\
+\pmb{数据挖掘}
+\end{cases}</script><h1 id="2-线性回归"><a href="#2-线性回归" class="headerlink" title="2 线性回归"></a>2 线性回归</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211029131504886.png" srcset="/img/loading.gif" lazyload alt="image-20211029131504886"></p>
+<ul>
+<li><p>线性回归方程的最小二乘函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析</p>
+</li>
+<li><p>线性回归输出是⼀个连续值，因此适⽤于回归问题</p>
+</li>
+</ul>
+<h3 id="2-2-损失函数"><a href="#2-2-损失函数" class="headerlink" title="2.2 损失函数"></a>2.2 损失函数</h3><ul>
+<li>均方差（mse）：</li>
+</ul>
+<script type="math/tex; mode=display">
+\ell^{(i)}(W, b) = \frac{(\hat{y}^{(i)} - y^{(i)})^2}{2}</script><p>其中$\hat{y}$为计算出的预测值，$y$为真实值（label）</p>
+<h1 id="3-全连接层（稠密层）"><a href="#3-全连接层（稠密层）" class="headerlink" title="3  全连接层（稠密层）"></a>3  全连接层（稠密层）</h1><ul>
+<li>输出层中的神经元和输⼊ 层中各个输⼊完全连接</li>
+<li>计算完全依赖于输入层。</li>
+</ul>
+<h1 id="4-小批量随机梯度下降"><a href="#4-小批量随机梯度下降" class="headerlink" title="4  小批量随机梯度下降"></a>4  小批量随机梯度下降</h1><ul>
+<li><p>在每次迭代中，先随机均匀采样⼀个由固定数⽬训练数据样本所组成的小批量（mini-batch）$\mathbb{B}$，然后求小批量中数据样本的平均损失有关模型参数的导数（梯度），最后⽤此结果与预先设定的⼀个正数的乘积（学习率$\eta$）作为模型参数在本次迭代的减小量。</p>
+</li>
+<li><p>每次mini-batch梯度下降计算过程：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+w_1 = w_1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial{\ell(...)}}{\partial{w_1}}</script><ul>
+<li>注意学习率要取正数</li>
+</ul>
+<h1 id="5-Softmax回归"><a href="#5-Softmax回归" class="headerlink" title="5  Softmax回归"></a>5  Softmax回归</h1><h3 id="5-1-基本概念"><a href="#5-1-基本概念" class="headerlink" title="5.1 基本概念"></a>5.1 基本概念</h3><ul>
+<li>softmax回归跟线性回归⼀样将输⼊特征与权重做线性叠加。与线性回归的⼀个主要不同在于， softmax回归的输出值个数等于标签⾥的类别数</li>
+<li>由于输出元有多个，所以我们要讲输出做softmax计算，得到的结果作为置信度（也就是为该类的概率），具体计算如下：</li>
+</ul>
+<p>假设输出元有3个，输出值分别为$o_1, o_2, o_3$， 则:</p>
+<script type="math/tex; mode=display">
+\hat{y}_1, \hat{y}_2, \hat{y}_3 = softmax(o_1, o_2, o_3)</script><p>其中</p>
+<script type="math/tex; mode=display">
+\hat{y}_i = \frac{e^{o_i}}{\sum_{j = 1}^{3}e^{o_j}}</script><ul>
+<li>容易看出$\sum_{i = 1}^{3}y_i = 1$（即所有概率加起来等于1）</li>
+<li>通常，我 们把预测概率最⼤的类别作为输出类别</li>
+</ul>
+<h3 id="5-2-损失函数"><a href="#5-2-损失函数" class="headerlink" title="5.2 损失函数"></a>5.2 损失函数</h3><ul>
+<li>mse过于严格，因为并不需要所有的输出都和真实值相近</li>
+<li>这里我们运用交叉熵损失函数（cross entropy）：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(y^{(i)}, \hat{y}^{(i)}) = -\sum_{j = 1}^qy_j^{(i)}\log{\hat{y}^{(i)}}</script><p>q为输出元个数$\times$样本个数，即所有样本的所有输出元都要参与运算，最后求平均值</p>
+<h1 id="6-多层感知机（MLP）"><a href="#6-多层感知机（MLP）" class="headerlink" title="6 多层感知机（MLP）"></a>6 多层感知机（MLP）</h1><ul>
+<li>多层感知机有一到多个隐藏层</li>
+<li>多层感知机中的隐藏层和输出层都是全连接层</li>
+<li>多层感知机具有激活函数，下面介绍常用激活函数</li>
+</ul>
+<h1 id="7-激活函数"><a href="#7-激活函数" class="headerlink" title="7 激活函数"></a>7 激活函数</h1><h3 id="7-1-Sigmoid函数"><a href="#7-1-Sigmoid函数" class="headerlink" title="7.1 Sigmoid函数"></a>7.1 Sigmoid函数</h3><script type="math/tex; mode=display">
+sigmoid(x) = \frac{1}{1 + e^{-x}}</script><script type="math/tex; mode=display">
+sigmoid'(x) = sigmoid(x)(1 - sigmoid(x))</script><p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030004640247.png" srcset="/img/loading.gif" lazyload alt="image-20211030004640247"></p>
+<ul>
+<li>一般用在二分类的输出层中</li>
+</ul>
+<h3 id="7-2-tanh函数"><a href="#7-2-tanh函数" class="headerlink" title="7.2 tanh函数"></a>7.2 tanh函数</h3><script type="math/tex; mode=display">
+tanh(x) = \frac{1 - e^{-2x}}{1 + e^{-2x}}</script><script type="math/tex; mode=display">
+tanh'(x) = 1 - tanh^2(x)</script><p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030005138300.png" srcset="/img/loading.gif" lazyload alt="image-20211030005138300"></p>
+<ul>
+<li>tanh和sigmoid比较相似，但是性能一般要优于sigmoid</li>
+</ul>
+<h3 id="7-3-ReLU函数"><a href="#7-3-ReLU函数" class="headerlink" title="7.3 ReLU函数"></a>7.3 ReLU函数</h3><script type="math/tex; mode=display">
+ReLU(x) = max(0, x)</script><p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030005121490.png" srcset="/img/loading.gif" lazyload alt="image-20211030005121490"></p>
+<ul>
+<li>十分常用</li>
+</ul>
+<h3 id="7-4-Leaky-ReLU函数"><a href="#7-4-Leaky-ReLU函数" class="headerlink" title="7.4 Leaky ReLU函数"></a>7.4 Leaky ReLU函数</h3><script type="math/tex; mode=display">
+Leaky\_Relu(x) = max(0.1 * x, x)</script><p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030005818507.png" srcset="/img/loading.gif" lazyload alt="image-20211030005818507"></p>
+<h1 id="8-训练误差和泛化误差"><a href="#8-训练误差和泛化误差" class="headerlink" title="8 训练误差和泛化误差"></a>8 训练误差和泛化误差</h1><h3 id="8-1-基本概念"><a href="#8-1-基本概念" class="headerlink" title="8.1 基本概念"></a>8.1 基本概念</h3><ul>
+<li>训练误差：指模型在训练数据集上表现出的误差</li>
+<li><p>泛化误差：指模型在任意⼀个测试数据样本上表 现出的误差的期望</p>
+</li>
+<li><p>我们通常假设训练数据集（训练题）和测试数据集（测试题）⾥的每⼀个样本都 是从同⼀个概率分布中相互独⽴地⽣成的</p>
+</li>
+</ul>
+<h3 id="8-2-验证数据集"><a href="#8-2-验证数据集" class="headerlink" title="8.2 验证数据集"></a>8.2 验证数据集</h3><ul>
+<li>在机器学习中，通常需要评估若⼲候选模型的表现并从中选择模型。这⼀过程称为模型选择 （model selection）。可供选择的候选模型可以是有着不同超参数的同类模型。</li>
+<li>从严格意义上讲，测试集只能在所有超参数和模型参数选定后使⽤⼀次。不可以使⽤测试数据选择模型，如调参。由于⽆法从训练误差估计泛化误差，因此也不应只依赖训练数据选择模型。鉴于此，我们可以预留⼀部分在训练数据集和测试数据集以外的数据来进⾏模型选择。</li>
+<li>我们可以从给定的训练集中随机选取⼀ 小部分作为验证集，而将剩余部分作为真正的训练集</li>
+<li>对于总样本数量比较小的情况，一般训练集：验证集：测试集 = 6：2：1；如果数据量比较大，如上百万，那么训练集：验证集：测试集 = 98：1：1</li>
+</ul>
+<h3 id="8-3-k折交叉验证"><a href="#8-3-k折交叉验证" class="headerlink" title="8.3 k折交叉验证"></a>8.3 k折交叉验证</h3><ul>
+<li>当训练数据不够⽤时，预留⼤量的验证数据显得太奢侈，这时候就可以运用k折交叉验证法</li>
+<li>即我们把原始训练数据 集分割成k个不重合的⼦数据集，然后我们做k次模型训练和验证。每⼀次，我们使⽤⼀个⼦数据集验证模型，并使⽤其他k − 1个⼦数据集来训练模型，最后，我们对这k次训练误差和验证误差分别求平均。</li>
+</ul>
+<h3 id="8-4-欠拟合和过拟合"><a href="#8-4-欠拟合和过拟合" class="headerlink" title="8.4 欠拟合和过拟合"></a>8.4 欠拟合和过拟合</h3><ul>
+<li>欠拟合：模型⽆法得到较低的训练误差</li>
+<li><p>过拟合：是模型的训练误差远小于它在测试数据集上 的误差</p>
+</li>
+<li><p>如果模型的复杂度过低，很容易出现⽋拟合；如果模型复杂度过⾼，很容易出现过拟合</p>
+</li>
+<li><p>⼀般来说，如果训练数据集中样本 数过少，特别是⽐模型参数数量（按元素计）更少时，过拟合更容易发⽣。</p>
+</li>
+<li>泛化误差不会 随训练数据集⾥样本数量增加而增⼤</li>
+</ul>
+<h3 id="8-5-正则化"><a href="#8-5-正则化" class="headerlink" title="8.5 正则化"></a>8.5 正则化</h3><ul>
+<li>正则化通过为模型损失函数添加惩罚项使学出 的模型参数值较小</li>
+</ul>
+<h4 id="8-5-1-L2正则化（权重衰减）"><a href="#8-5-1-L2正则化（权重衰减）" class="headerlink" title="8.5.1 L2正则化（权重衰减）"></a>8.5.1 L2正则化（权重衰减）</h4><ul>
+<li>L2范数惩罚项指的是模型权重参数每个元素的平⽅和与⼀个正的常数的乘积</li>
+<li>损失函数添加一个L2惩罚项：</li>
+</ul>
+<script type="math/tex; mode=display">
+\ell(...) + \frac{\lambda}{2}\begin{Vmatrix} W \end{Vmatrix}^2</script><p>求导后：（每个mini-batch）</p>
+<script type="math/tex; mode=display">
+w1 = (1 - \eta\lambda)w1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial\ell^{(i)}(...)}{\partial{w1}}</script><p>其中超参数$\lambda$ &gt; 0。当权重参数均为0时，惩罚项最小。当$\lambda$较⼤时，惩罚项在损失函数中的⽐重较⼤，这通常会使学到的权重参数的元素较接近0。当$\lambda$设为0时，惩罚项完全不起作⽤。</p>
+<ul>
+<li>一般训练集中的损失函数要加惩罚项，测试集中不用</li>
+</ul>
+<h4 id="8-5-2-丢弃法（Dropout）"><a href="#8-5-2-丢弃法（Dropout）" class="headerlink" title="8.5.2 丢弃法（Dropout）"></a>8.5.2 丢弃法（Dropout）</h4><ul>
+<li>对于每一层的神经元，有一定的概率被丢弃掉，设丢弃概率为p，计算新的单元：</li>
+</ul>
+<script type="math/tex; mode=display">
+h_i' = \frac{\xi_i}{1 - p}h_i</script><p>$\xi_i$为0和1的概率分别为p和1 - p</p>
+<p>分母中的1- p是为了不改变其输⼊的期望值：</p>
+<script type="math/tex; mode=display">
+由于E(\xi_i) = 1 - p \\
+所以E(h_i') = \frac{E(\xi_i)}{1 - p}h_i = h_i</script><ul>
+<li><p>测试模型时，我们为了得到更加确定性的结果，⼀般不使⽤丢弃法</p>
+</li>
+<li><p>进行了Dropout的多层感知机：</p>
+</li>
+</ul>
+<p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030141251677.png" srcset="/img/loading.gif" lazyload alt="image-20211030141251677"></p>
+<p>可以看到隐藏层中的$h_2$和$h_5$消失了</p>
+<ul>
+<li>每一层的丢弃概率可以不同，通常把靠近输⼊层的丢弃概率设得小⼀点</li>
+</ul>
+<h1 id="9-正向传播和反向传播"><a href="#9-正向传播和反向传播" class="headerlink" title="9 正向传播和反向传播"></a>9 正向传播和反向传播</h1><h3 id="9-1-正向传播"><a href="#9-1-正向传播" class="headerlink" title="9.1 正向传播"></a>9.1 正向传播</h3><ul>
+<li>正向传播（forward propagation）是指对神经⽹络沿着从输⼊层到输出层的顺序，依次计算并存储模型的中间变量（包括输出）</li>
+<li>中间变量称为缓存，在反向传播中会用到，避免重复计算，如每层的输出值等</li>
+<li>正向传播的计算图：</li>
+</ul>
+<p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211030142019713.png" srcset="/img/loading.gif" lazyload alt="image-20211030142019713"></p>
+<p>其中：</p>
+<ol>
+<li>左下⻆是输⼊，右上⻆是输出</li>
+<li>⽅框代表变量，圆圈代表运算符</li>
+<li>$J = L + s$，$J$称为目标函数，$L$为损失函数，$s$为惩罚项</li>
+</ol>
+<h3 id="9-2-反向传播"><a href="#9-2-反向传播" class="headerlink" title="9.2 反向传播"></a>9.2 反向传播</h3><ul>
+<li>反向传播最重要的是通过链式法则求导，从后往前进行计算</li>
+<li>反向传播的梯度计算可能依赖于各变量的当前值，而这些变量的当前值是通过正向传 播计算得到的</li>
+</ul>
+<h3 id="9-3-衰减和爆炸"><a href="#9-3-衰减和爆炸" class="headerlink" title="9.3 衰减和爆炸"></a>9.3 衰减和爆炸</h3><ul>
+<li>如果隐藏层的层数很大，$H(l)$的计算可能会出现衰减或爆炸，如：</li>
+</ul>
+<p>假设输⼊和所有层的权重参数都是标量，如权重参数为0.2和5，多层感知 机的第30层输出为输⼊X分别与0.2 30 ≈ 1 × 10−21（衰减）和5 30 ≈ 9 × 1020（爆炸）的乘积</p>
+<h3 id="9-4-随机初始化参数"><a href="#9-4-随机初始化参数" class="headerlink" title="9.4 随机初始化参数"></a>9.4 随机初始化参数</h3><ul>
+<li>例如：</li>
+</ul>
+<p>假设将每个隐藏单元的参数都初始化为相等的值，那么在正向传播时每个隐藏单元将根据相同的输⼊计算出相同的值， 并传递⾄输出层。在反向传播中，每个隐藏单元的参数梯度值相等。因此，这些参数在使⽤基于梯度的优化算法迭代后值依然相等。</p>
+<ul>
+<li><strong>在这种情况下，⽆论隐藏单元有多少， 隐藏层本质上只有1个隐藏单元在发挥作⽤</strong></li>
+</ul>
+<h3 id="9-5-Xavier随机初始化"><a href="#9-5-Xavier随机初始化" class="headerlink" title="9.5 Xavier随机初始化"></a>9.5 Xavier随机初始化</h3><ul>
+<li>假设某全连接层的输⼊个数为a， 输出个数为b，Xavier随机初始化将使该层中权重参数的每个元素都随机采样于均匀分布：</li>
+</ul>
+<script type="math/tex; mode=display">
+U(-\sqrt{\frac{6}{a + b}}, \sqrt{\frac{6}{a + b}})</script><ul>
+<li>该设计主要为了每层输出的⽅差不该受该层输⼊个数影响，且每层梯度的⽅差也不该受该层输出个数影响</li>
+</ul>
+<h1 id="10-Block类"><a href="#10-Block类" class="headerlink" title="10 Block类"></a>10 Block类</h1><ul>
+<li>Block类是⼀个模型构造类，我们可以继承它来定义我们想要的模型。</li>
+<li>它的⼦类既可以是⼀个层（如Dense类），⼜可以是深度学习计算的⼀个模型，或者是模型的⼀个部分</li>
+</ul>
+<h1 id="11-模型参数的延后初始化"><a href="#11-模型参数的延后初始化" class="headerlink" title="11 模型参数的延后初始化"></a>11 模型参数的延后初始化</h1><h3 id="11-1-基本概念"><a href="#11-1-基本概念" class="headerlink" title="11.1 基本概念"></a>11.1 基本概念</h3><ul>
+<li>如果我们在创建层时没有指定输入输出的个数，那么和该层相邻的参数的维度一开始我们是不知道的，只有我们将最开始的输入值输进去，这时系统才能推断出参数的维度，才能开始参数初始化。系统将这种真正的参数初始化延后到获得⾜够信息时才执⾏的⾏为叫作延后初始化（deferred initialization）</li>
+<li>这个初始化只会在第⼀次前向计算时被调⽤</li>
+</ul>
+<h3 id="11-2-避免延后初始化"><a href="#11-2-避免延后初始化" class="headerlink" title="11.2 避免延后初始化"></a>11.2 避免延后初始化</h3><ul>
+<li>可以额外做⼀次前向计算来迫使参数被真正地初始化</li>
+<li>也可以在创建层的时候指定了它的输⼊个数</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/05/%E8%AF%AD%E6%B3%95/">
+                        <span class="hidden-mobile">Markdown & Letax常用语法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2021/10/31/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/';
+          this.page.identifier = '/2021/10/31/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
