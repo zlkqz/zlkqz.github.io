@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 常用损失函数1.1 0-1损失函数 L(y, \hat{y}) &#x3D; \begin{cases} 1 &amp; y\neq \hat{y}\\ 0 &amp; y &#x3D; \hat{y} \end{cases} 0-1损失函数直接对应分类判断错误的个数，但是它是一个非凸函数，不太适用 感知机就是用的这种损失函数。但是相等这个条件太过严格，因此可以放宽条件，即满足$|y - \hat{y}| &lt; T$时认为相">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用损失函数和评估模型的指标">
+<meta property="og:url" content="https://zlkqz.github.io/2021/11/11/%E5%B8%B8%E7%94%A8%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8C%87%E6%A0%87/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 常用损失函数1.1 0-1损失函数 L(y, \hat{y}) &#x3D; \begin{cases} 1 &amp; y\neq \hat{y}\\ 0 &amp; y &#x3D; \hat{y} \end{cases} 0-1损失函数直接对应分类判断错误的个数，但是它是一个非凸函数，不太适用 感知机就是用的这种损失函数。但是相等这个条件太过严格，因此可以放宽条件，即满足$|y - \hat{y}| &lt; T$时认为相">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/09/e6FQMBY42PDGxtI.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/09/BvpTeXqWFYRKoMU.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/09/hPt1nITJ624Llfp.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/09/KngeQOwp54JZRMf.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/09/OCNnaMs2ceBQIJz.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/10/zV1Sj4HyYfD3G5e.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/10/TUMHuC3N9rX18iz.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/10/xG1TrPNfyimzq7Q.png">
+<meta property="article:published_time" content="2021-11-11T03:27:19.863Z">
+<meta property="article:modified_time" content="2021-11-11T03:25:40.373Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png">
+  
+  <title>常用损失函数和评估模型的指标 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="常用损失函数和评估模型的指标">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-11 11:27" pubdate>
+        2021年11月11日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      9 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">常用损失函数和评估模型的指标</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-常用损失函数"><a href="#1-常用损失函数" class="headerlink" title="1 常用损失函数"></a>1 常用损失函数</h1><h3 id="1-1-0-1损失函数"><a href="#1-1-0-1损失函数" class="headerlink" title="1.1 0-1损失函数"></a>1.1 0-1损失函数</h3><script type="math/tex; mode=display">
+L(y, \hat{y}) = \begin{cases}
+1 & y\neq \hat{y}\\
+0 & y = \hat{y}
+\end{cases}</script><ul>
+<li>0-1损失函数直接对应分类判断错误的个数，但是它是一个非凸函数，不太适用</li>
+<li>感知机就是用的这种损失函数。但是相等这个条件太过严格，因此可以放宽条件，即满足$|y - \hat{y}| &lt; T$时认为相等，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+L(y, \hat{y}) = \begin{cases}
+1 & |y - \hat{y}| \geq T\\
+0 & |y - \hat{y}| < T
+\end{cases}</script><h3 id="1-2-均方差损失函数（MSE）"><a href="#1-2-均方差损失函数（MSE）" class="headerlink" title="1.2 均方差损失函数（MSE）"></a>1.2 均方差损失函数（MSE）</h3><script type="math/tex; mode=display">
+J_{MSE} = \frac{1}{N} \sum_{i = 1}^N(y_i - \hat{y_i})^2</script><ul>
+<li>也称L2 Loss</li>
+</ul>
+<h5 id="1-2-1-证明"><a href="#1-2-1-证明" class="headerlink" title="1.2.1 证明"></a>1.2.1 证明</h5><p>假设预测值和真实值的误差服从标准正态分布，则给定一个$x_i$输出真实值$y_i$的概率为：</p>
+<script type="math/tex; mode=display">
+p(y_i|x_i) = \frac{1}{\sqrt{2\pi}}exp(-\frac{(y_i - \hat{y_i})^2}{2})</script><p>其实就是极大似然估计，我们要寻找一组参数，使$p(y_i|x_i)$最大</p>
+<p>进一步对所有样本，由于他们相互独立，所以所有样本都正好取到真实值$y$的概率为：</p>
+<script type="math/tex; mode=display">
+L(x, y) = \prod_{i = 1}^N\frac{1}{\sqrt{2\pi}}exp(-\frac{(y_i - \hat{y_i})^2}{2})</script><p>现在我们就要使$L(x, y)$最大，为了方便计算，我们取对数：</p>
+<script type="math/tex; mode=display">
+LL(x, y) = log(L(x, y)) = -\frac{N}{2}log2\pi - \frac{1}{2}\sum_{i = 1}^N(y_i - \hat{y_i})^2</script><p>把第一项无关项去掉，再取负：</p>
+<script type="math/tex; mode=display">
+NLL(x, y) = \frac{1}{2}\sum_{i = 1}^N(y_i - \hat{y_i})^2</script><p>即得到均方差形式</p>
+<h5 id="1-2-2-为什么可以用极大似然"><a href="#1-2-2-为什么可以用极大似然" class="headerlink" title="1.2.2 为什么可以用极大似然"></a>1.2.2 为什么可以用极大似然</h5><p><strong>在模型输出与真实值的误差服从高斯分布的假设下，最小化均方差损失函数与极大似然估计本质上是一致的，拟合数据最好的情况就是所有的$y_i = \hat{y_i}$，即每个样本的$p(y_i|x_i)$取最大，即$L(x, y)$取最大，由于对数运算不改变单调性，并且最后取了个负值，所以即$NLL(x, y)$取最小</strong></p>
+<h3 id="1-3-平均绝对误差损失（MAE）"><a href="#1-3-平均绝对误差损失（MAE）" class="headerlink" title="1.3 平均绝对误差损失（MAE）"></a>1.3 平均绝对误差损失（MAE）</h3><script type="math/tex; mode=display">
+J_{MAE} = \frac{1}{N}\sum_{i = 1}^N|y_i - \hat{y_i}|</script><ul>
+<li>也称L1 Loss</li>
+</ul>
+<h5 id="1-3-1-拉普拉斯分布"><a href="#1-3-1-拉普拉斯分布" class="headerlink" title="1.3.1 拉普拉斯分布"></a>1.3.1 拉普拉斯分布</h5><script type="math/tex; mode=display">
+f(x|\mu, b) = \frac{1}{2b}exp(-\frac{|x - \mu|}{b})</script><p>期望值：$\mu$             方差：$2b^2$</p>
+<p><img src="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png" srcset="/img/loading.gif" lazyload alt="Laplace_distribution_pdf" style="zoom: 25%;" /></p>
+<h5 id="1-3-2-证明"><a href="#1-3-2-证明" class="headerlink" title="1.3.2 证明"></a>1.3.2 证明</h5><p>假设预测值和真实值的误差服从拉普拉斯分布（$\mu = 0, b = 1$）</p>
+<script type="math/tex; mode=display">
+p(y_i | x_i) = \frac{1}{2}exp(-{|y_i - \hat{y_i}|})</script><p>剩余证明和上述MSE证明过程一样</p>
+<h5 id="1-3-3-MSE和MAE的区别："><a href="#1-3-3-MSE和MAE的区别：" class="headerlink" title="1.3.3 MSE和MAE的区别："></a>1.3.3 MSE和MAE的区别：</h5><ul>
+<li><strong>MSE 损失相比 MAE 通常可以更快地收敛</strong></li>
+</ul>
+<p>关于$\hat{y_i}$求导时，MSE为$-(y_i - \hat{y_i})$，MAE为$\pm1$，即 MSE 的梯度的 scale 会随误差大小变化，而 MAE 的梯度的 scale 则一直保持为 1，即便在绝对误差很小的时候 MAE 的梯度 scale 也同样为 1，这实际上是非常不利于模型的训练的（当然也可以通过调整学习率缓解这个问题，但总体来说还是MAE更快）。</p>
+<ul>
+<li><strong>MAE对于离群值更加健壮，即更加不易受到离群值影响</strong></li>
+</ul>
+<ol>
+<li>由于MAE 损失与绝对误差之间是线性关系，MSE 损失与误差是平方关系，当误差非常大的时候，MSE 损失会远远大于 MAE 损失</li>
+<li>MSE 假设了误差服从正态分布，MAE 假设了误差服从拉普拉斯分布。拉普拉斯分布本身对于离群值更加健壮</li>
+</ol>
+<h5 id="1-3-4-MSE和MAE的收敛"><a href="#1-3-4-MSE和MAE的收敛" class="headerlink" title="1.3.4 MSE和MAE的收敛"></a>1.3.4 MSE和MAE的收敛</h5><ul>
+<li>MSE收敛于均值</li>
+</ul>
+<p>将$\hat{y_i}$设为变量$t$：</p>
+<script type="math/tex; mode=display">
+J_{MSE} = \frac{1}{N}\sum_{i = 1}^N(t - y_i)^2</script><p>关于$t$求导：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial t} = \frac{2}{N}\sum_{i = 1}^N(t - y_i) = 0</script><p>求得：</p>
+<script type="math/tex; mode=display">
+t = \frac{1}{N}\sum_{i = 1}^Ny_i = E(y)</script><ul>
+<li>MAE收敛于中值</li>
+</ul>
+<p>将$\hat{y_i}$设为变量$t$：</p>
+<script type="math/tex; mode=display">
+J_{MAE} = \frac{1}{N}\sum_{i = 1}^N|t - y_i|</script><p>关于$t$求导：</p>
+<script type="math/tex; mode=display">
+\frac{\partial J}{\partial t} = \frac{1}{N}\sum_{i = 1}^Nsgn(t - y_i) = 0</script><p>显然在该种情况下应该取$t$为中值</p>
+<h3 id="1-4-Huber-Loss"><a href="#1-4-Huber-Loss" class="headerlink" title="1.4 Huber Loss"></a>1.4 Huber Loss</h3><ul>
+<li>上面介绍了MSE和MAE，他们各有各的优缺点，MSE 损失收敛快但容易受 outlier 影响，MAE 对 outlier 更加健壮但是收敛慢，而Huber Loss则是将两者结合起来，原理很简单，就是误差接近 0 时使用 MSE，误差较大时使用 MAE：</li>
+</ul>
+<script type="math/tex; mode=display">
+J_{huber} = \frac{1}{N} \sum_{i=1}^{N} \mathbb{I}_{\left|y_{i}-\hat{y}_{i}\right| \leq \delta} \frac{\left(y_{i}-\hat{y}_{i}\right)^{2}}{2}+\mathbb{I}_{\left|y_{i}-\hat{y}_{i}\right|>\delta}\left(\delta\left|y_{i}-\hat{y}_{i}\right|-\frac{1}{2} \delta^{2}\right)</script><ul>
+<li>前半部分是MSE部分，后半部分是MAE部分，超参数$\delta$为两个部分的连接处</li>
+<li>MAE部分为$\delta |y_i - \hat{y_i}| - \frac{1}{2}\delta ^2$是为了在$|y_i - \hat{y_i}| = \delta$ 端点处连续可导</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/09/e6FQMBY42PDGxtI.png" srcset="/img/loading.gif" lazyload alt="超参数为1的Huber Loss"></p>
+<ul>
+<li>Huber Loss 结合了 MSE 和 MAE 损失，在误差接近 0 时使用 MSE，使损失函数可导并且梯度更加稳定；在误差较大时使用 MAE 可以降低 outlier 的影响，使训练对 outlier 更加健壮。缺点是需要额外地设置一个$\delta$超参数。</li>
+</ul>
+<h3 id="1-5-分位数损失（Quantile-Loss）"><a href="#1-5-分位数损失（Quantile-Loss）" class="headerlink" title="1.5 分位数损失（Quantile Loss）"></a>1.5 分位数损失（Quantile Loss）</h3><script type="math/tex; mode=display">
+J_{\text {quant }}=\frac{1}{N} \sum_{i=1}^{N} \mathbb{I}_{\hat{y}_{i} \geq y_{i}}(1-r)\left|y_{i}-\hat{y}_{i}\right|+\mathbb{I}_{\hat{y}_{i}<y_{i}} r\left|y_{i}-\hat{y}_{i}\right|</script><ul>
+<li>这是一个分段函数，这个损失函数是一个分段的函数 ，将$\hat{y_i} \geq y_i$（高估） 和$\hat{y_i} &lt; y_i$（低估) 两种情况分开来，并分别给予不同的系数</li>
+<li>分位数损失实现了分别用不同的系数（r和1-r）控制高估和低估的损失</li>
+<li>特别地，当$r = 0.5$时分位数损失退化为 MAE 损失</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/09/BvpTeXqWFYRKoMU.png" srcset="/img/loading.gif" lazyload alt="Quantile Loss"></p>
+<h3 id="1-6-交叉熵损失（Cross-Entropy-Loss）"><a href="#1-6-交叉熵损失（Cross-Entropy-Loss）" class="headerlink" title="1.6 交叉熵损失（Cross Entropy Loss）"></a>1.6 交叉熵损失（Cross Entropy Loss）</h3><ul>
+<li>上文介绍的几种损失函数都是适用于回归问题损失函数，对于分类问题，最常用的损失函数是交叉熵损失函数 </li>
+</ul>
+<h5 id="1-6-1-二分类"><a href="#1-6-1-二分类" class="headerlink" title="1.6.1 二分类"></a>1.6.1 二分类</h5><script type="math/tex; mode=display">
+J_{C E}=-\sum_{i=1}^{N}\left(y_{i} \log \left(\hat{y}_{i}\right)+\left(1-y_{i}\right) \log \left(1-\hat{y}_{i}\right)\right)</script><p><img src="https://i.loli.net/2021/11/09/hPt1nITJ624Llfp.png" srcset="/img/loading.gif" lazyload alt="二分类的交叉熵"></p>
+<ul>
+<li>证明：</li>
+</ul>
+<p>在二分类中我们通常将输出结果用sigmoid映射到区间$(0, 1)$，并将其作为该类的概率，由于只有两类，所以给定$x_i$求出类别为1或0的概率分别为：</p>
+<script type="math/tex; mode=display">
+p(y_i = 1|x_i) = \hat{y_i} \\
+p(y_i = 0|x_i) = 1 - \hat{y_i}</script><p>合并成一个式子：</p>
+<script type="math/tex; mode=display">
+p(y_i|x_i) = (\hat{y_i})^{y_i}(1 - \hat{y_i})^{1 - y_i}</script><p>由于各数据点独立同分布，则似然可以表示为：</p>
+<script type="math/tex; mode=display">
+L(x, y) = \prod_{i=1}^{N}\left(\hat{y}_{i}\right)^{y_{i}}\left(1-\hat{y}_{i}\right)^{1-y_{i}}</script><p>取负对数：</p>
+<script type="math/tex; mode=display">
+N L L(x, y)=J_{C E}=-\sum_{i=1}^{N}\left(y_{i} \log \left(\hat{y}_{i}\right)+\left(1-y_{i}\right) \log \left(1-\hat{y}_{i}\right)\right)</script><h5 id="1-6-2-多分类"><a href="#1-6-2-多分类" class="headerlink" title="1.6.2 多分类"></a>1.6.2 多分类</h5><p>在多分类的任务中，交叉熵损失函数的推导思路和二分类是一样的，变化的地方是真实值$y_i$现在是一个 One-hot 向量，同时模型输出的压缩由原来的 Sigmoid 函数换成 Softmax 函数</p>
+<script type="math/tex; mode=display">
+J_{C E}=-\sum_{i=1}^{N} \sum_{k=1}^{K} y_{i}^{k} \log \left(\hat{y}_{i}^{k}\right)</script><p>因为$y_i$是一个One-hot向量，所以还可以写为：</p>
+<script type="math/tex; mode=display">
+J_{C E}=-\sum_{i=1}^{N} y_{i}^{c_{i}} \log \left(\hat{y}_{i}^{c_{i}}\right)</script><p>其中$c_i$为样本$x_i$的目标类</p>
+<ul>
+<li>证明：</li>
+</ul>
+<p>对于一个样本，分类正确的概率为：</p>
+<script type="math/tex; mode=display">
+p(y_i|x_i) = \prod_{k=1}^{K}\left(\hat{y}_{i}^{k}\right)^{y_{i}^{k}}</script><p>（其中$y_i^k和\hat{y_i}^k$为该向量的第k维）</p>
+<p>因为所有样本相互，所有相乘再取负对数即可得到：</p>
+<script type="math/tex; mode=display">
+N L L(x, y)=J_{C E}=-\sum_{i=1}^{N} \sum_{k=1}^{K} y_{i}^{k} \log \left(\hat{y}_{i}^{k}\right)</script><h3 id="1-7-合页损失（Hinge-Loss）"><a href="#1-7-合页损失（Hinge-Loss）" class="headerlink" title="1.7 合页损失（Hinge Loss）"></a>1.7 合页损失（Hinge Loss）</h3><ul>
+<li>Hinge Loss也是一种二分类损失函数</li>
+</ul>
+<script type="math/tex; mode=display">
+J_{\text {hinge }}=\sum_{i=1}^{N} \max \left(0,1-\operatorname{sgn}\left(y_{i}\right) \hat{y}_{i}\right)</script><p>下图是$y$为正类， 即$sgn(y) = 1$时，不同输出的合页损失示意图：</p>
+<p><img src="https://i.loli.net/2021/11/09/KngeQOwp54JZRMf.png" srcset="/img/loading.gif" lazyload alt="image-20211109225642368"></p>
+<ul>
+<li>可以看到当$y$为正类时，模型输出负值会有较大的惩罚，当模型输出为正值且在$(0, 1)$区间时还会有一个较小的惩罚。即合页损失不仅惩罚预测错的，并且对于预测对了但是置信度不高的也会给一个惩罚，只有置信度高的才会有零损失。<strong>使用合页损失直觉上理解是要找到一个决策边界，使得所有数据点被这个边界正确地、高置信地被分类</strong></li>
+</ul>
+<h1 id="2-评估模型的指标"><a href="#2-评估模型的指标" class="headerlink" title="2 评估模型的指标"></a>2 评估模型的指标</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="https://i.loli.net/2021/11/09/OCNnaMs2ceBQIJz.png" srcset="/img/loading.gif" lazyload alt="image-20211109233859657"></p>
+<h3 id="2-2-查准率和查全率"><a href="#2-2-查准率和查全率" class="headerlink" title="2.2 查准率和查全率"></a>2.2 查准率和查全率</h3><script type="math/tex; mode=display">
+查准率 P（Precision） = \frac{TP}{TP + FP}</script><script type="math/tex; mode=display">
+查全率 R（Recall） = \frac{TP}{TP + FN}</script><ul>
+<li>查准率可以直观理解为所有预测为正项的样本中有多少是真正的正项</li>
+<li>查全率可以直观理解为所有label是正项的样本中有多少被成功预测出来了</li>
+<li>理想情况下，查准率和查全率两者都越高越好。<strong>然而事实上这两者在某些情况下是矛盾的，一般来说，查准率高时，查全率低；查确率低时，查全率高</strong></li>
+</ul>
+<h3 id="2-3-准确率和错误率"><a href="#2-3-准确率和错误率" class="headerlink" title="2.3 准确率和错误率"></a>2.3 准确率和错误率</h3><p>准确率：</p>
+<script type="math/tex; mode=display">
+accuracy = \frac{TP + TF}{TP + TN + FP + FN}</script><ul>
+<li>即有多少样本被分类正确</li>
+</ul>
+<p>而错误率：</p>
+<script type="math/tex; mode=display">
+errorrate = 1 - accuracy</script><h3 id="2-4-P-R曲线"><a href="#2-4-P-R曲线" class="headerlink" title="2.4 P-R曲线"></a>2.4 P-R曲线</h3><p><img src="https://i.loli.net/2021/11/10/zV1Sj4HyYfD3G5e.png" srcset="/img/loading.gif" lazyload alt="image-20211110000609300" style="zoom: 80%;" /></p>
+<ul>
+<li>P-R曲线直观地显示出学习器在样本总体上地查全率、查准率，在进行比较时，<strong>若一个学习器的P-R曲线被另一个学习器曲线“完全包住”，则可以断言后者的性能一定优于前者，如上图的B性能优于C，而A、B不一定</strong></li>
+<li>平衡点（BEP）时$P = R$时的取值，如上图A的BEP为0.8，而如果基于BEP比较，可知A优于B</li>
+</ul>
+<h3 id="2-5-F函数"><a href="#2-5-F函数" class="headerlink" title="2.5 F函数"></a>2.5 F函数</h3><p>BEP还是过于简化了些，更常用得是F1度量，我们可以取P和R的调和平均：</p>
+<script type="math/tex; mode=display">
+\frac{2}{F_1} = \frac{1}{P} + \frac{1}{R}</script><p>求得：</p>
+<script type="math/tex; mode=display">
+F1 = \frac{2PR}{P + R}</script><p>但是在许多应用中我们对查准率和查全率得重视程度不同，所以可以给予P和R不同的权重，取P和R的加权调和平均：</p>
+<script type="math/tex; mode=display">
+\frac{1}{F_{\beta}} = \frac{1}{1 + \beta ^2}(\frac{1}{P} + \frac{\beta ^2}{R})</script><p>求得：</p>
+<script type="math/tex; mode=display">
+F_{\beta} = \frac{(1 + \beta ^2)PR}{\beta ^2P + R}</script><ul>
+<li>$\beta &gt; 0$度量了查全率和查准率的相对重要性，$\beta = 1$退化为标准的F1，$\beta &gt; 1$查全率有更大影响，$\beta &lt; 1$查准率有更大影响</li>
+</ul>
+<h3 id="2-6-ROC与AUC"><a href="#2-6-ROC与AUC" class="headerlink" title="2.6 ROC与AUC"></a>2.6 ROC与AUC</h3><h5 id="2-6-1-基本概念"><a href="#2-6-1-基本概念" class="headerlink" title="2.6.1 基本概念"></a>2.6.1 基本概念</h5><ul>
+<li><p>大多二分类问题是将输出的预测值与一个<strong>分类阈值（threshold）</strong>进行比较，若预测值大于阈值则为正类，反之则为负类</p>
+</li>
+<li><p>根据预测值，我们可将测试样本进行排序，根据预测值由大到小，“最可能”是正例的排在前面，“最不可能”是正例的排到后面。<strong>这样，分类过程就相当于以中间某个截断点（也就是分类阈值）将样本分为两部分，前一部分判定为正例，后一部分判定为反例</strong></p>
+</li>
+<li><p>在不同的任务中，我们我们可以根据任务需求采取不同的截断点。例如如更重视查准率，可以将截断点设置靠前，更注重查全率，可以将截断点靠后</p>
+</li>
+<li>而我们根据预测值进行排序后，按顺序将样本逐个作为正例进行预测，每次计算出<strong>真正例率（TPR）</strong>和<strong>假正例率（FPR）</strong>，以他们为横纵坐标就得到了<strong>ROC曲线</strong></li>
+</ul>
+<h5 id="2-6-2-ROC曲线"><a href="#2-6-2-ROC曲线" class="headerlink" title="2.6.2 ROC曲线"></a>2.6.2 ROC曲线</h5><ul>
+<li>首先介绍真正例率和假正例率：</li>
+</ul>
+<script type="math/tex; mode=display">
+TPR = \frac{TP}{TP + FN} \\
+FPR = \frac{FP}{TN + FP}</script><ul>
+<li>ROC曲线：</li>
+</ul>
+<p>首先将分类阈值设最大，则所有类都被分类为负类，TPR和FPR都为0，然后每次将分类阈值设为下一个样本点的预测值（按预测值由大到小进行排序），记录每次的TPR和FPR，组成ROC曲线</p>
+<p><img src="https://i.loli.net/2021/11/10/TUMHuC3N9rX18iz.png" srcset="/img/loading.gif" lazyload alt="image-20211110140633061"></p>
+<p>但是现实中我们是基于有限个样本画的图，所以不会产生这么平滑的曲线，更多情况应该像下图：</p>
+<p><img src="https://i.loli.net/2021/11/10/xG1TrPNfyimzq7Q.png" srcset="/img/loading.gif" lazyload alt="image-20211110140853013"></p>
+<ul>
+<li>基于ROC的比较方法</li>
+</ul>
+<blockquote>
+<p>如果一个学习器的ROC曲线完全被另一个学习器的”包住“，则后者性能优于前者</p>
+<p>若两者的曲线交叉，则可以通过ROC曲线所包裹的面积进行判断，即<strong>AUC</strong></p>
+</blockquote>
+<h5 id="2-6-3-AUC"><a href="#2-6-3-AUC" class="headerlink" title="2.6.3 AUC"></a>2.6.3 AUC</h5><ul>
+<li><strong>AUC就是ROC曲线下的面积</strong>，假定ROC曲线是由坐标为$\left(x<em>{1}, y</em>{1}\right),\left(x<em>{2}, y</em>{2}\right),\left(x<em>{3}, y</em>{3}\right), \cdots,\left(x<em>{m}, y</em>{m}\right)$的点按序连接而形成，则AUC为：</li>
+</ul>
+<script type="math/tex; mode=display">
+A U C=\frac{1}{2} \sum_{i=1}^{m-1}\left(x_{i+1}-x_{i}\right)\left(y_{i}+y_{i+1}\right)</script><ul>
+<li><p>从Mann–Whitney U statistic的角度来解释，AUC就是从所有1样本中随机选取一个样本， 从所有0样本中随机选取一个样本，然后根据你的分类器对两个随机样本进行预测，把1样本预测为1的概率为p1，把0样本预测为1的概率为p0，p1&gt;p0的概率就等于AUC， 即<strong>AUC是指随机给定一个正样本和一个负样本，分类器输出该正样本为正的那个概率值比分类器输出该负样本为正的那个概率值要大的可能性</strong></p>
+</li>
+<li><p><strong>所以AUC反应的是分类器对样本的排序能力</strong></p>
+</li>
+</ul>
+<p>证明：</p>
+<p>设所有正类的集合$X = { \hat{X_1}, \hat{X_2}, …, \hat{X_m}}$和负类的集合$Y = { \hat{Y_1}, \hat{Y_2}, …, \hat{Y_n}}$，其中是每个样本对应的预测值，设分类阈值为c，$F_X(x)$和$F_Y(y)$分别为X和Y的分布函数，则$TPR(c) = 1 - F_X(c)$，$FPR(c) = 1 - F_Y(c)$</p>
+<p>设$t = FPR(c)$， 则$c = F_Y^{-1}(1 - t)$，则$ROC(t) = 1 - F_X(F_Y^{-1}(1 - t))$</p>
+<p>则：</p>
+<script type="math/tex; mode=display">
+AUC = \int_0^1ROC(t)dt \\
+=\int_0^1 [1 - F_X(F_Y^{-1}(1 - t))] dt \\
+=\int_0^1 [1 - F_X(F_Y^{-1}(t))] dt \\
+=\int_{-\infty}^{+\infty} [1 - F_X(y)] dF_Y(y) \\
+=\int_{-\infty}^{+\infty}P(X > y)f_Y(y)dy \\
+=\int_{-\infty}^{+\infty}P(X > y, Y = y)dy \\
+=P(X > Y)</script><h5 id="2-6-4-使用ROC和AUC的优点"><a href="#2-6-4-使用ROC和AUC的优点" class="headerlink" title="2.6.4 使用ROC和AUC的优点"></a>2.6.4 使用ROC和AUC的优点</h5><ul>
+<li><strong>AUC的计算方法同时考虑了学习器对于正例和负例的分类能力，在样本不平衡（正负类样本不相同）的情况下，依然能够对分类器做出合理的评价</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+TPR = P(\hat{Y} = 1 | Y = 1) \\
+FPR = P(\hat{Y} = 1 | Y = 0)</script><p><strong>由上式可得：无论Y的真实概率是多少， 都不会影响TPR和FPR</strong></p>
+<p>而PR曲线更关注正例</p>
+<ul>
+<li>ROC曲线能很容易的查出任意阈值对学习器的泛化性能影响，有助于选择最佳的阈值。ROC曲线越靠近左上角，模型的查全率就越高。最靠近左上角的ROC曲线上的点是分类错误最少的最好阈值，其假正例和假反例总数最少</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/11/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8%E5%92%8C%E6%AF%94%E8%BE%83/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">激活函数的作用和比较</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">深度学习基础总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2021/11/11/%E5%B8%B8%E7%94%A8%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8C%87%E6%A0%87/';
+          this.page.identifier = '/2021/11/11/%E5%B8%B8%E7%94%A8%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8C%87%E6%A0%87/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
