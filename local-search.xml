@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>有无激活函数的影响</title>
+    <link href="/2021/11/13/%E6%9C%89%E6%97%A0%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E7%9A%84%E5%BD%B1%E5%93%8D/"/>
+    <url>/2021/11/13/%E6%9C%89%E6%97%A0%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E7%9A%84%E5%BD%B1%E5%93%8D/</url>
+    
+    <content type="html"><![CDATA[<ul><li><strong>linear data：</strong></li></ul><p><img src="https://i.loli.net/2021/11/13/iGpoDqvTQUx7sAI.png" alt="linear"></p><ul><li><strong>modeled data：</strong></li></ul><p><img src="https://i.loli.net/2021/11/13/TQDzJnNviPw2hKu.png" alt="modeled"></p><ul><li><strong>nonlinear data：</strong></li></ul><p><img src="https://i.loli.net/2021/11/13/z2EuKy5AsgNQ9kY.png" alt="nonlinear"></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>不同batch-size对结果的影响</title>
     <link href="/2021/11/13/%E4%B8%8D%E5%90%8Cbatch-size%E5%AF%B9%E7%BB%93%E6%9E%9C%E7%9A%84%E5%BD%B1%E5%93%8D/"/>
     <url>/2021/11/13/%E4%B8%8D%E5%90%8Cbatch-size%E5%AF%B9%E7%BB%93%E6%9E%9C%E7%9A%84%E5%BD%B1%E5%93%8D/</url>
