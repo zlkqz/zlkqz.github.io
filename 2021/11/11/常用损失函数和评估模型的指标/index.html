@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://i.loli.net/2021/11/10/TUMHuC3N9rX18iz.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/10/xG1TrPNfyimzq7Q.png">
 <meta property="article:published_time" content="2021-11-11T03:27:19.863Z">
-<meta property="article:modified_time" content="2021-11-28T05:30:49.681Z">
+<meta property="article:modified_time" content="2021-12-03T08:09:18.972Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png">
@@ -368,6 +368,7 @@ J_{\text {hinge }}=\sum_{i=1}^{N} \max \left(0,1-\operatorname{sgn}\left(y_{i}\r
 <p><img src="https://i.loli.net/2021/11/09/KngeQOwp54JZRMf.png" srcset="/img/loading.gif" lazyload alt="image-20211109225642368"></p>
 <ul>
 <li>可以看到当$y$为正类时，模型输出负值会有较大的惩罚，当模型输出为正值且在$(0, 1)$区间时还会有一个较小的惩罚。即合页损失不仅惩罚预测错的，并且对于预测对了但是置信度不高的也会给一个惩罚，只有置信度高的才会有零损失。<strong>使用合页损失直觉上理解是要找到一个决策边界，使得所有数据点被这个边界正确地、高置信地被分类</strong></li>
+<li><strong>Hinge Loss常用在SVM中</strong></li>
 </ul>
 <h1 id="2-评估模型的指标"><a href="#2-评估模型的指标" class="headerlink" title="2 评估模型的指标"></a>2 评估模型的指标</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="https://i.loli.net/2021/11/09/OCNnaMs2ceBQIJz.png" srcset="/img/loading.gif" lazyload alt="image-20211109233859657"></p>
 <h3 id="2-2-查准率和查全率"><a href="#2-2-查准率和查全率" class="headerlink" title="2.2 查准率和查全率"></a>2.2 查准率和查全率</h3><script type="math/tex; mode=display">
