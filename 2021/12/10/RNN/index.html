@@ -16,12 +16,12 @@
   <meta name="description" content="bia">
   <meta name="author" content="zlk">
   <meta name="keywords" content="">
-  <meta name="description" content="与多层感知机和能有效处理空间信息的卷积神经⽹络不同，循环神经⽹络是为更好地处理时序信息而设计的。它引⼊状态变量来存储过去的信息，并⽤其与当前的输⼊共同决定当前的输出  1 语言模型1.1 语言模型的计算 我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 T 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，w_t（1 ≤ t ≤ T）可">
+  <meta name="description" content="与多层感知机和能有效处理空间信息的卷积神经⽹络不同，循环神经⽹络是为更好地处理时序信息而设计的。它引⼊状态变量来存储过去的信息，并⽤其与当前的输⼊共同决定当前的输出  1 语言模型1.1 语言模型的计算 我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 $T$ 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，$w_t（1 ≤ t ≤">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RNN基本概念">
 <meta property="og:url" content="https://zlkqz.github.io/2021/12/10/RNN/index.html">
 <meta property="og:site_name" content="ZLK">
-<meta property="og:description" content="与多层感知机和能有效处理空间信息的卷积神经⽹络不同，循环神经⽹络是为更好地处理时序信息而设计的。它引⼊状态变量来存储过去的信息，并⽤其与当前的输⼊共同决定当前的输出  1 语言模型1.1 语言模型的计算 我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 T 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，w_t（1 ≤ t ≤ T）可">
+<meta property="og:description" content="与多层感知机和能有效处理空间信息的卷积神经⽹络不同，循环神经⽹络是为更好地处理时序信息而设计的。它引⼊状态变量来存储过去的信息，并⽤其与当前的输⼊共同决定当前的输出  1 语言模型1.1 语言模型的计算 我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 $T$ 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，$w_t（1 ≤ t ≤">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/OYZwANsxl2oEQaI.png">
@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/QEBb3gUVxmuDS7O.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/5kGV8uqeaYn3wlF.png">
 <meta property="article:published_time" content="2021-12-10T11:05:28.597Z">
-<meta property="article:modified_time" content="2021-12-10T11:13:01.697Z">
+<meta property="article:modified_time" content="2021-12-11T07:55:31.135Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png">
@@ -256,13 +256,13 @@
 <li>与多层感知机和能有效<strong>处理空间信息</strong>的卷积神经⽹络不同，循环神经⽹络是为更好地<strong>处理时序信息</strong>而设计的。它<strong>引⼊状态变量来存储过去的信息</strong>，并⽤其<strong>与当前的输⼊共同决定当前的输出</strong></li>
 </ul>
 <h1 id="1-语言模型"><a href="#1-语言模型" class="headerlink" title="1 语言模型"></a>1 语言模型</h1><h3 id="1-1-语言模型的计算"><a href="#1-1-语言模型的计算" class="headerlink" title="1.1 语言模型的计算"></a>1.1 语言模型的计算</h3><ul>
-<li>我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 <script type="math/tex">T</script> 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，<script type="math/tex">w_t（1 ≤ t ≤ T）</script>可看作在时间步（time step）<script type="math/tex">t</script> 的输出或标签。给定⼀个⻓度为 <script type="math/tex">T</script> 的词的序列 $w_1, w_2, . . . , w_T$，语⾔模型将计算该序列的概率：</li>
+<li>我们可以把⼀段⾃然语⾔⽂本看作⼀段离散的时间序列。假设⼀段⻓度为 $T$ 的⽂本中的词 依次为 $w_1, w_2, . . . , w_T$，那么在离散的时间序列中，$w_t（1 ≤ t ≤ T）$可看作在时间步（time step）$ t$ 的输出或标签。给定⼀个⻓度为 $T$ 的词的序列 $w_1, w_2, . . . , w_T$，语⾔模型将计算该序列的概率：</li>
 </ul>
 <script type="math/tex; mode=display">
 P(w_1, w_2, ...,w_T)</script><ul>
 <li><p>语⾔模型可⽤于提升语⾳识别和机器翻译的性能。例如，在语⾳识别中，给定⼀段“厨房⾥⻝油 ⽤完了”的语⾳，有可能会输出“厨房⾥⻝油⽤完了”和“厨房⾥⽯油⽤完了”这两个读⾳完全 ⼀样的⽂本序列。如果语⾔模型判断出前者的概率⼤于后者的概率，我们就可以根据相同读⾳的 语⾳输出“厨房⾥⻝油⽤完了”的⽂本序列。</p>
 </li>
-<li><p><strong>由于 <script type="math/tex">w_1, w_2, . . . , w_T</script> 是依次生成的，所以有：</strong></p>
+<li><p><strong>由于 $w_1, w_2, . . . , w_T$ 是依次生成的，所以有：</strong></p>
 </li>
 </ul>
 <script type="math/tex; mode=display">
@@ -286,14 +286,13 @@ P(w_1, w_2, ...,w_T) \approx \prod_{t=1}^T P(w_t | w_{t - (n - 1)}, ..., w_{t-1}
 <li>但是对于循环神经网络，它<strong>并⾮刚性地记忆所有固定⻓度的序列，而是通过隐藏状态来存储之前时间步的信息</strong></li>
 </ul>
 <h3 id="2-1-循环神经⽹络"><a href="#2-1-循环神经⽹络" class="headerlink" title="2.1 循环神经⽹络"></a>2.1 循环神经⽹络</h3><ul>
-<li>假设$X<em>t \in \mathbb{R}^{n \times d}$是序列中时间步t的小批量输⼊， $H_t \in \mathbb{R}^{n \times h}$是该时间步的隐藏变量。与多层感知机不同的是，这⾥我们保存上⼀时间步的隐藏变量$H</em>{t−1}$，并引⼊⼀个新的权重参数$W_{hh} \in \mathbb{R}^{h×h}$，该参数⽤来描述在当前时间步如何使⽤上⼀时间步的隐藏变量。时间步t的隐藏变量的计算由当前时间步的输⼊和上⼀时间步的隐藏变量共同决定：</li>
+<li>假设<script type="math/tex">X_t \in \mathbb{R}^{n \times d}</script>是序列中时间步t的小批量输⼊， <script type="math/tex">H_t \in \mathbb{R}^{n \times h}</script>是该时间步的隐藏变量。与多层感知机不同的是，这⾥我们保存上⼀时间步的隐藏变量<script type="math/tex">H_{t−1}</script>，并引⼊⼀个新的权重参数<script type="math/tex">W_{hh} \in \mathbb{R}^{h×h}</script>，该参数⽤来描述在当前时间步如何使⽤上⼀时间步的隐藏变量。时间步t的隐藏变量的计算由当前时间步的输⼊和上⼀时间步的隐藏变量共同决定：</li>
 </ul>
 <script type="math/tex; mode=display">
-\boldsymbol{H}_{t}=\phi\left(\boldsymbol{X}_{t} \boldsymbol{W}_{x h}+\boldsymbol{H}_{t-1} \boldsymbol{W}_{h h}+\boldsymbol{b}_{h}\right)</script><ul>
-<li><p><strong>这⾥的隐藏变量能够捕捉截⾄当前时间步的序列的历史信息</strong></p>
-</li>
-<li><p>每个时间步还有一个对应的输出：</p>
-</li>
+\boldsymbol{H}_{t}=\phi\left(\boldsymbol{X}_{t} \boldsymbol{W}_{x h}+\boldsymbol{H}_{t-1} \boldsymbol{W}_{h h}+\boldsymbol{b}_{h}\right)</script><p>$\phi$是激活函数</p>
+<ul>
+<li><strong>这⾥的隐藏变量能够捕捉截⾄当前时间步的序列的历史信息</strong></li>
+<li>每个时间步还有一个对应的输出：</li>
 </ul>
 <script type="math/tex; mode=display">
 \boldsymbol{O}_{t}=\boldsymbol{H}_{t} \boldsymbol{W}_{h q}+\boldsymbol{b}_{q}</script><p>在训练时，我们对每个时间步的输出层输出使⽤softmax运算，然后使⽤交叉熵损失函数来计算它与标签的误差</p>
@@ -302,7 +301,7 @@ P(w_1, w_2, ...,w_T) \approx \prod_{t=1}^T P(w_t | w_{t - (n - 1)}, ..., w_{t-1}
 </ul>
 <p><img src="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png" srcset="/img/loading.gif" lazyload alt="image-20211210101227481"></p>
 <ul>
-<li>隐藏状态中$X<em>{t}W</em>{x h}+H<em>{t-1} W</em>{h h}$的计算等价于$X<em>t$与$H</em>{t−1}$连结后的矩阵乘以$W<em>{xh}$与$W</em>{hh}$连结后的矩阵</li>
+<li>隐藏状态中<script type="math/tex">X_{t}W_{x h}+H_{t-1} W_{h h}</script>的计算等价于<script type="math/tex">X_t</script>与<script type="math/tex">H_{t−1}</script>连结后的矩阵乘以<script type="math/tex">W_{xh}</script>与<script type="math/tex">W_{hh}</script>连结后的矩阵</li>
 </ul>
 <ul>
 <li>举一个栗子：基于字符级循环神经⽹络的语⾔模型</li>
@@ -390,7 +389,7 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <script type="math/tex; mode=display">
 \frac{\partial L}{\partial \boldsymbol{o}_{t}}=\frac{\partial \ell\left(\boldsymbol{o}_{t}, y_{t}\right)}{T \cdot \partial \boldsymbol{o}_{t}}</script><p>然后可以得到：</p>
 <script type="math/tex; mode=display">
-\frac{\partial L}{\partial \boldsymbol{W}_{q h}}=\sum_{t=1}^{T} \operatorname{prod}\left(\frac{\partial L}{\partial \boldsymbol{o}_{t}}, \frac{\partial \boldsymbol{o}_{t}}{\partial \boldsymbol{W}_{q h}}\right)=\sum_{t=1}^{T} \frac{\partial L}{\partial \boldsymbol{o}_{t}} \boldsymbol{h}_{t}^{\top} .</script><p>接下来就是计算关于$W<em>{hx}$和$W</em>{hh}$的梯度，那么必然要求关于各时间步隐藏状态的梯度，我们注意到隐藏状态之间也存在依赖关系，，L只通过$o_T$依赖最终时间步T的隐藏状态$h_T$。因此，我们先计算⽬标函数有关最终时间步隐藏状态的梯度：</p>
+\frac{\partial L}{\partial \boldsymbol{W}_{q h}}=\sum_{t=1}^{T} \operatorname{prod}\left(\frac{\partial L}{\partial \boldsymbol{o}_{t}}, \frac{\partial \boldsymbol{o}_{t}}{\partial \boldsymbol{W}_{q h}}\right)=\sum_{t=1}^{T} \frac{\partial L}{\partial \boldsymbol{o}_{t}} \boldsymbol{h}_{t}^{\top} .</script><p>接下来就是计算关于<script type="math/tex">W_{hx}</script>和<script type="math/tex">W_{hh}</script>的梯度，那么必然要求关于各时间步隐藏状态的梯度，我们注意到隐藏状态之间也存在依赖关系，，L只通过<script type="math/tex">o_T</script>依赖最终时间步T的隐藏状态<script type="math/tex">h_T</script>。因此，我们先计算⽬标函数有关最终时间步隐藏状态的梯度：</p>
 <script type="math/tex; mode=display">
 \frac{\partial L}{\partial \boldsymbol{h}_{T}}=\operatorname{prod}\left(\frac{\partial L}{\partial \boldsymbol{o}_{T}}, \frac{\partial \boldsymbol{o}_{T}}{\partial \boldsymbol{h}_{T}}\right)=\boldsymbol{W}_{q h}^{\top} \frac{\partial L}{\partial \boldsymbol{o}_{T}}</script><p>接下来对于时间步t &lt; T，在图6.3中，$L$通过$h_{t+1}$和$o_t$依赖$h_t$。依据链式法则，⽬标函数有关时间步t &lt; T的隐藏状态的梯度$\partial L / \partial h_t \in R^h$需要按照时间步从⼤到小依次计算:</p>
 <script type="math/tex; mode=display">
@@ -411,11 +410,11 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <li><strong>但是梯度裁剪无法应对梯度衰减</strong></li>
 </ul>
 <h1 id="3-门控循环单元（GRU）"><a href="#3-门控循环单元（GRU）" class="headerlink" title="3 门控循环单元（GRU）"></a>3 门控循环单元（GRU）</h1><ul>
-<li>我们发现，当时间步数较⼤或者时间步较小时，循环神经⽹络的梯度较容易出现衰减或爆炸。虽然裁剪梯度可以应对梯度爆炸，但⽆法解决梯度 衰减的问题。通常由于这个原因，<strong>循环神经⽹络在实际中较难捕捉时间序列中时间步距离较⼤的依赖关系</strong></li>
+<li>我们发现，当时间步数较⼤或者时间步较小时，循环神经⽹络的梯度较容易出现衰减或爆炸。虽然裁剪梯度可以应对梯度爆炸，但⽆法解决梯度衰减的问题。通常由于这个原因，<strong>循环神经⽹络在实际中较难捕捉时间序列中时间步距离较⼤的依赖关系</strong></li>
 <li>门控循环神经⽹络（gated recurrent neural network）的提出，正是为了更好地捕捉时间序列中时间步距离较⼤的依赖关系。它通过可以学习的⻔来控制信息的流动。其中，门控循环单元（gated recurrent unit，GRU）是⼀种常⽤的⻔控循环神经⽹</li>
 </ul>
 <h3 id="3-1-重置门和更新门"><a href="#3-1-重置门和更新门" class="headerlink" title="3.1 重置门和更新门"></a>3.1 重置门和更新门</h3><ul>
-<li>⻔控循环单元中的重置⻔和更新⻔的输⼊均为当前时间步输⼊$X<em>t$与上⼀时间步隐藏状态$H</em>{t−1}$，输出由激活函数为sigmoid函数的全连接层计算得到。</li>
+<li>⻔控循环单元中的重置⻔和更新⻔的输⼊均为当前时间步输⼊<script type="math/tex">X_t</script>与上⼀时间步隐藏状态<script type="math/tex">H_{t−1}</script>，输出由激活函数为sigmoid函数的全连接层计算得到。</li>
 </ul>
 <p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211210135706726.png" srcset="/img/loading.gif" lazyload alt="image-20211210135706726"></p>
 <p>具体来说，重置门$R_t \in \mathbb{R}^{n \times h}$和更新门$Z_t \in \mathbb{R}^{n \times h}$的计算如下：</p>
@@ -433,7 +432,7 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 \tilde{\boldsymbol{H}}_{t}=\tanh \left(\boldsymbol{X}_{t} \boldsymbol{W}_{x h}+\left(\boldsymbol{R}_{t} \odot \boldsymbol{H}_{t-1}\right) \boldsymbol{W}_{h h}+\boldsymbol{b}_{h}\right),</script><ul>
 <li><p><strong>重置门控制了上⼀时间步的隐藏状态如何流⼊当前时间步的候选隐藏状态。而上⼀时间步的隐藏状态可能包含了时间序列截⾄上⼀时间步的全部历史信息。因此，重置门可以⽤来丢弃与预测⽆关的历史信息</strong></p>
 </li>
-<li><p>最后，时间步t的隐藏状态$H<em>t \in \mathbb{R}^{n×h}$的计算使⽤当前时间步的更新门$Z_t$来对上⼀时间步的隐藏状态$H</em>{t−1}$和当前时间步的候选隐藏状态$\tilde{H}_t$做组合：</p>
+<li><p>最后，时间步t的隐藏状态<script type="math/tex">H_t \in \mathbb{R}^{n×h}</script>的计算使⽤当前时间步的更新门<script type="math/tex">Z_t</script>来对上⼀时间步的隐藏状态<script type="math/tex">H_{t−1}</script>和当前时间步的候选隐藏状态<script type="math/tex">\tilde{H}_t</script>做组合：</p>
 </li>
 </ul>
 <script type="math/tex; mode=display">
@@ -450,7 +449,7 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <li>还有另外一种十分常用的门控循环神经网络：⻓短期记忆（long short-term memory，LSTM）</li>
 </ul>
 <h3 id="4-1-输⼊门、遗忘门、输出门和候选记忆细胞"><a href="#4-1-输⼊门、遗忘门、输出门和候选记忆细胞" class="headerlink" title="4.1 输⼊门、遗忘门、输出门和候选记忆细胞"></a>4.1 输⼊门、遗忘门、输出门和候选记忆细胞</h3><ul>
-<li>与门控循环单元中的重置门和更新门⼀样，⻓短期记忆的门的输⼊均为当前时间步输⼊$X<em>t$与上⼀时间步隐藏状态$H</em>{t−1}$，输出由激活函数为sigmoid函数的全连接层计算得到</li>
+<li>与门控循环单元中的重置门和更新门⼀样，⻓短期记忆的门的输⼊均为当前时间步输⼊<script type="math/tex">X_t</script>与上⼀时间步隐藏状态<script type="math/tex">H_{t−1}</script>，输出由激活函数为sigmoid函数的全连接层计算得到</li>
 <li>⻓短期记忆需要计算候选记忆细胞$\tilde{C}_t$。它的计算与上⾯介绍的3个⻔类似，但使⽤了值域在[−1, 1]的tanh函数作为激活函数:</li>
 </ul>
 <p><img src="https://s2.loli.net/2021/12/10/jzn954wmEqRfyIg.png" srcset="/img/loading.gif" lazyload alt="image-20211210144009641"></p>
@@ -513,14 +512,14 @@ H_t = O_t \odot tanh(C_t)</script><ul>
 </ul>
 <script type="math/tex; mode=display">
 \boldsymbol{O}_{t}=\boldsymbol{H}_{t}^{(L)} \boldsymbol{W}_{h q}+\boldsymbol{b}_{q}</script><ul>
-<li><p>同多层感知机⼀样，隐藏层个数L和隐藏单元个数h都是超参数</p>
+<li><p>同多层感知机⼀样，隐藏层个数L是超参数</p>
 </li>
 <li><p><strong>RNN中选择深度网络的原因和一般前馈神经网络一样，都是为了能够用来表征更复杂的情况</strong></p>
 </li>
 </ul>
 <h1 id="6-双向循环神经⽹络"><a href="#6-双向循环神经⽹络" class="headerlink" title="6 双向循环神经⽹络"></a>6 双向循环神经⽹络</h1><ul>
 <li>之前介绍的循环神经⽹络模型都是假设当前时间步是由前⾯的较早时间步的序列决定的，因此它们都将信息通过隐藏状态从前往后传递。有时候，当前时间步也可能由后⾯时间步决定。例如，当我们写下⼀个句⼦时，可能会根据句⼦后⾯的词来修改句⼦前⾯的⽤词</li>
-<li><strong>双向循环神经⽹络通过增加从后往前传递信息的隐藏层来更灵活地处理这类信息</strong>，下图演⽰了⼀个含单隐藏层的双 向循环神经⽹络的架构</li>
+<li><strong>双向循环神经⽹络通过增加从后往前传递信息的隐藏层来更灵活地处理这类信息</strong>，下图演⽰了⼀个含单隐藏层的双向循环神经⽹络的架构</li>
 </ul>
 <p><img src="https://s2.loli.net/2021/12/10/VtFmigZ58qw2aeb.png" srcset="/img/loading.gif" lazyload alt="image-20211210151934211"></p>
 <ul>
@@ -537,13 +536,13 @@ O_t = H_tW_{hq} + b_q</script><ul>
 <li>双向循环神经⽹络在每个时间步的隐藏状态同时取决于该时间步之前和之后的⼦序列（包括当前时间步的输⼊）</li>
 </ul>
 <h1 id="7-Seq2Seq模型"><a href="#7-Seq2Seq模型" class="headerlink" title="7 Seq2Seq模型"></a>7 Seq2Seq模型</h1><ul>
-<li>在许多时候，输入和输出都是不定长序列，这采用一般的RNN肯定是行不通的。。以机器翻译为例，输⼊可以是⼀段不定⻓的英语⽂本序列，输出可以是⼀段不定⻓的法语⽂本序列，例如：英语输⼊：“They”、“are”、“watching”、“.” ； 法语输出：“Ils”、“regardent”、“.”</li>
+<li>在许多时候，输入和输出都是不定长序列，这采用一般的RNN肯定是行不通的。以机器翻译为例，输⼊可以是⼀段不定⻓的英语⽂本序列，输出可以是⼀段不定⻓的法语⽂本序列，例如：英语输⼊：“They”、“are”、“watching”、“.” ； 法语输出：“Ils”、“regardent”、“.”</li>
 <li>当输⼊和输出都是不定⻓序列时，我们可以使⽤seq2seq模型，本质上都⽤到了两个循环神经网络，分别叫做编码器和解码器。<strong>编码器用来分析输⼊序列，解码器⽤来生成输出序列</strong></li>
 </ul>
 <p><img src="https://s2.loli.net/2021/12/10/FQfVxdq2wuC7aSs.png" srcset="/img/loading.gif" lazyload alt="image-20211210170200879"></p>
 <ul>
 <li>&lt; bos &gt;（beginning of sequence）和 &lt; eos &gt;（end of sequence）分别表示序列的开始和结束</li>
-<li>编码器每 个时间步的输⼊依次为英语句⼦中的单词、标点和特殊符号。上图中使⽤了编码器在最终时间步的隐藏状态作为输⼊句⼦的表征或编码信息。解码器在各个时间步中使⽤输⼊句⼦的编码信息和上个时间步的输出以及隐藏状态作为输⼊</li>
+<li>编码器每个时间步的输⼊依次为英语句⼦中的单词、标点和特殊符号。上图中使⽤了编码器在最终时间步的隐藏状态作为输⼊句⼦的表征或编码信息。解码器在各个时间步中使⽤输⼊句⼦的编码信息和上个时间步的输出以及隐藏状态作为输⼊</li>
 </ul>
 <h3 id="7-1-编码器"><a href="#7-1-编码器" class="headerlink" title="7.1 编码器"></a>7.1 编码器</h3><ul>
 <li><strong>编码器的作⽤是把⼀个不定⻓的输⼊序列变换成⼀个定⻓的背景变量$c$，并在该背景变量中编码输⼊序列信息</strong>。编码器可以使⽤循环神经网络</li>
@@ -557,10 +556,10 @@ c = q(h_1, ...,h_T)</script><ul>
 <li>解码器就是通过编码器输出的背景向量$c$，和每一个时间步的输入，输出所需要的结果</li>
 <li><strong>解码器在预测和训练时是不一样的</strong>，我们先介绍<strong>预测</strong>时的解码器：</li>
 </ul>
-<p>编码器输出的背景变量$c$编码了整个输⼊序列$x<em>1, . . . , x_T$的信息。给定训练样本中的输出序列$y_1, y_2, . . . , y</em>{T’}$，对每个时间步$t’$（符号与输⼊序列或编码器的时间步$t$有区别），解码器输出$y<em>{t’}$的条件概率将基于之前的输出序列$y_1, . . . , y</em>{t’−1}$和背景变量$c$，即$P(y<em>{t’} | y_1, . . . , y</em>{t’−1}, c)$</p>
-<p>为此，我们可以使⽤另⼀个循环神经网络作为解码器。在输出序列的时间步$t’$，解码器将上⼀时间步的输出$y<em>{t’−1}$以及背景变量$c$作为输⼊，并将它们与上⼀时间步的隐藏状态$s</em>{t’−1}$变换为当前时间步的隐藏状态$s_{t’}$：</p>
+<p>编码器输出的背景变量$c$编码了整个输⼊序列<script type="math/tex">x_1, . . . , x_T</script>的信息。给定训练样本中的输出序列<script type="math/tex">y_1, y_2, . . . , y_{T'}</script>，对每个时间步<script type="math/tex">t'</script>（符号与输⼊序列或编码器的时间步<script type="math/tex">t</script>有区别），解码器输出<script type="math/tex">y_{t'}</script>的条件概率将基于之前的输出序列<script type="math/tex">y_1, . . . , y_{t'−1}</script>和背景变量<script type="math/tex">c</script>，即<script type="math/tex">P(y_{t'} | y_1, . . . , y_{t'−1}, c)</script></p>
+<p>为此，我们可以使⽤另⼀个循环神经网络作为解码器。在输出序列的时间步<script type="math/tex">t'</script>，解码器将上⼀时间步的输出<script type="math/tex">y_{t'−1}</script>以及背景变量<script type="math/tex">c</script>作为输⼊，并将它们与上⼀时间步的隐藏状态<script type="math/tex">s_{t'−1}</script>变换为当前时间步的隐藏状态<script type="math/tex">s_{t'}</script>：</p>
 <script type="math/tex; mode=display">
-s_{t'} = g(y_{t' -1}, c, s_{t' - 1})</script><p>有了解码器的隐藏状态后，我们可以使⽤⾃定义的输出层和softmax运算来计算$P(y<em>{t’} | y_1, . . . , y</em>{t’−1}, c)$</p>
+s_{t'} = g(y_{t' -1}, c, s_{t' - 1})</script><p>有了解码器的隐藏状态后，我们可以使⽤⾃定义的输出层和softmax运算来计算<script type="math/tex">P(y_{t'} | y_1, . . . , y_{t'−1}, c)</script></p>
 <ul>
 <li><strong>训练</strong>时的解码器，和预测不一样的地方在于，每一时间步的输入序列不是上一时间步的输出，而是上一时间步的真实标签序列。这叫做<strong>强制教学</strong></li>
 </ul>
@@ -624,7 +623,7 @@ y_{t'} = argmax_{y \in Y}P(y|y_1, ..., y_{t' - 1}, c)</script><p>作为输出。
 <script type="math/tex; mode=display">
 \boldsymbol{c}_{t^{\prime}}=\sum_{t=1}^{T} \alpha_{t^{\prime} t} \boldsymbol{h}_{t}</script><p>其中给定$t’$时，权重$\alpha_{t’t}$在$t = 1, . . . , T$的值是⼀个概率分布。为了得到概率分布，我们可以使⽤softmax运算:</p>
 <script type="math/tex; mode=display">
-\alpha_{t^{\prime} t}=\frac{\exp \left(e_{t^{\prime} t}\right)}{\sum_{k=1}^{T} \exp \left(e_{t^{\prime} k}\right)}, \quad t=1, \ldots, T</script><p>由于$e<em>{t’t}$同时取决于解码器的时间步$t’$和编码器的时间步t，我们不妨以解码器在时间步$t’− 1$的隐藏状态$s</em>{t’−1}$与编码器在时间步t的隐藏状态$h<em>t$为输⼊，并通过函数a计算$e</em>{t’t}$：</p>
+\alpha_{t^{\prime} t}=\frac{\exp \left(e_{t^{\prime} t}\right)}{\sum_{k=1}^{T} \exp \left(e_{t^{\prime} k}\right)}, \quad t=1, \ldots, T</script><p>由于<script type="math/tex">e_{t't}</script>同时取决于解码器的时间步<script type="math/tex">t'</script>和编码器的时间步t，我们不妨以解码器在时间步<script type="math/tex">t'− 1</script>的隐藏状态<script type="math/tex">s_{t'−1}</script>与编码器在时间步t的隐藏状态<script type="math/tex">h_t</script>为输⼊，并通过函数a计算<script type="math/tex">e_{t't}</script>：</p>
 <script type="math/tex; mode=display">
 e_{t't} = a(s_{t'-1}, h_t)</script><p>其中a是一个自定义函数，有多种选择。如果两个输⼊向量⻓度相同，⼀个简单的选择是计算它们的内积$a(s,h) = s^⊤h$</p>
 <ul>
