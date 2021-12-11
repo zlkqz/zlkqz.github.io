@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://i.loli.net/2021/11/11/npR3aNjrLOISQC8.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/11/npR3aNjrLOISQC8.png">
 <meta property="article:published_time" content="2021-11-12T03:59:48.052Z">
-<meta property="article:modified_time" content="2021-11-12T03:59:24.940Z">
+<meta property="article:modified_time" content="2021-12-11T08:21:50.166Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/11/11/npR3aNjrLOISQC8.png">
@@ -198,7 +198,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.3k 字
+      2.6k 字
     </span>
   
 
@@ -207,7 +207,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      8 分钟
     </span>
   
 
@@ -285,6 +285,7 @@
 </ul>
 <script type="math/tex; mode=display">
 w1 = (1 - \eta\lambda)w1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial\ell^{(i)}(...)}{\partial{w1}}</script><p>我们可以看到$L_2$正则化主要是通过设置一个<strong>权重的惩罚项</strong>，使权重不会过大，<strong>而减少权重就起到了减少某些特征的重要性的作用</strong>，<strong>使用降低权重值对结果的影响可以减小网络加深对训练准确度降低而产生的影响</strong>，惩罚项让$w_1$往0靠近，其实就是减少了模型的复杂度</p>
+<p>至于减少哪些权重才能得到好的结果，我们可以看到，对于惩罚项，是<strong>参数越大，惩罚越大</strong>，而我们是发生了过拟合才使用的正则化，过拟合的根本原因就是模型<strong>对于不重要的特征过度看重，换而言之就是权重过大</strong>，所以正则化能很大削减这一类权重。然而，<strong>对于重要的特征，可能权重也很大</strong>，如果加入惩罚项，会使重要特征权重削减。首先，<strong>如果重要的特征权重很大，甚至可能都不会发生严重的过拟合，就算发生了过拟合，我们也可以通过增加训练，使更靠近最优点</strong>，这也是为什么使用正则化后需要增加训练次数。当然，正则化也不是万能的，有些时候确实使用了效果也不大。</p>
 <h3 id="4-4-降低模型复杂度"><a href="#4-4-降低模型复杂度" class="headerlink" title="4.4 降低模型复杂度"></a>4.4 降低模型复杂度</h3><ul>
 <li><strong>当模型复杂度过高的时候，拟合函数的系数往往非常大，需要顾忌每一个点，最终形成的拟合函数波动很大</strong>，如上图过拟合情况。在某些很小的区间里，函数值的变化很剧烈。这就意味着函数在某些小区间里的导数值（绝对值）非常大，所以才需要惩罚项来降低</li>
 </ul>
