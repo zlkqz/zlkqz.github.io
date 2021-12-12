@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/QEBb3gUVxmuDS7O.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/5kGV8uqeaYn3wlF.png">
 <meta property="article:published_time" content="2021-12-10T11:05:28.597Z">
-<meta property="article:modified_time" content="2021-12-11T07:55:31.135Z">
+<meta property="article:modified_time" content="2021-12-12T11:26:59.098Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png">
@@ -211,7 +211,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      15k 字
+      16k 字
     </span>
   
 
@@ -220,7 +220,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      48 分钟
+      50 分钟
     </span>
   
 
@@ -325,6 +325,7 @@ P(w_1, w_2, ...,w_T) \approx \prod_{t=1}^T P(w_t | w_{t - (n - 1)}, ..., w_{t-1}
 <li><strong>两种采样方式的区别：</strong><ol>
 <li>采用相邻采样，在训练模型时，我们只需在每⼀个迭代周期开始时初始化隐藏状态</li>
 <li>当多个相邻小批量通过传递隐藏状态串联起来时，模型参数的梯度计算将依赖所有串联起来的小批量序列。同⼀迭代周期中，随着迭代次数的增加，梯度的<strong>计算开销会越来越⼤</strong>。为了使模型参数的梯度计算只依赖⼀次迭代读取的小批量序列，我们可以在每次读取小批量前将隐藏状态从计算图中分离出来</li>
+<li><strong>相邻采样不能并行运算</strong>，因为必须等上一个小批量结束了，下一个小批量才能开始</li>
 </ol>
 </li>
 </ul>
@@ -357,7 +358,15 @@ h_{t}=f\left(\text { net }_{t}\right)
 <li>综上所述：当采用ReLu作为激活函数时，只有W在单位矩阵附近时才能取得比较好的结果，因此需要将W初始化为单位矩阵。但是ReLu也拥有自己的优点，那就是计算量更小，收敛更快</li>
 </ul>
 <h4 id="2-3-3-预测"><a href="#2-3-3-预测" class="headerlink" title="2.3.3 预测"></a>2.3.3 预测</h4><ul>
-<li><strong>预测时和训练时的最大区别就是预测将上⼀时间步的输出作为当前时间步的输⼊</strong></li>
+<li><p><strong>在训练时，下一个时间步的输入可以：</strong></p>
+<ol>
+<li>上一个时间步的标签</li>
+<li>上一个时间步的表征（也就是输出）</li>
+</ol>
+<p>采用第一种方法，<strong>更容易收敛，但是泛化能力更差</strong>，而第二种方法<strong>更不易收敛，但是泛化能力更强</strong></p>
+</li>
+<li><p><strong>但是在预测时</strong>，由于我们压根没有标签，所以只能用上述第二种方法。正是由于训练时和预测时干的事情都不一样，所以采用第一种方法泛化能力更差</p>
+</li>
 </ul>
 <h4 id="2-3-4-困惑度"><a href="#2-3-4-困惑度" class="headerlink" title="2.3.4 困惑度"></a>2.3.4 困惑度</h4><ul>
 <li>我们通常使⽤困惑度（perplexity）来评价语⾔模型的好坏</li>
@@ -438,13 +447,42 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <script type="math/tex; mode=display">
 \boldsymbol{H}_{t}=\boldsymbol{Z}_{t} \odot \boldsymbol{H}_{t-1}+\left(1-\boldsymbol{Z}_{t}\right) \odot \tilde{\boldsymbol{H}}_{t}</script><p><img src="https://s2.loli.net/2021/12/10/L7O69pm3Yjzbno5.png" srcset="/img/loading.gif" lazyload alt="image-20211210141824572"></p>
 <ul>
-<li><strong>更新⻔可以控制隐藏状态应该如何被包含当前时间步信息的候选隐藏状态所更新</strong>。假设更新⻔在时间步$t’$到$t（t’ &lt; t）$之间⼀直近似1。那么，<strong>在时间步$t’$到$t$之间的输⼊信息⼏乎没有流⼊时间步$t$的隐藏状态$H_t$</strong>。实际上，<strong>这可以看作是较早时刻的隐藏状态$H_{t’−1}$⼀直通过时间保存并传递⾄当前时间步$t$</strong>。这个设计可以应对循环神经⽹络中的梯度衰减问题，并更好地捕捉时间序列中时间步距离较⼤的依赖关系</li>
+<li><strong>更新门可以控制隐藏状态应该如何被包含当前时间步信息的候选隐藏状态所更新</strong>。假设更新⻔在时间步$t’$到$t（t’ &lt; t）$之间⼀直近似1。那么，<strong>在时间步$t’$到$t$之间的输⼊信息⼏乎没有流⼊时间步$t$的隐藏状态$H_t$</strong>。实际上，<strong>这可以看作是较早时刻的隐藏状态$H_{t’−1}$⼀直通过时间保存并传递⾄当前时间步$t$</strong>。这个设计可以应对循环神经⽹络中的梯度衰减问题，并更好地捕捉时间序列中时间步距离较⼤的依赖关系</li>
 <li>我们稍作总结：</li>
 </ul>
 <ol>
 <li>重置⻔有助于捕捉时间序列⾥短期的依赖关系</li>
 <li>更新⻔有助于捕捉时间序列⾥⻓期的依赖关系</li>
+<li>重置门和更新门为0、1的情况：</li>
 </ol>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>对应情况</th>
+<th>重置门</th>
+<th>更新门</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>退化为一般的RNN</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>丢弃当前时间步的全部信息，只保留历史信息</td>
+<td>0或1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>完全丢弃历史信息，只保留当前时间步的信息</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
 <h1 id="4-长短期记忆（LSTM）"><a href="#4-长短期记忆（LSTM）" class="headerlink" title="4 长短期记忆（LSTM）"></a>4 长短期记忆（LSTM）</h1><ul>
 <li>还有另外一种十分常用的门控循环神经网络：⻓短期记忆（long short-term memory，LSTM）</li>
 </ul>
@@ -561,7 +599,7 @@ c = q(h_1, ...,h_T)</script><ul>
 <script type="math/tex; mode=display">
 s_{t'} = g(y_{t' -1}, c, s_{t' - 1})</script><p>有了解码器的隐藏状态后，我们可以使⽤⾃定义的输出层和softmax运算来计算<script type="math/tex">P(y_{t'} | y_1, . . . , y_{t'−1}, c)</script></p>
 <ul>
-<li><strong>训练</strong>时的解码器，和预测不一样的地方在于，每一时间步的输入序列不是上一时间步的输出，而是上一时间步的真实标签序列。这叫做<strong>强制教学</strong></li>
+<li><strong>训练</strong>时的解码器，每一时间步的输入序列可以是上一时间步的输出，也可以是上一时间步的真实标签序列。后者叫做<strong>强制教学</strong></li>
 </ul>
 <p>根据最大似然估计，我们可以最大化输出序列基于输入序列的条件概率：</p>
 <script type="math/tex; mode=display">
@@ -608,7 +646,7 @@ y_{t'} = argmax_{y \in Y}P(y|y_1, ..., y_{t' - 1}, c)</script><p>作为输出。
 <li>束搜索的计算开销为$O(k|Y|T’)$，介于贪婪搜索和穷举搜索之间</li>
 <li><strong>束搜索通过灵活的束宽来权衡计算开销和搜索质量</strong></li>
 </ul>
-<h3 id="7-4-注意力机制"><a href="#7-4-注意力机制" class="headerlink" title="7.4 注意力机制"></a>7.4 注意力机制</h3><ul>
+<h3 id="7-4-注意力机制"><a href="#7-4-注意力机制" class="headerlink" title="7.4 注意力机制"></a>7.4 注意力机制</h3><h4 id="7-4-1-seq2seq中的注意力机制"><a href="#7-4-1-seq2seq中的注意力机制" class="headerlink" title="7.4.1 seq2seq中的注意力机制"></a>7.4.1 seq2seq中的注意力机制</h4><ul>
 <li><strong>解码器在⽣成输出序列中的每⼀个词时可能只需利⽤输⼊序列某⼀部分的信息， 而不需要由整个输入序列生成的背景向量</strong>，例如，在输出序列的时间步1，解码器可以主要依赖“They” “are” 的信息来⽣成“Ils”，在时间步2则主要使⽤来⾃“watching”的编码信息⽣成“regardent”，而不需要”They are watching”整个句子</li>
 <li><p>若没引入注意力机制，在实际使用中，那么会发现随着输入序列的增长，模型的性能发生了显著下降。<strong>这是因为编码时输入序列的全部信息压缩到了一个向量中，随着序列的增长，越前面的词丢失越严重</strong>。<strong>同时，seq2seq模型的输出序列中，常常会损失部分输入序列的信息，这是因为在解码时，当前词对应的源语言词的上下文信息和位置信息在编解码过程中丢失了</strong></p>
 </li>
@@ -630,6 +668,14 @@ e_{t't} = a(s_{t'-1}, h_t)</script><p>其中a是一个自定义函数，有多�
 <li>我们对注意力机制可以有一个直观的理解：<strong>在生成一个输出词时，会考虑每一个输入词和当前输出词的对应关系，对齐越好的词，会有越大的权重</strong></li>
 <li>还可以结合双向RNN和注意力机制，每个隐状态包含了$\overleftarrow{h_t}$和$\overrightarrow{h_t}$</li>
 </ul>
+<h4 id="7-4-2-矢量化计算"><a href="#7-4-2-矢量化计算" class="headerlink" title="7.4.2 矢量化计算"></a>7.4.2 矢量化计算</h4><ul>
+<li><p>我们还可以对注意⼒机制采⽤更⾼效的⽮量化计算。⼴义上，注意⼒机制的输⼊包括<strong>查询项</strong>以及<strong>⼀⼀对应的键项和值项</strong>，其中值项是需要加权平均的⼀组项。在加权平均中，<strong>值项的权重来⾃查询项以及与该值项对应的键项的计算</strong></p>
+</li>
+<li><p>在上面的例⼦中，查询项为解码器的隐藏状态，键项和值项均为编码器的隐藏状态。假设编码器和解码器的隐藏单元个数均为h，且函数<script type="math/tex">a(s, h) = s^ ⊤h</script>。若我们希望根据解码器单个隐藏状态<script type="math/tex">s_{t'−1} \in \mathbb{R}^h</script>和编码器所有隐藏状态<script type="math/tex">h_t \in \mathbb{R}^h , t = 1, . . . , T</script>来计算背景向量<script type="math/tex">c_{t'} \in \mathbb{R}^h</script>。我们可以将查询项矩阵<script type="math/tex">Q \in R^{1\times h}</script>设为<script type="math/tex">s^⊤_{t'−1}</script>，并令键项矩阵<script type="math/tex">K \in \mathbb{R}^{T\times h}</script>和值项矩阵<script type="math/tex">V \in \mathbb{R}^{T\times h}</script>相同且第t⾏均为<script type="math/tex">h^⊤_t</script> 。此时，我们只需要通过⽮量化计算：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+softmax(QK^T)V</script><p>即可算出转置后的背景向量<script type="math/tex">c^⊤_{t'}</script>。当查询项矩阵Q的⾏数为n时，上式将得到n行的输出矩阵。输出矩阵与查询项矩阵在相同行上⼀⼀对应。</p>
 
             </div>
             <hr>
