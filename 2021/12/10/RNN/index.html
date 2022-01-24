@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/OYZwANsxl2oEQaI.png">
 <meta property="og:image" content="https://pic2.zhimg.com/80/v2-2d19e8c9b39f40044853ea65f6edfb31_720w.jpg?source=1940ef5c">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/Feq2PM3nCslpGO7.png">
-<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20211210135706726.png">
+<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20211210135706726.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/L7O69pm3Yjzbno5.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/jzn954wmEqRfyIg.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/mlYhrVbA47MByvG.png">
@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/QEBb3gUVxmuDS7O.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/5kGV8uqeaYn3wlF.png">
 <meta property="article:published_time" content="2021-12-10T11:05:28.597Z">
-<meta property="article:modified_time" content="2021-12-12T15:07:35.215Z">
+<meta property="article:modified_time" content="2022-01-24T16:27:44.786Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png">
@@ -347,7 +347,7 @@ P(w_1, w_2, ...,w_T) \approx \prod_{t=1}^T P(w_t | w_{t - (n - 1)}, ..., w_{t-1}
 \begin{array}{c}
 \text { net }_{t}=U x_{t}+W h_{t-1} \\
 h_{t}=f\left(\text { net }_{t}\right)
-\end{array}</script><p>假设ReLu函数一直处于激活区域（即输入大于0），则有$f(x) = x, net<em>t = Ux_t + W(Ux</em>{t-1} + Wh_{t-2})$，继续将其展开，最终会包含多个W的连乘，如果W不是单位矩阵， 那么最终的结果将会区域0或无穷。</p>
+\end{array}</script><p>假设ReLu函数一直处于激活区域（即输入大于0），则有<script type="math/tex">f(x) = x, net_t = Ux_t + W(Ux_{t-1} + Wh_{t-2})</script>，继续将其展开，最终会包含多个W的连乘，如果W不是单位矩阵， 那么最终的结果将会区域0或无穷。</p>
 <p>但是在CNN中就不会发生这种问题，因为CNN中每一层的W是不同的，并且在初始化时它们是独立同分布的，因此可以相互抵消，在多层之后一般不会出现这种严重的数值问题</p>
 <p>我们再来看看反向传播的时候：</p>
 <script type="math/tex; mode=display">
@@ -404,11 +404,10 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <script type="math/tex; mode=display">
 \frac{\partial L}{\partial \boldsymbol{h}_{t}}=\operatorname{prod}\left(\frac{\partial L}{\partial \boldsymbol{h}_{t+1}}, \frac{\partial \boldsymbol{h}_{t+1}}{\partial \boldsymbol{h}_{t}}\right)+\operatorname{prod}\left(\frac{\partial L}{\partial \boldsymbol{o}_{t}}, \frac{\partial \boldsymbol{o}_{t}}{\partial \boldsymbol{h}_{t}}\right)=\boldsymbol{W}_{h h}^{\top} \frac{\partial L}{\partial \boldsymbol{h}_{t+1}}+\boldsymbol{W}_{q h}^{\top} \frac{\partial L}{\partial \boldsymbol{o}_{t}} .</script><p>对次递归公式展开，我们可以得到对任意时间步1 ≤ t ≤ T，我们可以得到⽬标函数有关隐藏状态梯度的通项公式：</p>
 <script type="math/tex; mode=display">
-\frac{\partial L}{\partial \boldsymbol{h}_{t}}=\sum_{i=t}^{T}\left(\boldsymbol{W}_{h h}^{\top}\right)^{T-i} \boldsymbol{W}_{q h}^{\top} \frac{\partial L}{\partial \boldsymbol{o}_{T+t-i}}</script><ul>
-<li><p><strong>由上式中的指数项可⻅，当时间步数T较⼤或者时间步t较小时，⽬标函数有关隐藏状态的梯度较容易出现衰减和爆炸</strong></p>
-</li>
-<li><p>RNN和一般的网络一样，我们在正向传播和反向传播的时候会进行一些数据的储存，避免重复计算</p>
-</li>
+\frac{\partial L}{\partial \boldsymbol{h}_{t}}=\sum_{i=t}^{T}\left(\boldsymbol{W}_{h h}^{\top}\right)^{T-i} \boldsymbol{W}_{q h}^{\top} \frac{\partial L}{\partial \boldsymbol{o}_{T+t-i}}</script><p>通过关于每个时间步隐藏状态的梯度，易求得关于<script type="math/tex">W_{hx}</script>和<script type="math/tex">W_{hh}</script>的梯度。</p>
+<ul>
+<li><strong>由上式中的指数项可⻅，当时间步数T较⼤或者时间步t较小时，⽬标函数有关隐藏状态的梯度较容易出现衰减和爆炸</strong></li>
+<li>RNN和一般的网络一样，我们在正向传播和反向传播的时候会进行一些数据的储存，避免重复计算</li>
 </ul>
 <h3 id="2-4-梯度裁剪"><a href="#2-4-梯度裁剪" class="headerlink" title="2.4 梯度裁剪"></a>2.4 梯度裁剪</h3><ul>
 <li>循环神经⽹络中较容易出现梯度衰减或梯度爆炸。<strong>为了应对梯度爆炸</strong>，我们可以裁剪梯度（clip gradient）。假设我们把所有模型参数梯度的元素拼接成⼀个向量 $g$，并设裁剪的阈值是$\theta$。裁剪后的梯度：</li>
@@ -425,7 +424,7 @@ L = \frac{1}{T}\sum_{t = 1}^T \ell(o_t, y_t)</script><ul>
 <h3 id="3-1-重置门和更新门"><a href="#3-1-重置门和更新门" class="headerlink" title="3.1 重置门和更新门"></a>3.1 重置门和更新门</h3><ul>
 <li>⻔控循环单元中的重置⻔和更新⻔的输⼊均为当前时间步输⼊<script type="math/tex">X_t</script>与上⼀时间步隐藏状态<script type="math/tex">H_{t−1}</script>，输出由激活函数为sigmoid函数的全连接层计算得到。</li>
 </ul>
-<p><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20211210135706726.png" srcset="/img/loading.gif" lazyload alt="image-20211210135706726"></p>
+<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20211210135706726.png" srcset="/img/loading.gif" lazyload alt="image-20211210135706726"></p>
 <p>具体来说，重置门$R_t \in \mathbb{R}^{n \times h}$和更新门$Z_t \in \mathbb{R}^{n \times h}$的计算如下：</p>
 <script type="math/tex; mode=display">
 \begin{array}{l}
