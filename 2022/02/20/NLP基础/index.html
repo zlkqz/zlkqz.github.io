@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212155747478.png">
 <meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212161751535.png">
 <meta property="article:published_time" content="2022-02-20T09:03:58.941Z">
-<meta property="article:modified_time" content="2022-02-20T09:03:49.372Z">
+<meta property="article:modified_time" content="2022-02-22T05:22:14.319Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125151903218.png">
@@ -260,7 +260,7 @@
 <p>word2vec⼯具的提出正是为了解决上⾯这个问题。它将每个词表示成⼀个定⻓的向量，并使得这些向量能较好地表达不同词之间的相似和类⽐关系。word2vec⼯具包含了两个模型，即<strong>跳字模型（skip-gram）</strong> 和<strong>连续词袋模型（continuous bag of words，CBOW）</strong></p>
 <h3 id="1-2-跳字模型（skip-gram）"><a href="#1-2-跳字模型（skip-gram）" class="headerlink" title="1.2 跳字模型（skip-gram）"></a>1.2 跳字模型（skip-gram）</h3><ul>
 <li>跳字模型假设基于某个词来生成它在⽂本序列周围的词</li>
-<li>举个例⼦，假设⽂本序列是 “the” “man” “loves” “his” “son”。以“loves”作为中⼼词，设背景窗口大小为2。如下图所示，跳字模型所关⼼的是，给定中⼼词“loves”，生成与它距离不超过2个词的背景词 “the” “man” “his” “son”的条件概率，即：</li>
+<li>举个例子，假设⽂本序列是 “the” “man” “loves” “his” “son”。以“loves”作为中⼼词，设背景窗口大小为2。如下图所示，跳字模型所关⼼的是，给定中⼼词“loves”，生成与它距离不超过2个词的背景词 “the” “man” “his” “son”的条件概率，即：</li>
 </ul>
 <script type="math/tex; mode=display">
 P(the, man, his, son | loves)</script><p>假设给定中⼼词的情况下，背景词的生成是相互独⽴的，那么上式可以改写成：</p>
@@ -285,7 +285,7 @@ P\left(w_{o} \mid w_{c}\right)=\frac{\exp \left(\boldsymbol{u}_{o}^{\top} \bolds
 <li>先把把最大似然函数取负对数：</li>
 </ul>
 <script type="math/tex; mode=display">
--\sum_{t=1}^{T} \sum_{-m \leq j \leq m, j \neq 0} \log P\left(w^{(t+j)} \mid w^{(t)}\right)</script><p>如果使⽤随机梯度下降，那么在每⼀次迭代⾥我们随机采样⼀个较短的⼦序列来计算有关该⼦序列的损失，然后计算梯度来更新模型参数</p>
+-\sum_{t=1}^{T} \sum_{-m \leq j \leq m, j \neq 0} \log P\left(w^{(t+j)} \mid w^{(t)}\right)</script><p>如果使⽤随机梯度下降，那么在每⼀次迭代⾥我们随机采样⼀个较短的子序列来计算有关该子序列的损失，然后计算梯度来更新模型参数</p>
 <ul>
 <li>由Softmax的运算结果可以得到：</li>
 </ul>
@@ -432,15 +432,15 @@ P(w_0|w_c)=\left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]^{1-d_{j}^{w}} \cdo
 </ul>
 <h1 id="2-子词嵌入（fastText）"><a href="#2-子词嵌入（fastText）" class="headerlink" title="2 子词嵌入（fastText）"></a>2 子词嵌入（fastText）</h1><ul>
 <li>英语单词通常有其内部结构和形成⽅式。例如，我们可以从“dog” “dogs”和“dogcatcher”的 字面上推测它们的关系。这些词都有同⼀个词根“dog”，但使⽤不同的后缀来改变词的含义。而 且，这个关联可以推⼴⾄其他词汇。例如，“dog”和“dogs”的关系如同“cat”和“cats”的关 系，“boy”和“boyfriend”的关系如同“girl”和“girlfriend”的关系。这方面的研究称为构词学</li>
-<li><p>在word2vec中，我们并没有直接利⽤构词学中的信息。⽆论是在跳字模型还是连续词袋模型中， 我们都将形态不同的单词⽤不同的向量来表示。例如，“dog”和“dogs”分别⽤两个不同的向量表示，而模型中并未直接表达这两个向量之间的关系。鉴于此，fastText提出了⼦词嵌⼊（subword embedding）的⽅法，从而试图将构词信息引⼊word2vec中的跳字模型</p>
+<li><p>在word2vec中，我们并没有直接利⽤构词学中的信息。⽆论是在跳字模型还是连续词袋模型中， 我们都将形态不同的单词⽤不同的向量来表示。例如，“dog”和“dogs”分别⽤两个不同的向量表示，而模型中并未直接表达这两个向量之间的关系。鉴于此，fastText提出了子词嵌⼊（subword embedding）的⽅法，从而试图将构词信息引⼊word2vec中的跳字模型</p>
 </li>
-<li><p>在fastText中，每个中⼼词被表⽰成⼦词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的⼦词：”<wh" "whe" "her" "ere" "re>“以及特殊⼦词”where”。</p>
+<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：”<wh" "whe" "her" "ere" "re>“以及特殊子词”where”。</p>
 </li>
-<li>在fastText中，对于⼀个词w，我们将它所有⻓度在3 ∼ 6的⼦词和特殊⼦词的并集记为<script type="math/tex">\mathcal{G}_{w}</script>。<strong>那么词典则是所有词的⼦词集合的并集</strong>。假设词典中子词<script type="math/tex">g</script>的向量为<script type="math/tex">z_g</script>，那么跳字模型中词w的作为中⼼词的向量<script type="math/tex">v_w</script>则表⽰成：</li>
+<li>在fastText中，对于⼀个词w，我们将它所有⻓度在3 ∼ 6的子词和特殊子词的并集记为<script type="math/tex">\mathcal{G}_{w}</script>。<strong>那么词典则是所有词的子词集合的并集</strong>。假设词典中子词<script type="math/tex">g</script>的向量为<script type="math/tex">z_g</script>，那么跳字模型中词w的作为中⼼词的向量<script type="math/tex">v_w</script>则表⽰成：</li>
 </ul>
 <script type="math/tex; mode=display">
 v_{w}=\sum_{g \in \mathcal{G}_{w}} z_{g}</script><ul>
-<li>fastText的其余部分同跳字模型⼀致，不在此重复。可以看到，<strong>与跳字模型相⽐，fastText中词典 规模更大，造成模型参数更多</strong>，同时⼀个词的向量需要对所有⼦词向量求和，继而导致<strong>计算复杂度更高</strong>。但与此同时，<strong>较生僻的复杂单词，甚⾄是词典中没有的单词，可能会从同它结构类似的 其他词那⾥获取更好的词向量表示。</strong></li>
+<li>fastText的其余部分同跳字模型⼀致，不在此重复。可以看到，<strong>与跳字模型相⽐，fastText中词典 规模更大，造成模型参数更多</strong>，同时⼀个词的向量需要对所有子词向量求和，继而导致<strong>计算复杂度更高</strong>。但与此同时，<strong>较生僻的复杂单词，甚⾄是词典中没有的单词，可能会从同它结构类似的 其他词那⾥获取更好的词向量表示。</strong></li>
 </ul>
 <h1 id="3-全局向量的词嵌入（GloVe）"><a href="#3-全局向量的词嵌入（GloVe）" class="headerlink" title="3 全局向量的词嵌入（GloVe）"></a>3 全局向量的词嵌入（GloVe）</h1><ul>
 <li>在词嵌入中，交叉熵损失函数有时并不是一个好的选择。一方面，正如上面所说，<strong>会带来整个词典大小的累加项，带来过大的计算开销</strong>。另一方面，<strong>词典中往往有大量生僻词，它们在数据集中出现的次数极少。而有关大量生僻词的条件概率分布在交叉熵损失函数中的最终预测往往并不准确。</strong></li>
@@ -523,10 +523,10 @@ f(x)=\left\{\begin{array}{r}
 </ul>
 <h3 id="4-1-求近义词和类比词"><a href="#4-1-求近义词和类比词" class="headerlink" title="4.1 求近义词和类比词"></a>4.1 求近义词和类比词</h3><ul>
 <li>求近义词可以运用词向量之间的余弦相似度</li>
-<li>求类比词，例如，“man”（男人）: “woman”（女人）:: “son”（儿子）: “daughter”（女儿）是⼀个类⽐例⼦。<strong>对于类比关系中的4个词 a : b :: c : d，给定前3个词a、b和c，求d。设词w的词向量为vec(w)。求类比词的思路是vec(a) - vec(b) = vec(c) - vec(d)，来求出vec(d)的近似值，然后寻找和其最相似的几个词向量</strong></li>
+<li>求类比词，例如，“man”（男人）: “woman”（女人）:: “son”（儿子）: “daughter”（女儿）是⼀个类⽐例子。<strong>对于类比关系中的4个词 a : b :: c : d，给定前3个词a、b和c，求d。设词w的词向量为vec(w)。求类比词的思路是vec(a) - vec(b) = vec(c) - vec(d)，来求出vec(d)的近似值，然后寻找和其最相似的几个词向量</strong></li>
 </ul>
 <h3 id="4-2-使用循环神经网络进行文本情感分类"><a href="#4-2-使用循环神经网络进行文本情感分类" class="headerlink" title="4.2 使用循环神经网络进行文本情感分类"></a>4.2 使用循环神经网络进行文本情感分类</h3><ul>
-<li>⽂本分类是⾃然语⾔处理的⼀个常⻅任务，它把⼀段不定⻓的⽂本序列变换为⽂本的类别。本节关 注它的⼀个⼦问题：使⽤⽂本情感分类来分析⽂本作者的情绪。这个问题也叫<strong>情感分析（sentiment analysis）</strong></li>
+<li>⽂本分类是⾃然语⾔处理的⼀个常⻅任务，它把⼀段不定⻓的⽂本序列变换为⽂本的类别。本节关 注它的⼀个子问题：使⽤⽂本情感分类来分析⽂本作者的情绪。这个问题也叫<strong>情感分析（sentiment analysis）</strong></li>
 <li>本节我们使用电影评论的情感分析（二分类，positive和negtive的情感），在数据处理的时候，一条评论为一个样本，我们要先对评论进行分词（一般都是<strong>基于空格分词</strong>），并且由于每条评论的长度不一样，无法组成小批量，所以我们需要通过<strong>截断或者补充来使长度定长</strong></li>
 <li>对于模型的设计，先需要一个<strong>嵌入层将文本转化为词向量</strong>，再通过<strong>双向循环网络对特征序列进⼀步编码得到序列信息</strong>，然后将<strong>最初时间步和最终时间步的隐藏状态连结</strong>，再传入全连接层输出</li>
 <li>注意由于是预训练的模型，所以<strong>嵌入层的模型参数是不需要更新的</strong>，直接由训练好的模型参数导入即可。但是<strong>导入的模型的词向量维度要和预先设置的嵌入层词向量维度一致</strong></li>
@@ -556,10 +556,26 @@ f(x)=\left\{\begin{array}{r}
 </ol>
 </blockquote>
 <ul>
-<li>举个例子，这⾥的输⼊是⼀个有11个词的句⼦，每个词⽤6维词向量表⽰。因此输⼊序列的宽为11，输⼊通道数为6。给定2个⼀维卷积核，核宽分别为2和4，输出 通道数分别设为4和5</li>
+<li>举个例子，这⾥的输⼊是⼀个有11个词的句子，每个词⽤6维词向量表⽰。因此输⼊序列的宽为11，输⼊通道数为6。给定2个⼀维卷积核，核宽分别为2和4，输出 通道数分别设为4和5</li>
 </ul>
 <p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212161751535.png" srcset="/img/loading.gif" lazyload alt="image-20220212161751535" style="zoom: 67%;" /></p>
 <p><strong>尽管每个通道的宽不同，我们依然可以对各个通道做时序最⼤池化， 并将9个通道的池化输出连结成⼀个9维向量</strong>。最终，使⽤全连接将9维向量变换为2维输出，即正⾯情感和负⾯情感的预测</p>
+<h1 id="5-机器翻译"><a href="#5-机器翻译" class="headerlink" title="5 机器翻译"></a>5 机器翻译</h1><ul>
+<li><p>我们使用seq2seq模型进行机器翻译，原理具体可看<a target="_blank" rel="noopener" href="https://zlkqz.top/2021/12/10/RNN/#7-Seq2Seq%E6%A8%A1%E5%9E%8B">seq2seq</a></p>
+</li>
+<li><p>这里我们只介绍一下如何评价翻译结果。评价机器翻译结果通常使⽤<strong>BLEU（Bilingual Evaluation Understudy）</strong>。对于模型预测序列中任意的子序列，BLEU考察这个子序列是否出现在标签序列中。</p>
+</li>
+<li>具体来说，设词数为n的⼦序列的精度为<script type="math/tex">p_n</script>。它是<strong>预测序列与标签序列匹配词数为n的⼦序列的数量与预测序列中词数为n的⼦序列的数量之⽐</strong>。举个例子，假设标签序列为A、B、C、D、E、F， 预测序列为A、B、B、C、D，那么<script type="math/tex">p_1 = 4/5, p_2 = 3/4, p_3 = 1/3, p_4 = 0</script>。设<script type="math/tex">len_{label}</script>和<script type="math/tex">len_{pred}</script>分 别为标签序列和预测序列的词数，那么，BLEU的定义为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\exp \left(\min \left(0,1-\frac{\text { len }_{\text {label }}}{\text { len }_{\text {pred }}}\right)\right) \prod_{n=1}^{k} p_{n}^{1 / 2^{n}}</script><p>其中k是我们希望匹配的⼦序列的最⼤词数。可以看到当预测序列和标签序列完全⼀致时， BLEU为1。</p>
+<ul>
+<li>设计思想：</li>
+</ul>
+<blockquote>
+<p>因为匹配较⻓⼦序列⽐匹配较短⼦序列更难，BLEU对匹配较⻓⼦序列的精度赋予了更⼤权重，具体是在上式的<script type="math/tex">p_n^{1/2^n}</script>中，当序列较长，即n较大时，由于<script type="math/tex">p_n \in [0, 1]</script>，所以<script type="math/tex">1/2^n</script>后会变大，并且n越大越接近1，即给较长序列更大的权重</p>
+<p>并且由于较短序列一般会有比较大的<script type="math/tex">p_n</script>，所以连乘项前面的系数是为了惩罚较短的输出而设置的。举个例子，当<script type="math/tex">len_{pred}</script>较小时，连乘项前面的系数就会小于1，以此来减少较短序列的权重。</p>
+</blockquote>
 
             </div>
             <hr>
