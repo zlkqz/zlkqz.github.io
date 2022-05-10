@@ -23,23 +23,23 @@
 <meta property="og:site_name" content="ZLK">
 <meta property="og:description" content="1 词嵌入（word embedding） 词向量是⽤来表示词的向量，也可被认为是词的特征向量或表征。把词映射为实数域向量的技术也叫词嵌⼊（word embedding）  1.1 词嵌入相比于one-hot向量的优点 虽然one-hot词向量构造起来很容易，但通常并不是⼀个好选择。⼀个主要的原因是，one-hot词 向量⽆法准确表达不同词之间的相似度，如我们常常使⽤的余弦相似度。对于向量x, y">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125151903218.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/20190526195633208.jpg">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/20190526202027163.jpg">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125172417014.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211153340493.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220210181128975.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211235403111.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211235553030.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212005820238.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212155418239.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212155747478.png">
-<meta property="og:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212161751535.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526195633208.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526202027163.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125172417014.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211153340493.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220210181128975.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235403111.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235553030.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212005820238.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155418239.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png">
 <meta property="article:published_time" content="2022-02-20T09:03:58.941Z">
-<meta property="article:modified_time" content="2022-05-10T01:19:58.300Z">
+<meta property="article:modified_time" content="2022-05-10T03:32:17.093Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125151903218.png">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
   
   <title>NLP基础 - ZLK</title>
 
@@ -265,7 +265,7 @@
 <script type="math/tex; mode=display">
 P(the, man, his, son | loves)</script><p>假设给定中⼼词的情况下，背景词的生成是相互独⽴的，那么上式可以改写成：</p>
 <script type="math/tex; mode=display">
-P(the| loves) \times P(man | loves) \times P(his | loves) \times P(son | loves)</script><p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125151903218.png" srcset="/img/loading.gif" lazyload alt="image-20220125151903218" style="zoom: 80%;" /></p>
+P(the| loves) \times P(man | loves) \times P(his | loves) \times P(son | loves)</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png" srcset="/img/loading.gif" lazyload alt="image-20220125151903218" style="zoom: 80%;" /></p>
 <ul>
 <li>在跳字模型中，<strong>每个词被表示成两个<script type="math/tex">d</script>维向量</strong>，⽤来计算条件概率。假设这个词在词典中索引为<script type="math/tex">i</script>， 当它为中心词时向量表示为<script type="math/tex">v_i \in R^d</script>，而为背景词时向量表示为<script type="math/tex">u_i \in R^d</script>。设中⼼词<script type="math/tex">w_c</script>在词典中索引为<script type="math/tex">c</script>，背景词<script type="math/tex">w_o</script>在词典中索引为<script type="math/tex">o</script>，<strong>给定中⼼词<script type="math/tex">w_c</script>生成背景词<script type="math/tex">w_o</script>的条件概率可以通过对向量内积做softmax运算而得到：</strong></li>
 </ul>
@@ -301,7 +301,7 @@ P\left(w_{o} \mid w_{c}\right)=\frac{\exp \left(\boldsymbol{u}_{o}^{\top} \bolds
 <ul>
 <li>可以用一个input-hidden-output的三层神经网络来建模上面的skip-model：</li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/20190526195633208.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 50%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526195633208.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 50%;" /></p>
 <ul>
 <li><p>输入的表示：输入层中每个词由独热编码方式表示，即所有词均表示成一个N维向量，其中N为词汇表中单词的总数。在向量中，每个词都将与之对应的维度置为1,其余维度的值均为0</p>
 </li>
@@ -309,7 +309,7 @@ P\left(w_{o} \mid w_{c}\right)=\frac{\exp \left(\boldsymbol{u}_{o}^{\top} \bolds
 </li>
 <li><strong>input层和hidden层之间的N<script type="math/tex">\times</script>K权重矩阵即N个词的中心词向量，从input层到hidden层的运算即对中心词向量的提取，具体见下图。而hidden层和output层之间的K<script type="math/tex">\times</script>N权重矩阵即N个词的背景词向量，hidden层到output层的运算即实现<script type="math/tex">u^T_ov_c</script>，然后再在最后做一个softmax</strong></li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/20190526202027163.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 67%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526202027163.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 67%;" /></p>
 <p>左边矩阵是input，右边矩阵是input到hidden的权重矩阵，即N个词的中心词向量，由于输入是ont-hot向量，所以运算结果其实就是对中心词向量的一个提取</p>
 <ul>
 <li>在代码实现中是直接使用一个<strong>嵌入层（Embedding层）</strong>，此层的权值形状为<strong>词典大小<script type="math/tex">\times</script>每个词的维度</strong>，可以直接将中心词和背景词对应的one-hot向量转化为词向量。以skip-gram举例，中心词的one-hot向量形状为(批量大小，1)，背景词为(批量大小，词典大小)，两者皆通过嵌入层转化成词向量后形状分别为(批量大小，1，每个词维度)、(批量大小，词典大小，每个词维度)。然后通过<strong>小批量乘法</strong>实现中心词向量和背景词向量的相乘<script type="math/tex">u^T_ov_c</script>，得到形状为(批量大小，词典大小)的结果，然后进行Softmax</li>
@@ -324,7 +324,7 @@ P\left(w_{o} \mid w_{c}\right)=\frac{\exp \left(\boldsymbol{u}_{o}^{\top} \bolds
 </li>
 </ul>
 <script type="math/tex; mode=display">
-P(loves|the,man,his,son)</script><p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220125172417014.png" srcset="/img/loading.gif" lazyload alt="image-20220125172417014" style="zoom:80%;" /></p>
+P(loves|the,man,his,son)</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125172417014.png" srcset="/img/loading.gif" lazyload alt="image-20220125172417014" style="zoom:80%;" /></p>
 <ul>
 <li><p>因为连续词袋模型的背景词有多个，我们<strong>将这些背景词向量取平均</strong>，然后使⽤和跳字模型⼀样的 ⽅法来计算条件概率</p>
 <p>设<script type="math/tex">v_i \in R^d</script>和<script type="math/tex">u_i \in R^d</script>分别表示词典中索引为<script type="math/tex">i</script>的词作为背景词和中⼼词的向 量（<strong>注意符号的含义与跳字模型中的相反</strong>）。设中⼼词<script type="math/tex">w_c</script>在词典中索引为<script type="math/tex">c</script>，背景词<script type="math/tex">w_{o1} , . . . , w_{o2m}</script>在 词典中索引为<script type="math/tex">o_1, . . . , o_{2m}</script>，那么给定背景词生成中⼼词的条件概率：</p>
@@ -399,11 +399,11 @@ P\left(w^{(t+j)} \mid w^{(t)}\right)=P\left(D=1 \mid w^{(t)}, w^{(t+j)}\right) \
 <li><p><strong>设词典大小为<script type="math/tex">\mathcal{V}</script>，将一根长为1的线段分为<script type="math/tex">\mathcal{V}</script>段，每段分别对应一个词，每个词对应的长度就是上面所写的每个词对应的频率<script type="math/tex">P(w_i)</script>，然后取一个M（M&gt;&gt;<script type="math/tex">\mathcal{V}</script>），论文中M取的是<script type="math/tex">10^8</script>，将长度为1的线段均分为M份（如下图），然后取K个负样本即在该线段上取K个点，取到的点在哪个词的对应线段就取哪个词</strong></p>
 </li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211153340493.png" srcset="/img/loading.gif" lazyload alt="image-20220211153340493" style="zoom:67%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211153340493.png" srcset="/img/loading.gif" lazyload alt="image-20220211153340493" style="zoom:67%;" /></p>
 </blockquote>
 <h5 id="1-4-3-层序Softmax（hierarchical-softmax）"><a href="#1-4-3-层序Softmax（hierarchical-softmax）" class="headerlink" title="1.4.3 层序Softmax（hierarchical softmax）"></a>1.4.3 层序Softmax（hierarchical softmax）</h5><ul>
 <li>层序softmax是另⼀种近似训练法。它使⽤了⼆叉树这⼀数据结构，树的每个叶结点代表词典<script type="math/tex">\mathcal{V}</script>中的每个词。</li>
-<li><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220210181128975.png" srcset="/img/loading.gif" lazyload alt="image-20220210181128975" style="zoom: 80%;" /></li>
+<li><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220210181128975.png" srcset="/img/loading.gif" lazyload alt="image-20220210181128975" style="zoom: 80%;" /></li>
 </ul>
 <p>假设<script type="math/tex">L(w)</script>为从⼆叉树的根结点到词<script type="math/tex">w</script>的叶结点的路径（包括根结点和叶结点）上的结点数。 设<script type="math/tex">n(w, j)</script>为该路径上第<script type="math/tex">j</script>个结点，并设该结点的背景词向量为<script type="math/tex">u_{n(w,j)}</script>。以上图为例，<script type="math/tex">L(w_3) = 4</script> 层序softmax将跳字模型中的条件概率近似表示为：</p>
 <script type="math/tex; mode=display">
@@ -464,9 +464,9 @@ v_{w}=\sum_{g \in \mathcal{G}_{w}} z_{g}</script><ul>
 <li><p>下面我们来举个例子：</p>
 </li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211235403111.png" srcset="/img/loading.gif" lazyload alt="image-20220211235403111" style="zoom:80%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235403111.png" srcset="/img/loading.gif" lazyload alt="image-20220211235403111" style="zoom:80%;" /></p>
 <p>设Ratio = <script type="math/tex">\frac{P_{ik}}{P_{jk}}</script>，，从上面的例子中我们可以总结出：</p>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220211235553030.png" srcset="/img/loading.gif" lazyload alt="image-20220211235553030"></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235553030.png" srcset="/img/loading.gif" lazyload alt="image-20220211235553030"></p>
 <p><strong>所以Ratio可以反应word之间的相关性，而GloVe就是利用了这个值</strong></p>
 <p>假设<script type="math/tex">i, j, k</script>三者的词向量都已经得到<script type="math/tex">w_i, w_j, w_k</script>，那么我们现在就要找一个函数F，使得：</p>
 <script type="math/tex; mode=display">
@@ -517,7 +517,7 @@ J=\sum_{i k} f\left(X_{i k}\right)\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}
 f(x)=\left\{\begin{array}{r}
 \left(\frac{x}{x_{\max }}\right)^{\alpha}, \text { if } x<x_{\max } \\
 1, \text { otherwise }
-\end{array}\right.</script><p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212005820238.png" srcset="/img/loading.gif" lazyload alt="image-20220212005820238" style="zoom:67%;" /></p>
+\end{array}\right.</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212005820238.png" srcset="/img/loading.gif" lazyload alt="image-20220212005820238" style="zoom:67%;" /></p>
 <p>作者认为<script type="math/tex">x_{max} = 100, \alpha = \frac{3}{4}</script>比较合适</p>
 </blockquote>
 <ul>
@@ -542,9 +542,9 @@ f(x)=\left\{\begin{array}{r}
 <h5 id="4-3-1-一维卷积层"><a href="#4-3-1-一维卷积层" class="headerlink" title="4.3.1 一维卷积层"></a>4.3.1 一维卷积层</h5><ul>
 <li>和二维卷积层一样，一维卷积层卷积窗口从输⼊数组的最左⽅开始，按从左往右的顺序，依次在输⼊数组上滑动，举个例子：</li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212155418239.png" srcset="/img/loading.gif" lazyload alt="image-20220212155418239" style="zoom:67%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155418239.png" srcset="/img/loading.gif" lazyload alt="image-20220212155418239" style="zoom:67%;" /></p>
 <p>输出中的2是由输入的前两个和核逐个相乘得到的：0x1+1x2=2，然后窗口往后滑动一格，以此类推</p>
-<p>对于多通道操作也是和二维卷积层一样的：<br><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212155747478.png" srcset="/img/loading.gif" lazyload alt="image-20220212155747478"></p>
+<p>对于多通道操作也是和二维卷积层一样的：<br><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png" srcset="/img/loading.gif" lazyload alt="image-20220212155747478"></p>
 <p>每个通道分别操作，然后各通道结果相加。如果想要输出多通道，则核还要增加一个维度</p>
 <h5 id="4-3-2-时序最大池化层"><a href="#4-3-2-时序最大池化层" class="headerlink" title="4.3.2 时序最大池化层"></a>4.3.2 时序最大池化层</h5><ul>
 <li>假设输⼊包含多个通道，各通道由不同时间步上的数值组成，<strong>各通道的输出即该通道所有时间步中最⼤的数值</strong>。因此，<strong>时序最⼤池化层的输⼊在各个通道上的时间 步数可以不同</strong></li>
@@ -563,7 +563,7 @@ f(x)=\left\{\begin{array}{r}
 <ul>
 <li>举个例子，这⾥的输⼊是⼀个有11个词的句子，每个词⽤6维词向量表⽰。因此输⼊序列的宽为11，输⼊通道数为6。给定2个⼀维卷积核，核宽分别为2和4，输出 通道数分别设为4和5</li>
 </ul>
-<p><img src="https://gitee.com/zlkqz/my_images/raw/master/img/image-20220212161751535.png" srcset="/img/loading.gif" lazyload alt="image-20220212161751535" style="zoom: 67%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png" srcset="/img/loading.gif" lazyload alt="image-20220212161751535" style="zoom: 67%;" /></p>
 <p><strong>尽管每个通道的宽不同，我们依然可以对各个通道做时序最⼤池化， 并将9个通道的池化输出连结成⼀个9维向量</strong>。最终，使⽤全连接将9维向量变换为2维输出，即正⾯情感和负⾯情感的预测</p>
 <h1 id="5-机器翻译"><a href="#5-机器翻译" class="headerlink" title="5 机器翻译"></a>5 机器翻译</h1><ul>
 <li><p>我们使用seq2seq模型进行机器翻译，原理具体可看<a target="_blank" rel="noopener" href="https://zlkqz.top/2021/12/10/RNN/#7-Seq2Seq%E6%A8%A1%E5%9E%8B">seq2seq</a></p>
