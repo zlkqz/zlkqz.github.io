@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220701233158369.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220702121317344.png">
 <meta property="article:published_time" content="2022-07-02T04:58:18.200Z">
-<meta property="article:modified_time" content="2022-07-02T04:58:02.557Z">
+<meta property="article:modified_time" content="2022-07-02T05:16:47.228Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220701114959234.png">
@@ -365,17 +365,20 @@
 <li>那么<script type="math/tex">word_i</script>作为第一个词的概率，可以使用点积+softmax的求得：（其中<script type="math/tex">T_i</script>是<script type="math/tex">word_i</script>对应的output）</li>
 </ul>
 <script type="math/tex; mode=display">
-P_{i}=\frac{e^{S \cdot T_{i}}}{\sum_{j} e^{S \cdot T_{j}}}</script><script type="math/tex; mode=display">word_i$$作为最后一个词的概率也是一样的算法，只是把S替换成E
-
-- 在训练时的损失为正确的开始和结束位置的最大似然
-
-- 在预测时，每个候选位置，即将$$word_i$$到$$word_j$$作为answer的score为：</script><p>S \cdot T_i + E \cdot T_i \quad (j \geq i)</p>
+P_{i}=\frac{e^{S \cdot T_{i}}}{\sum_{j} e^{S \cdot T_{j}}}</script><p>将<script type="math/tex">word_i</script>作为最后一个词的概率也是一样的算法，只是把S替换成E</p>
+<ul>
+<li><p>在训练时的损失为正确的开始和结束位置的最大似然</p>
+</li>
+<li><p>在预测时，每个候选位置，即将<script type="math/tex">word_i</script>到<script type="math/tex">word_j</script>作为answer的score为：</p>
+</li>
+</ul>
 <script type="math/tex; mode=display">
-
-然后取最大score的侯选位置作为输出
-
-- 超参：batch size = 32，epochs = 3，learning rate = $$5 \times 10^{-5}</script><ul>
-<li>在具体实验中，应用于SQuAD数据集上前，先在TriviaQA上微调，进行适当的数据增强</li>
+S \cdot T_i + E \cdot T_i \quad (j \geq i)</script><p>然后取最大score的侯选位置作为输出</p>
+<ul>
+<li><p>超参：batch size = 32，epochs = 3，learning rate = <script type="math/tex">5 \times 10^{-5}</script></p>
+</li>
+<li><p>在具体实验中，应用于SQuAD数据集上前，先在TriviaQA上微调，进行适当的数据增强</p>
+</li>
 </ul>
 <h4 id="4-2-2-SQuAD-v2-0"><a href="#4-2-2-SQuAD-v2-0" class="headerlink" title="4.2.2 SQuAD v2.0"></a>4.2.2 SQuAD v2.0</h4><ul>
 <li>SQuAD v2.0相对于SQuAD v1.1增加了一个No Answer的输出，因为一个问题的答案并不总是出现在passage中的，No Answer的的具体形式为start和end都是[CLS]的answer span，预测为No Answer的score为：</li>
