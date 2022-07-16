@@ -1,0 +1,824 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="NLTK用法 nltk用于英文分词分句等应用  基本的预处理 分句：nltk.sent_tokenize(text, language&#x3D;”english”):   输入：一个str段落 输出：一个list，每个元素是一个str句子   分词：nltk.word_tokenize(text, language&#x3D;”english”, preserve_line&#x3D;False):   输入：一个str句子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码总结（持续更新）">
+<meta property="og:url" content="https://zlkqz.github.io/2022/07/14/%E4%BB%A3%E7%A0%81%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="NLTK用法 nltk用于英文分词分句等应用  基本的预处理 分句：nltk.sent_tokenize(text, language&#x3D;”english”):   输入：一个str段落 输出：一个list，每个元素是一个str句子   分词：nltk.word_tokenize(text, language&#x3D;”english”, preserve_line&#x3D;False):   输入：一个str句子">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706160148320.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706210417422.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220711120934316.png">
+<meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
+<meta property="article:modified_time" content="2022-07-14T05:35:46.033Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
+  
+  <title>代码总结（持续更新） - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="代码总结（持续更新）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-07-14 14:05" pubdate>
+        2022年7月14日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">代码总结（持续更新）</h1>
+            
+            <div class="markdown-body">
+              <h1 id="NLTK用法"><a href="#NLTK用法" class="headerlink" title="NLTK用法"></a>NLTK用法</h1><ul>
+<li>nltk用于<strong>英文</strong>分词分句等应用</li>
+</ul>
+<h3 id="基本的预处理"><a href="#基本的预处理" class="headerlink" title="基本的预处理"></a>基本的预处理</h3><ul>
+<li><strong>分句：nltk.sent_tokenize(text, language=”english”):</strong></li>
+</ul>
+<blockquote>
+<p>输入：一个str段落</p>
+<p>输出：一个list，每个元素是一个str句子</p>
+</blockquote>
+<ul>
+<li><strong>分词：nltk.word_tokenize(text, language=”english”, preserve_line=False):</strong></li>
+</ul>
+<blockquote>
+<p>输入：一个str句子</p>
+<p>输出：一个list，每个元素是一个str词</p>
+</blockquote>
+<ul>
+<li><strong>POS标注：nltk.postag(tokens)</strong></li>
+</ul>
+<blockquote>
+<p>输入：一个list，每个元素是一个str，一个句子分好词的结果</p>
+<p>输入：一个list，每个元素是一个tuple，tuple[0]是对应的token，tuple[1]是对应的词性，示例：[(‘football’, ‘NN’), (‘is’, ‘VBZ’), (‘a’, ‘DT’), (‘family’, ‘NN’)]</p>
+<p>词性所对应的意义，大致来说<strong>N开头对应名词NOUN，V开头对应动词VERB，J开头对应形容词ADJ，R开头对应副词ADV</strong></p>
+<p>词性具体所对应意义如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>标记</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC</td>
+<td>连词</td>
+<td>and, or,but, if, while,although</td>
+</tr>
+<tr>
+<td>CD</td>
+<td>数词</td>
+<td>twenty-four, fourth, 1991,14:24</td>
+</tr>
+<tr>
+<td>DT</td>
+<td>限定词</td>
+<td>the, a, some, most,every, no</td>
+</tr>
+<tr>
+<td>EX</td>
+<td>存在量词</td>
+<td>there, there’s</td>
+</tr>
+<tr>
+<td>FW</td>
+<td>外来词</td>
+<td>dolce, ersatz, esprit, quo,maitre</td>
+</tr>
+<tr>
+<td>IN</td>
+<td>介词连词</td>
+<td>on, of,at, with,by,into, under</td>
+</tr>
+<tr>
+<td>JJ</td>
+<td>形容词</td>
+<td>new,good, high, special, big, local</td>
+</tr>
+<tr>
+<td>JJR</td>
+<td>比较级词语</td>
+<td>bleaker braver breezier briefer brighter brisker</td>
+</tr>
+<tr>
+<td>JJS</td>
+<td>最高级词语</td>
+<td>calmest cheapest choicest classiest cleanest clearest</td>
+</tr>
+<tr>
+<td>LS</td>
+<td>标记</td>
+<td>A A. B B. C C. D E F First G H I J K</td>
+</tr>
+<tr>
+<td>MD</td>
+<td>情态动词</td>
+<td>can cannot could couldn’t</td>
+</tr>
+<tr>
+<td>NN</td>
+<td>名词</td>
+<td>year,home, costs, time, education</td>
+</tr>
+<tr>
+<td>NNS</td>
+<td>名词复数</td>
+<td>undergraduates scotches</td>
+</tr>
+<tr>
+<td>NNP</td>
+<td>专有名词</td>
+<td>Alison,Africa,April,Washington</td>
+</tr>
+<tr>
+<td>NNPS</td>
+<td>专有名词复数</td>
+<td>Americans Americas Amharas Amityvilles</td>
+</tr>
+<tr>
+<td>PDT</td>
+<td>前限定词</td>
+<td>all both half many</td>
+</tr>
+<tr>
+<td>POS</td>
+<td>所有格标记 ’</td>
+<td>‘s</td>
+</tr>
+<tr>
+<td>PRP</td>
+<td>人称代词</td>
+<td>hers herself him himself hisself</td>
+</tr>
+<tr>
+<td>PRP$</td>
+<td>所有格</td>
+<td>her his mine my our ours</td>
+</tr>
+<tr>
+<td>RB</td>
+<td>副词</td>
+<td>occasionally unabatingly maddeningly</td>
+</tr>
+<tr>
+<td>RBR</td>
+<td>副词比较级</td>
+<td>further gloomier grander</td>
+</tr>
+<tr>
+<td>RBS</td>
+<td>副词最高级</td>
+<td>best biggest bluntest earliest</td>
+</tr>
+<tr>
+<td>RP</td>
+<td>虚词</td>
+<td>aboard about across along apart</td>
+</tr>
+<tr>
+<td>SYM</td>
+<td>符号</td>
+<td>% &amp; ’ ‘’ ‘’. ) )</td>
+</tr>
+<tr>
+<td>TO</td>
+<td>词to</td>
+<td>to</td>
+</tr>
+<tr>
+<td>UH</td>
+<td>感叹词</td>
+<td>Goodbye Goody Gosh Wow</td>
+</tr>
+<tr>
+<td>VB</td>
+<td>动词</td>
+<td>ask assemble assess</td>
+</tr>
+<tr>
+<td>VBD</td>
+<td>动词过去式</td>
+<td>dipped pleaded swiped</td>
+</tr>
+<tr>
+<td>VBG</td>
+<td>动词现在分词</td>
+<td>telegraphing stirring focusing</td>
+</tr>
+<tr>
+<td>VBN</td>
+<td>动词过去分词</td>
+<td>multihulled dilapidated aerosolized</td>
+</tr>
+<tr>
+<td>VBP</td>
+<td>动词现在式非第三人称时态</td>
+<td>predominate wrap resort sue</td>
+</tr>
+<tr>
+<td>VBZ</td>
+<td>动词现在式第三人称时态</td>
+<td>bases reconstructs marks</td>
+</tr>
+<tr>
+<td>WDT</td>
+<td>Wh限定词</td>
+<td>who,which,when,what,where,how</td>
+</tr>
+<tr>
+<td>WP</td>
+<td>WH代词</td>
+<td>that what whatever</td>
+</tr>
+<tr>
+<td>WP$</td>
+<td>WH代词所有格</td>
+<td>whose</td>
+</tr>
+<tr>
+<td>WRB</td>
+<td>WH副词</td>
+</tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<ul>
+<li><strong>词形还原Lemmatization：nltk.stem.WordNetLemmatizer().lemmatize(word, pos=”n”)：</strong></li>
+</ul>
+<blockquote>
+<p>这是一个类的内置方法，首先需要创建WordNetLemmatizer对象（假设为wnl），则通过wnl.lemmatize()调用</p>
+<p>输入：word是单个词，pos是其对应的单词词性（n对应noun，v对应verb，a对应adj，r对应adv，s对应satellite adjectives(不咋用)）</p>
+<p>输出：word经过还原后的词，如cars还原为car</p>
+</blockquote>
+<h3 id="NER"><a href="#NER" class="headerlink" title="NER"></a>NER</h3><ul>
+<li>先介绍一下命名实体识别（Named Entity Recognition，NER）是信息提取、问答系统、句法分析、机器翻译等应用领域的重要基础工具，在自然语言处理技术走向实用化的过程中占有重要地位。一般来说，命名实体识别的任务就是识别出待处理文本中三大类（实体类、时间类和数字类）、七小类（人名、机构名、地名、时间、日期、货币和百分比）命名实体。</li>
+<li>nltk中对NER类别的分类如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>其中LOCATION和GPE有重合，GPE通常表示地理—政治条目，比如城市，州，国家，洲等。LOCATION除了上述内容外，还能表示名山大川等。FACILITY通常表示知名的纪念碑或人工制品等。</p>
+<ul>
+<li><strong>进行NER：ne_chunk(tagged_tokens, binary=False)</strong></li>
+</ul>
+<blockquote>
+<p>输入：tagged_tokens为pos_tag()函数的输出，一个list，每个元素是一个tuple，tuple[0]是对应的token，tuple[1]是对应的词性，示例：[(‘football’, ‘NN’), (‘is’, ‘VBZ’), (‘a’, ‘DT’), (‘family’, ‘NN’)]</p>
+<p>输出：同样的是一个list，每个元素变为了一个封装对象（Tree类），和输入一一对应</p>
+<ul>
+<li><strong>对于该封装对象：</strong></li>
+</ul>
+<p>输出的list中，有些元素是没有NER的结果的，其对应的封装对象没有label属性，<strong>可使用hasattr(ne_word, ‘label’)函数判断是否有NER结果</strong></p>
+<p>假设一个该对象命名为ne_word，调用ne_word.leaves()可返回一个list，每个元素为一个tuple，tuple[0]为token，tuple[1]为该token的pos_tag。对于NER，list中只有一个tuple，返回结果示例：[(‘FIFA’, ‘NNP’)]</p>
+<p>调用ne_word.label()函数可返回该token对应的NER结果，一定要先使用hasattr()函数才能使用label()函数</p>
+</blockquote>
+<h1 id="jieba用法"><a href="#jieba用法" class="headerlink" title="jieba用法"></a>jieba用法</h1><ul>
+<li>jieba用于<strong>中文</strong>分词分句等应用</li>
+</ul>
+<h1 id="gensim用法"><a href="#gensim用法" class="headerlink" title="gensim用法"></a>gensim用法</h1><ul>
+<li>gensim主要用于创建语料库，和计算各种特征（如相似度、tf-idf）等任务</li>
+</ul>
+<h3 id="创建语料库和计算相似度"><a href="#创建语料库和计算相似度" class="headerlink" title="创建语料库和计算相似度"></a>创建语料库和计算相似度</h3><ul>
+<li><strong>创建语料库类：gensim.corpora.Dictionary(texts)</strong></li>
+</ul>
+<blockquote>
+<p>输入：整个语料库，分好句和分好词的结果，一个list，每个元素又是一个list，里面的每个子元素是一个str词</p>
+<p>输出：一个Dictionary对象</p>
+</blockquote>
+<ul>
+<li><strong>将句子转化为词袋形式：Dictionary.doc2bow(text)</strong></li>
+</ul>
+<blockquote>
+<p>输入：分好词的一个句子，一个list，每个元素是一个str词</p>
+<p>输入：一个list，每个元素是一个二元tuple，tuple[0]是句子中存在的词的索引，tuple[1]是其在句子中出现的次数（出现0次的不计入）</p>
+<p>该类的用法和python自带的字典对象基本相同，values、key、item之类的</p>
+</blockquote>
+<ul>
+<li><strong>获取索引字典：Dictionary.token2id</strong></li>
+</ul>
+<blockquote>
+<p>返回一个{token : id}的字典</p>
+</blockquote>
+<ul>
+<li><strong>创建相似度类：gensim.similarities.Similarity(output_prefix, corpus, num_features)</strong></li>
+</ul>
+<blockquote>
+<p>out_prefix是存储这个对象文件的名称</p>
+<p>corpus是整个语料库，但是必须先转化为词袋模型</p>
+<p>num_fuatures是整个词典的数量，一般使用len(dictionary)表示</p>
+<p>对于得到的对象（取名为similarity），具体的用法为：similarity[test]，其中test为要比较的对象，可以是单个句子，也可以是整个语料库</p>
+</blockquote>
+<p><strong>举个栗子：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> nltk <span class="hljs-keyword">import</span> word_tokenize<br><span class="hljs-keyword">from</span> gensim.corpora <span class="hljs-keyword">import</span> Dictionary<br><span class="hljs-keyword">from</span> gensim.similarities <span class="hljs-keyword">import</span> Similarity<br><br>sent1 = <span class="hljs-string">&quot;I love sky, I love sea.&quot;</span><br>sent2 = <span class="hljs-string">&quot;I like running, I love reading.&quot;</span><br>sents = [sent1, sent2]<br><span class="hljs-comment"># 分词</span><br>texts = [word_tokenize(sent) <span class="hljs-keyword">for</span> sent <span class="hljs-keyword">in</span> sents]<br><br><span class="hljs-comment"># 创建字典对象</span><br>dictionary = Dictionary(texts)<br><span class="hljs-comment"># 获得词袋模型表示的词料库</span><br>corpus = [dictionary.doc2bow(text) <span class="hljs-keyword">for</span> text <span class="hljs-keyword">in</span> texts]<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;The corpus is : <span class="hljs-subst">&#123;corpus&#125;</span>&quot;</span>)<br><span class="hljs-comment"># 创建相似度对象</span><br>similarity = Similarity(<span class="hljs-string">&quot;Similarity-excise1&quot;</span>, corpus, num_features=<span class="hljs-built_in">len</span>(dictionary))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Created class : <span class="hljs-subst">&#123;similarity&#125;</span>&quot;</span>)<br><span class="hljs-comment"># 计算余弦相似度</span><br>test_corpus = dictionary.doc2bow(word_tokenize(sent1))<br><span class="hljs-built_in">print</span>(similarity[test_corpus])<br></code></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706160148320.png" srcset="/img/loading.gif" lazyload alt="image-20220706160148320"></p>
+<h3 id="计算TF-IDF"><a href="#计算TF-IDF" class="headerlink" title="计算TF-IDF"></a>计算TF-IDF</h3><ul>
+<li><strong>首先介绍一下tf-idf：</strong></li>
+</ul>
+<p>词频（term frequency，tf）指的是某一个给定的词语在该文件中对应的频率</p>
+<p>逆向文件频率（inverse document frequency，idf）是一个词语普遍重要性的度量，可由文件总数除以包含该词的文件的总数求得</p>
+<p>具体的计算公式如下：</p>
+<script type="math/tex; mode=display">
+\mathrm{tf}_{\mathrm{i}, \mathrm{j}}=\frac{n_{i, j}}{\sum_{k} n_{k, j}} \\
+\operatorname{idf}_{\mathrm{i}}=\lg \frac{|D|}{\left|\left\{j: t_{i} \in d_{j}\right\}\right|}\\
+\operatorname{tfidf}_{i, j}=\mathrm{tf}_{\mathrm{i}, \mathrm{j}} \times \mathrm{idf}_{\mathrm{i}}</script><p>其中<script type="math/tex">tf_{i, j}</script>为<script type="math/tex">word_i</script>在<script type="math/tex">doc_j</script>中出现的词频，<script type="math/tex">n_{i, j}</script>为<script type="math/tex">word_i</script>在<script type="math/tex">doc_j</script>中出现的个数</p>
+<p><script type="math/tex">idf_i</script>为<script type="math/tex">word_i</script>的逆向文件频率，<script type="math/tex">|D|</script>为文档总数，<script type="math/tex">\left|\left\{j: t_{i} \in d_{j}\right\}\right|</script>为包含<script type="math/tex">word_i</script>的文档个数</p>
+<p>对于idf，底数可用2、e、10，并且分母可以+1，避免除以0</p>
+<ul>
+<li><strong>创建tfidf模型类：gensim.models.TfidfModel(corpus)</strong></li>
+</ul>
+<blockquote>
+<p>输入为整个语料库，必须先转化为词袋模型</p>
+<p>在具体使用时，和Similarity类似，tfidf_model[test]，其中test可以是单个句子也可以是整个语料库，返回一个列表，列表中每个元素为一个tuple，tuple[0]为词索引，tuple[1]为对应的tfidf值</p>
+<p><strong>gensim算出来的tf-idf是经过了规范化的，每个句子的tfidf值，是一个单位向量</strong></p>
+</blockquote>
+<p><strong>举个栗子：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># texts的构建是每个段落分词，有三个段落，则len(texts)=3</span><br>texts = [text1, text2, text3]<br>texts = [get_tokens(text) <span class="hljs-keyword">for</span> text <span class="hljs-keyword">in</span> texts]<br>dictionary = Dictionary(texts)<br>id2token_dict = &#123;v : k <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> dictionary.token2id.items()&#125;<br>corpus = [dictionary.doc2bow(text) <span class="hljs-keyword">for</span> text <span class="hljs-keyword">in</span> texts]<br>tfidf_model = TfidfModel(corpus)<br>result = tfidf_model[corpus]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> result:<br>    <span class="hljs-built_in">print</span>(i)<br></code></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706210417422.png" srcset="/img/loading.gif" lazyload alt="image-20220706210417422"></p>
+<h1 id="Pandas用法"><a href="#Pandas用法" class="headerlink" title="Pandas用法"></a>Pandas用法</h1><ul>
+<li><strong>创建DataFrame对象：pd.DataFrame(data, columns)</strong></li>
+</ul>
+<blockquote>
+<p>输入：data是一个list, 每个对象是一个tuple，tuple的长度和columns的个数对应。data也可以是numpy形式</p>
+<p>示例：pd.DataFrame([(1, 2), (3, 4), (5, 6)], columns=[“name”, “NER result”])，输出为：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220711120934316.png" srcset="/img/loading.gif" lazyload alt="image-20220711120934316" style="zoom: 80%;" /></p>
+</blockquote>
+<ul>
+<li><strong>获取DataFrame的某列：DataFrame[column_name]</strong></li>
+</ul>
+<blockquote>
+<p> 这样可获取到column列，结果是一个Series类（<strong>只有一个列则是Series，多个列则是DataFrame</strong>）</p>
+<p>如果不想出现重复结果，可调用unique()函数，示例：data[“ner_result”].unique()，返回的结果是一个ndarray，也可使用list()将其转换为列表</p>
+</blockquote>
+<h1 id="Pickle用法"><a href="#Pickle用法" class="headerlink" title="Pickle用法"></a>Pickle用法</h1><h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><h1 id="Numpy用法"><a href="#Numpy用法" class="headerlink" title="Numpy用法"></a>Numpy用法</h1><h1 id="Tensorflow用法"><a href="#Tensorflow用法" class="headerlink" title="Tensorflow用法"></a>Tensorflow用法</h1>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/07/02/Bert%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">BERT总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/07/14/%E4%BB%A3%E7%A0%81%E6%80%BB%E7%BB%93/';
+          this.page.identifier = '/2022/07/14/%E4%BB%A3%E7%A0%81%E6%80%BB%E7%BB%93/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
