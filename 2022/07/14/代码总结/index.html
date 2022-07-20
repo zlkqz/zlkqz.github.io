@@ -27,8 +27,10 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706160148320.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706210417422.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220711120934316.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123006189.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123836380.png">
 <meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
-<meta property="article:modified_time" content="2022-07-14T05:35:46.033Z">
+<meta property="article:modified_time" content="2022-07-20T09:13:55.341Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -200,7 +202,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      5.5k 字
+      11k 字
     </span>
   
 
@@ -209,7 +211,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      17 分钟
+      34 分钟
     </span>
   
 
@@ -486,9 +488,6 @@
 <p>假设一个该对象命名为ne_word，调用ne_word.leaves()可返回一个list，每个元素为一个tuple，tuple[0]为token，tuple[1]为该token的pos_tag。对于NER，list中只有一个tuple，返回结果示例：[(‘FIFA’, ‘NNP’)]</p>
 <p>调用ne_word.label()函数可返回该token对应的NER结果，一定要先使用hasattr()函数才能使用label()函数</p>
 </blockquote>
-<h1 id="jieba用法"><a href="#jieba用法" class="headerlink" title="jieba用法"></a>jieba用法</h1><ul>
-<li>jieba用于<strong>中文</strong>分词分句等应用</li>
-</ul>
 <h1 id="gensim用法"><a href="#gensim用法" class="headerlink" title="gensim用法"></a>gensim用法</h1><ul>
 <li>gensim主要用于创建语料库，和计算各种特征（如相似度、tf-idf）等任务</li>
 </ul>
@@ -551,21 +550,200 @@
 <p>输出：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220706210417422.png" srcset="/img/loading.gif" lazyload alt="image-20220706210417422"></p>
 <h1 id="Pandas用法"><a href="#Pandas用法" class="headerlink" title="Pandas用法"></a>Pandas用法</h1><ul>
-<li><strong>创建DataFrame对象：pd.DataFrame(data, columns)</strong></li>
+<li><strong>创建DataFrame对象：pd.DataFrame(data, columns, index)</strong></li>
 </ul>
 <blockquote>
-<p>输入：data是一个list, 每个对象是一个tuple，tuple的长度和columns的个数对应。data也可以是numpy形式</p>
+<p>输入：data是一个list, 每个对象是一个tuple或list，tuple的长度和columns的个数对应。data也可以是numpy形式</p>
+<p>index是一个list，是行索引值，可以用于自行设置行索引<strong>（索引没有规定一定是int）</strong></p>
 <p>示例：pd.DataFrame([(1, 2), (3, 4), (5, 6)], columns=[“name”, “NER result”])，输出为：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220711120934316.png" srcset="/img/loading.gif" lazyload alt="image-20220711120934316" style="zoom: 80%;" /></p>
 </blockquote>
 <ul>
-<li><strong>获取DataFrame的某列：DataFrame[column_name]</strong></li>
+<li><strong>获取DataFrame的某列：DataFrame[“column_name”]</strong></li>
 </ul>
 <blockquote>
 <p> 这样可获取到column列，结果是一个Series类（<strong>只有一个列则是Series，多个列则是DataFrame</strong>）</p>
-<p>如果不想出现重复结果，可调用unique()函数，示例：data[“ner_result”].unique()，返回的结果是一个ndarray，也可使用list()将其转换为列表</p>
+<p> 如果不想出现重复结果，可调用unique()函数，示例：data[“ner_result”].unique()，返回的结果是一个ndarray，也可使用list()将其转换为列表</p>
+<p> 如果想把这个Series类转换为ndarray，则可使用Series.values，这是Series类其中的一个属性，不是方法，类型是一个ndarrary，也可使用list()转换为列表</p>
 </blockquote>
-<h1 id="Pickle用法"><a href="#Pickle用法" class="headerlink" title="Pickle用法"></a>Pickle用法</h1><h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><h1 id="Numpy用法"><a href="#Numpy用法" class="headerlink" title="Numpy用法"></a>Numpy用法</h1><h1 id="Tensorflow用法"><a href="#Tensorflow用法" class="headerlink" title="Tensorflow用法"></a>Tensorflow用法</h1>
+<ul>
+<li><p><strong>获取DataFrame列名：DataFrame.columns</strong></p>
+</li>
+<li><p><strong>DataFrame根据某列，进行分组：DataFrame.groupby(“column_name”)</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>将DataFrame通过column_name列进行分组</p>
+<p>结果是一个可迭代的DataFrameGroupBy类，可转化为list，其中每一个元素为一个tuple，tuple[0]为column_name列对应的值，tuple[1]为原DataFrame的一部分，根据column_name的值进行截断</p>
+<p>举个例子：<br>input_data为一个DataFrame，值如下：</p>
+<p><div align=center><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123006189.png" srcset="/img/loading.gif" lazyload alt="image-20220716123006189" style="zoom:67%;" /></p>
+<p>现在将input_data根据sent_order列进行分组：input_data.groupby(“sent_order”)，结果如下：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123836380.png" srcset="/img/loading.gif" lazyload alt="image-20220716123836380" style="zoom: 67%;" /></p>
+<p>只展示了前三个元组，每个元组，tuple[0]为sent_order的值，tuple[1]为对应的DataFrame</p>
+</blockquote>
+<ul>
+<li><strong>对于DataFrameGroupBy类，还有一个apply()方法：DataFrameGroupBy.apply(func)</strong></li>
+</ul>
+<blockquote>
+<p>其中func是一个自定义函数，注意：<strong>该函数的输入是该迭代类的每一个元素，但是不是tuple，而是直接对对应的DataFrame进行处理，即上述的tuple[1]对应的DataFrame</strong></p>
+<p>常用用法是：list(DataFrame.groupby(“column_name”).apply(func))</p>
+</blockquote>
+<h3 id="Padas中DataFrame的增删查改"><a href="#Padas中DataFrame的增删查改" class="headerlink" title="Padas中DataFrame的增删查改"></a>Padas中DataFrame的增删查改</h3><ul>
+<li><strong>增加列：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">df = DataFrame(...)    <span class="hljs-comment"># 有三行数据</span><br>cities = [<span class="hljs-string">&quot;成都&quot;</span>, <span class="hljs-string">&quot;上海&quot;</span>, <span class="hljs-string">&quot;北京&quot;</span>]<br><span class="hljs-comment"># 三种插入方式</span><br>df.insert(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;city&quot;</span>, citys)    <span class="hljs-comment"># 参数分别为：插入列的位置、列名、插入内容</span><br>df[<span class="hljs-string">&quot;city&quot;</span>] = cities<br>df.loc[:, <span class="hljs-string">&quot;city&quot;</span>] = cities<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>增加行：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">df = DataFrame(...)  <span class="hljs-comment"># 有两列 </span><br>df.loc[<span class="hljs-number">3</span>] = [<span class="hljs-string">&quot;1&quot;</span>, <span class="hljs-string">&quot;2&quot;</span>]       <span class="hljs-comment"># 如果已经存在index=3的行，则修改值；反之直接添加该行</span><br>df = df.append(df_insert)    <span class="hljs-comment"># 合成两个DataFrame，列要相同才行</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>loc[]和iloc[]的使用：</strong></li>
+</ul>
+<blockquote>
+<p>两者功能是相同的，区别在于loc中对于列，只能使用列名（str类型）进行搜索，而iloc对于列只能使用整数索引进行搜索，DataFrame的查和改基本都是基于两者的</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">df[<span class="hljs-string">&quot;column_name&quot;</span>]或df.loc[:, <span class="hljs-string">&quot;column_name&quot;</span>]   <span class="hljs-comment"># 查找column_name列</span><br>df.loc[<span class="hljs-string">&quot;index_name&quot;</span>]    <span class="hljs-comment"># 查找index_name行</span><br>df.loc[<span class="hljs-string">&quot;index_name&quot;</span>, <span class="hljs-string">&quot;column_name&quot;</span>]     <span class="hljs-comment"># 查找(index_name, column_name)处的值</span><br><span class="hljs-comment"># 还可以使用list或者切片来代替，一次操作多行或多列</span><br>df.loc[[<span class="hljs-string">&quot;index_name1&quot;</span>, <span class="hljs-string">&quot;index_name2&quot;</span>], [<span class="hljs-string">&quot;column_name1&quot;</span>, <span class="hljs-string">&quot;column_name2&quot;</span>]]  <span class="hljs-comment"># 同时操作index_name1&amp;2行和column_name1&amp;2列</span><br>df.loc[<span class="hljs-number">0</span>:<span class="hljs-number">3</span>, <span class="hljs-string">&quot;column_name&quot;</span>]    <span class="hljs-comment"># 进行切片，对0、1、2、3行操作</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>iloc[]是使用整数列索引，比如：<code>df.iloc[:3, 2:6]</code></p>
+<p>注意loc[]中的切片，是包含了end所指的索引（和list的索引稍有不同），iloc[]是不包含end的索引的</p>
+</blockquote>
+<ul>
+<li><strong>删除：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">df.drop(<span class="hljs-number">0</span>, axis=<span class="hljs-number">0</span>)   <span class="hljs-comment"># 删除第0行</span><br><span class="hljs-comment"># 删除列的三种方法</span><br>df.drop(<span class="hljs-string">&quot;column_name&quot;</span>, axis=<span class="hljs-number">1</span>)<br>dfl df[<span class="hljs-string">&quot;column_name&quot;</span>]<br>ndf = df.pop(<span class="hljs-string">&quot;column_name&quot;</span>)<br><span class="hljs-comment"># 使用drop的时候，第一个参数也可以是list，一次操作多行或多列</span><br>df.drop([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], axis=<span class="hljs-number">0</span>)<br>df.drop([<span class="hljs-string">&quot;column_name1&quot;</span>, <span class="hljs-string">&quot;column_name2&quot;</span>], axis=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+<h1 id="Pickle用法"><a href="#Pickle用法" class="headerlink" title="Pickle用法"></a>Pickle用法</h1><ul>
+<li><p><strong>储存pk文件：pickle.dump(obj, file)</strong></p>
+</li>
+<li><p><strong>加载pk文件：pickle.load(file)</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>可以存储和加载对象，其中dump()中的obj是要存的对象，file是open()函数返回的文件描述符</p>
+<p>load()返回值为所存储的对象</p>
+<p>储存的文件后缀为.pk</p>
+<p>举个栗子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">a = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]<br>file_name = <span class="hljs-string">&quot;test.pk&quot;</span><br><span class="hljs-comment"># 存</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;wb&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    pickle.dump(a, f)<br><span class="hljs-comment"># 取</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;rb&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    b = pickle.load(f)<br>    <br><span class="hljs-comment"># a和b是一样的</span><br></code></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><h1 id="Numpy用法"><a href="#Numpy用法" class="headerlink" title="Numpy用法"></a>Numpy用法</h1><ul>
+<li><strong>获取最大值的位置（索引）np.argmax(a, axis=None, …)：</strong></li>
+</ul>
+<blockquote>
+<p>axis：如果为None, 则代表把整个数组当作一维的，然后返回最大的索引值。如果指定axis，则只在该维度搜索最大值，示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">array([[<span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>],<br>       [<span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>]])<br><span class="hljs-meta">&gt;&gt;&gt; </span>np.argmax(a)<br><span class="hljs-number">5</span><br><span class="hljs-meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="hljs-number">0</span>)<br>array([<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>])<br><span class="hljs-meta">&gt;&gt;&gt; </span>np.argmax(a, axis=<span class="hljs-number">1</span>)<br>array([<span class="hljs-number">2</span>, <span class="hljs-number">2</span>])<br></code></pre></td></tr></table></figure>
+<p>axis指定为哪个维度，则stack哪个维度</p>
+</blockquote>
+<ul>
+<li><strong>减少维度：np.squeeze(a, axis=None)</strong></li>
+</ul>
+<blockquote>
+<p>axis如果为None，则丢弃所有大小为1的维度</p>
+</blockquote>
+<h1 id="Tensorflow用法"><a href="#Tensorflow用法" class="headerlink" title="Tensorflow用法"></a>Tensorflow用法</h1><h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><ul>
+<li><strong>填充序列：tf.keras.preprocessing.sequence.pad_sequences(sequences, maxlen=None, dtype=’int32’, padding=’pre’, truncating=’pre’, value=0.)</strong></li>
+</ul>
+<blockquote>
+<p>输入：<br>sequences是要填充的序列</p>
+<p>maxlen是要填充的最大长度，如果为None，则设为所有序列中最长的那个的长度</p>
+<p>padding和truncating可以设为”pre”或者”post”，选择是在序列前面还是后面填充/截断</p>
+<p>value为填充的值</p>
+<p>返回值是一个ndarray</p>
+</blockquote>
+<ul>
+<li><strong>划分训练、测试集：sklearn.model_selection.train_test_split(*arrays, test_size=None, train_size=None, random_state=None, shuffle=True, stratify=None)</strong></li>
+</ul>
+<blockquote>
+<p>arrays是要划分的数据，可以使用list、numpy array、matric、dataframe<strong>（不能用Tensor）</strong>，示例：</p>
+<p><strong>x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)</strong></p>
+<p>train_size和test_size指定一个就行</p>
+<p>random_state为随机种子</p>
+<p>shuffle决定是否打乱数据</p>
+<p>stratify决定是否进行数据分层</p>
+<p><strong>输入的数据是什么类型，输出的数据就是什么类型，返回值依次为：x_train, x_test, y_train, y_test</strong></p>
+</blockquote>
+<h3 id="各种层"><a href="#各种层" class="headerlink" title="各种层"></a>各种层</h3><ul>
+<li><strong>tf.keras.layers.Dense(units, activation=None, use_bias=True, …)</strong></li>
+<li><strong>tf.keras.layers.Embedding(input_dim, output_dim,…., mask_zero=False, input_length=None)</strong></li>
+</ul>
+<blockquote>
+<p>input_dim：词汇表大小</p>
+<p>output_dim：词嵌入向量的维度</p>
+<p>mask_zero：决定输入值0是否是应被屏蔽的mask“填充”值。如果为True，则使用mask，相应的input_dim也应该为词汇表大小+1（因为增加了一个mask token，索引为0）</p>
+<p>intput_length：输入序列的长度，如果为None，则自动为最长序列的长度</p>
+</blockquote>
+<ul>
+<li><strong>tf.keras.layers.LSTM(units, activation=”tanh”, recurrent_activation=”sigmoid”, …, return_sequences=False)</strong></li>
+</ul>
+<blockquote>
+<p>其中return_sequences决定是否在最后返回所有时间步的输出，若为False只会返回最后一个时间步的输出，如果下一层需要使用到所有时间步的输出则需要设为True</p>
+</blockquote>
+<ul>
+<li><strong>tf.keras.layers.Bidirectional(layer, merge_mode=”concat”, …)</strong></li>
+</ul>
+<blockquote>
+<p>是RNN的双向包装器，可将单向RNN变为双向RNN</p>
+<p>layer是要包装的层，merge_mode决定前后信息汇总的 方式，可为：”sum”、”mul”、”concat”、”ave”、None，如果为None，则不会合并，而是将他们作为列表输出</p>
+</blockquote>
+<ul>
+<li><strong>tf.keras.layers.Softmax(axis=-1)</strong></li>
+</ul>
+<blockquote>
+<p>axis：决定对那个维度执行softmax，默认为最后一个维度</p>
+</blockquote>
+<h3 id="模型的常用方法"><a href="#模型的常用方法" class="headerlink" title="模型的常用方法"></a>模型的常用方法</h3><ul>
+<li><strong>序列容器：tf.keras.models.Sequential()</strong></li>
+</ul>
+<blockquote>
+<p>可以和add()配合使用，也可以里面直接加个列表Sequential([…])</p>
+</blockquote>
+<ul>
+<li><strong>配置模型：model.compile(optimizer=’rmsprop’, loss=None, metrics=None,…)</strong></li>
+</ul>
+<blockquote>
+<p>optimizer：字符串或者Opitimizer实例</p>
+<p>loss：字符串或Loss示例或一个函数</p>
+<p>metrics：字符串或Metric示例或一个函数</p>
+</blockquote>
+<ul>
+<li><strong>运行模型：model.fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0., validation_data=None, …)</strong></li>
+</ul>
+<blockquote>
+<p>x/y：可以是numpy数组或者Tensor，这样x/y应一一对应。x也可为DataSet、Generator、Sequence，但是这种情况下就不应该指定y，因为y已经在x中了</p>
+<p>batch_size如果未指定则默认32</p>
+<p>callbacks：一个列表，每个元素是一个callbacks中的实例，如EarlyStopping类</p>
+<p>validation_split和validaton_data只需要指定一个，前者是验证集所占比例，后者是直接指定验证集</p>
+</blockquote>
+<ul>
+<li><strong>画模型：tf.keras.utils.plot_model(model, to_file=”model.png”, show_shapes=False, show_dtype=False, show_layer_names=True, …)</strong></li>
+</ul>
+<blockquote>
+<p>model是要打印的模型，一个keras model实例</p>
+</blockquote>
+<ul>
+<li><strong>测试模型：model.evaluate(x=None, y=None, batch_size=None, verbose=1, …)</strong></li>
+</ul>
+<blockquote>
+<p>用法和fit基本一样</p>
+</blockquote>
+<h3 id="保存和加载模型"><a href="#保存和加载模型" class="headerlink" title="保存和加载模型"></a>保存和加载模型</h3><ul>
+<li><strong>model.save(filepath, overwrite=True, include_optimizer=True, save_format=None, …)</strong></li>
+</ul>
+<blockquote>
+<p>filepath后缀可为.h5</p>
+<p>save_format可为”tf”或”h5”，TF 1.X默认”h5”，TF 2.X默认”tf”</p>
+</blockquote>
+<ul>
+<li><strong>加载模型：tf.keras.models.load_mode(filepath, custom_objects=None, compile=True)</strong></li>
+</ul>
+<h3 id="模型的反馈"><a href="#模型的反馈" class="headerlink" title="模型的反馈"></a>模型的反馈</h3><ul>
+<li><strong>设置Early Stop：tf.keras.callbacks.EarlyStopping(monitor=’val_loss’, min_delta=0, patience=0, …, restore_best_weights=False)</strong></li>
+</ul>
+<blockquote>
+<p>monitor：要监视的量，如：”val_loss”、”val_acc”、”train_loss”等</p>
+<p>min_delta：若小于min_delta的绝对变化，将被视为没有改进</p>
+<p>patience：容忍可以没有提升的epochs数</p>
+<p>restore_best_weights：是否保存整个训练过程中最好的一个epoch</p>
+</blockquote>
+
             </div>
             <hr>
             <div>
