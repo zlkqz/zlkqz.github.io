@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724143414199.png">
-<meta property="og:image" content="c:/Users/LENOVO/AppData/Roaming/Typora/typora-user-images/image-20220724211345194.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211345194.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724153110907.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211302209.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211544134.png">
@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123006189.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123836380.png">
 <meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
-<meta property="article:modified_time" content="2022-07-24T13:15:57.451Z">
+<meta property="article:modified_time" content="2022-07-24T14:04:27.742Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -207,7 +207,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      13k 字
+      14k 字
     </span>
   
 
@@ -216,7 +216,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      42 分钟
+      43 分钟
     </span>
   
 
@@ -534,9 +534,9 @@
 <p>依存语法 (Dependency Parsing, DP) 通过分析语言单位内成分之间的依存关系揭示其句法结构。 直观来讲，依存句法分析识别句子中的“主谓宾”、“定状补”这些语法成分，并分析各成分之间的关系</p>
 <p>首先也是创建实例和加载模型，然后<code>parse_results = parser.parse(words, postags)</code>，得到的结果是一个可迭代对象，其中的每一个元素也是个自定义类（假设parse_results[i]为result），调用<code>result.head</code>和<code>result.relation</code>可分别获得words[i]对应的关系词和关系，其中head是返回关系词所对应的索引+1，如果为0则为”Root”，表示无对应关系词</p>
 <p>举个栗子：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">relations = [result.relation <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> parse_results]<br>heads = [words[result.head - <span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> result.head <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;Root&quot;</span> <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> parse_results]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(words)):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;relations[i]&#125;</span> : (<span class="hljs-subst">&#123;words[i]&#125;</span>, <span class="hljs-subst">&#123;heads[i]&#125;</span>)&quot;</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">relations = [result.relation <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> parse_results]<br>heads = [words[result.head - <span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> result.head <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;Root&quot;</span> <span class="hljs-keyword">for</span> result <span class="hljs-keyword">in</span> parse_results]<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(words)):<br> <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;relations[i]&#125;</span> : (<span class="hljs-subst">&#123;words[i]&#125;</span>, <span class="hljs-subst">&#123;heads[i]&#125;</span>)&quot;</span>)<br></code></pre></td></tr></table></figure>
 <p>输出结果：</p>
-<p><div align=center><img src="C:\Users\LENOVO\AppData\Roaming\Typora\typora-user-images\image-20220724211345194.png" srcset="/img/loading.gif" lazyload alt="image-20220724211345194" style="zoom: 80%;" /></p>
+<p><div align=center><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211345194.png" srcset="/img/loading.gif" lazyload alt="image-20220724211345194" style="zoom: 80%;" /></p>
 <p>依存句法关系如下：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724153110907.png" srcset="/img/loading.gif" lazyload alt="image-20220724153110907" style="zoom:50%;" /></p>
 </blockquote>
@@ -551,6 +551,21 @@
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211302209.png" srcset="/img/loading.gif" lazyload alt="image-20220724211302209" style="zoom:67%;" /></p>
 <p>语义角色如下：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211544134.png" srcset="/img/loading.gif" lazyload alt="image-20220724211544134" style="zoom:60%;" /></p>
+</blockquote>
+<h1 id="zhconv"><a href="#zhconv" class="headerlink" title="zhconv"></a>zhconv</h1><ul>
+<li><p>该库用于中文简繁体转换，但是也可以用<strong>OpenCC库，精准度更高、覆盖率更高、速度更快</strong></p>
+</li>
+<li><p><strong>逐字转换：zhconv.convert(s, locale, update=None)</strong></p>
+</li>
+<li><p><strong>基于MediaWiki的转换：zhconv.ocnvert_for_mw(s, locale, update=None)</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>两个函数用法相同</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">sent2 = <span class="hljs-string">&quot;計算機軟體&quot;</span><br><span class="hljs-built_in">print</span>(convert(sent2, <span class="hljs-string">&quot;zh-hans&quot;</span>))<br></code></pre></td></tr></table></figure>
+<p>locale可为以下值：</p>
+<p><code>zh-cn</code> 大陆简体、<code>zh-tw</code> 台灣正體、<code>zh-hk</code> 香港繁體、<code>zh-sg</code> 马新简体、<code>zh-hans</code> 简体、<code>zh-hant</code> 繁體</p>
 </blockquote>
 <h1 id="gensim用法"><a href="#gensim用法" class="headerlink" title="gensim用法"></a>gensim用法</h1><ul>
 <li>gensim主要用于创建语料库，和计算各种特征（如相似度、tf-idf）等任务</li>
