@@ -34,8 +34,13 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220711120934316.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123006189.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123836380.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725142611139.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143928089.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143939723.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143953768.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725144005108.png">
 <meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
-<meta property="article:modified_time" content="2022-07-24T14:04:27.742Z">
+<meta property="article:modified_time" content="2022-07-25T15:15:35.884Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -207,7 +212,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      14k 字
+      15k 字
     </span>
   
 
@@ -216,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      43 分钟
+      48 分钟
     </span>
   
 
@@ -653,7 +658,8 @@
 </ul>
 <blockquote>
 <p>将DataFrame通过column_name列进行分组</p>
-<p>结果是一个可迭代的DataFrameGroupBy类，可转化为list，其中每一个元素为一个tuple，tuple[0]为column_name列对应的值，tuple[1]为原DataFrame的一部分，根据column_name的值进行截断</p>
+<p>结果是一个可迭代的DataFrameGroupBy类，该类的用法和DataFrame几乎一样，比如可使用<code>DataFrameGroupBy[&quot;column_name&quot;]</code>将其转换为SeriesGroupby类</p>
+<p>也可转化为list，转换后，其中每一个元素为一个tuple，tuple[0]为column_name列对应的值，tuple[1]为原DataFrame的一部分，根据column_name的值进行截断。如果是将SeriesGroupby类转换为list，则tuple[1]变为一个Series类</p>
 <p>举个例子：<br>input_data为一个DataFrame，值如下：</p>
 <p><div align=center><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220716123006189.png" srcset="/img/loading.gif" lazyload alt="image-20220716123006189" style="zoom:67%;" /></p>
 <p>现在将input_data根据sent_order列进行分组：input_data.groupby(“sent_order”)，结果如下：</p>
@@ -661,11 +667,58 @@
 <p>只展示了前三个元组，每个元组，tuple[0]为sent_order的值，tuple[1]为对应的DataFrame</p>
 </blockquote>
 <ul>
-<li><strong>对于DataFrameGroupBy类，还有一个apply()方法：DataFrameGroupBy.apply(func)</strong></li>
+<li><strong>应用自定义方法：DaraFrame.apply(func, axis=0, …)</strong></li>
 </ul>
 <blockquote>
-<p>其中func是一个自定义函数，注意：<strong>该函数的输入是该迭代类的每一个元素，但是不是tuple，而是直接对对应的DataFrame进行处理，即上述的tuple[1]对应的DataFrame</strong></p>
-<p>常用用法是：<code>list(DataFrame.groupby(&quot;column_name&quot;).apply(func))</code></p>
+<p>Series、DataFrame和GroupbyDataFrame等均可使用</p>
+<p>func是一个自定义函数</p>
+<p>axis决定func的输入是什么，axis=0则输入为行，axis=1则输入为列</p>
+<p>Series无需指定axis，DataFrame可调节axis更换操作的维度，<strong>DaraFrameGroupby也无需指定，func的输入为分组后的每个DataFrame，最后再将每个分组返回的结果总和起来</strong></p>
+</blockquote>
+<ul>
+<li><strong>DataFrame的count()方法：</strong></li>
+</ul>
+<blockquote>
+<p><code>count()</code>有很多种用法，结果是可以对Series、DataFrame和GroupbyDataFrame等使用，结果是返回一个Series或DataFrame</p>
+<p>下面举几个示例，其中使用的df如下：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725142611139.png" srcset="/img/loading.gif" lazyload alt="image-20220725142611139" style="zoom: 60%;" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">df.count()    <span class="hljs-comment"># DataFrame执行count()，对每一列分别执行count，结果返回一个Series</span><br>df.data[<span class="hljs-string">&quot;length&quot;</span>].count()    <span class="hljs-comment"># Series执行count()，直接返回length列的长度，类型为int</span><br>df.groupy(<span class="hljs-string">&quot;length&quot;</span>).count()   <span class="hljs-comment"># 对DataFrameGroupby类执行，返回一个DataFrame，index为length的各指，colums为出length的其他列执行count的结果</span><br>df.groupy(<span class="hljs-string">&quot;length&quot;</span>)[<span class="hljs-string">&quot;evaluation&quot;</span>].count()  <span class="hljs-comment"># 对SeriesGroupby类执行，则只返回evaluation列的count结果，类型为Series</span><br></code></pre></td></tr></table></figure>
+<p>上述四句语句的执行结果：</p>
+<ul>
+<li>第一句：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143928089.png" srcset="/img/loading.gif" lazyload alt="image-20220725143928089" style="zoom:67%;" /></p>
+<ul>
+<li>第二句：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143939723.png" srcset="/img/loading.gif" lazyload alt="image-20220725143939723" style="zoom:67%;" /></p>
+<ul>
+<li>第三句：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143953768.png" srcset="/img/loading.gif" lazyload alt="image-20220725143953768" style="zoom:50%;" /></p>
+<ul>
+<li>第四句：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725144005108.png" srcset="/img/loading.gif" lazyload alt="image-20220725144005108" style="zoom:50%;" /></p>
+</blockquote>
+<h3 id="处理缺失值"><a href="#处理缺失值" class="headerlink" title="处理缺失值"></a>处理缺失值</h3><ul>
+<li><strong>判断空值：DataFrame.isnull()或DataFrame.notnull()</strong></li>
+</ul>
+<blockquote>
+<p>DataFrame和Series都可用，结果也是返回一个DataFrame或Series，和输入一一对应，其中每个值为布尔值</p>
+</blockquote>
+<ul>
+<li><strong>删除缺失值：DataFrame.dropna(axis=0, inplace=False, how=None)</strong></li>
+</ul>
+<blockquote>
+<p>axis：删除行还是列，{0 or ‘index’, 1 or ‘columns’}</p>
+<p>how : 如果等于any则任何值为空都删除，如果等于all则所有值都为空才删除</p>
+</blockquote>
+<ul>
+<li><strong>填充缺失值：DataFrame.fillna(value, method, axis, …)</strong></li>
+</ul>
+<blockquote>
+<p>value：用于填充的值，可以是单个值，或者字典（用于不同列填充不同值的情况，key是列名，value是值）<br>method : 等于”ffill”使用前一个；不为空的值填充forword fill；等于”bfill”使用后一个不为空的值填充backword fill<br>axis : 按行还是列填充，{0 or ‘index’, 1 or ‘columns’}</p>
 </blockquote>
 <h3 id="Padas中DataFrame的增删查改"><a href="#Padas中DataFrame的增删查改" class="headerlink" title="Padas中DataFrame的增删查改"></a>Padas中DataFrame的增删查改</h3><ul>
 <li><strong>增加列：</strong></li>
@@ -689,7 +742,7 @@
 <ul>
 <li><strong>删除：</strong></li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">df.drop(<span class="hljs-number">0</span>, axis=<span class="hljs-number">0</span>)   <span class="hljs-comment"># 删除第0行</span><br><span class="hljs-comment"># 删除列的三种方法</span><br>df.drop(<span class="hljs-string">&quot;column_name&quot;</span>, axis=<span class="hljs-number">1</span>)<br>dfl df[<span class="hljs-string">&quot;column_name&quot;</span>]<br>ndf = df.pop(<span class="hljs-string">&quot;column_name&quot;</span>)<br><span class="hljs-comment"># 使用drop的时候，第一个参数也可以是list，一次操作多行或多列</span><br>df.drop([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], axis=<span class="hljs-number">0</span>)<br>df.drop([<span class="hljs-string">&quot;column_name1&quot;</span>, <span class="hljs-string">&quot;column_name2&quot;</span>], axis=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">df.drop(<span class="hljs-number">0</span>, axis=<span class="hljs-number">0</span>)   <span class="hljs-comment"># 删除第0行</span><br><span class="hljs-comment"># 删除列的三种方法</span><br>df.drop(<span class="hljs-string">&quot;column_name&quot;</span>, axis=<span class="hljs-number">1</span>)<br><span class="hljs-keyword">del</span> df[<span class="hljs-string">&quot;column_name&quot;</span>]<br>ndf = df.pop(<span class="hljs-string">&quot;column_name&quot;</span>)<br><span class="hljs-comment"># 使用drop的时候，第一个参数也可以是list，一次操作多行或多列</span><br>df.drop([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>], axis=<span class="hljs-number">0</span>)<br>df.drop([<span class="hljs-string">&quot;column_name1&quot;</span>, <span class="hljs-string">&quot;column_name2&quot;</span>], axis=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
 <h1 id="Pickle用法"><a href="#Pickle用法" class="headerlink" title="Pickle用法"></a>Pickle用法</h1><ul>
 <li><p><strong>储存pk文件：pickle.dump(obj, file)</strong></p>
 </li>
@@ -703,7 +756,44 @@
 <p>举个栗子：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">a = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]<br>file_name = <span class="hljs-string">&quot;test.pk&quot;</span><br><span class="hljs-comment"># 存</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;wb&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    pickle.dump(a, f)<br><span class="hljs-comment"># 取</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;rb&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    b = pickle.load(f)<br>    <br><span class="hljs-comment"># a和b是一样的</span><br></code></pre></td></tr></table></figure>
 </blockquote>
-<h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><h1 id="Numpy用法"><a href="#Numpy用法" class="headerlink" title="Numpy用法"></a>Numpy用法</h1><ul>
+<h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><ul>
+<li><strong>折线图：plt.plot(x, y)</strong></li>
+<li><strong>直方图：plt.bar(x, y)</strong></li>
+<li><strong>散点图：plt.scatter(x, y)</strong></li>
+</ul>
+<blockquote>
+<p>上述函数还可以指定颜色、大小等参数：</p>
+<ul>
+<li>color：颜色</li>
+</ul>
+<blockquote>
+<p>可为：”b”：蓝色、”g”：绿色、”r”：红色、”c”：青色、”m”：品红、”y”：黄色、”k”：黑色、”w”：白色</p>
+<p>也只直接用全名，如”blue”</p>
+</blockquote>
+<ul>
+<li>s：点的大小</li>
+<li>linewidth：线宽</li>
+<li><p>linestyle：线样式，如设为”dashed”将线设为虚线</p>
+</li>
+<li><p>label：名字， 若要打印label，则使用<code>plt.legend()</code></p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>设置标题：plt.title()</strong></li>
+</ul>
+<blockquote>
+<p>同样可以使用fontsize指定字体大小</p>
+</blockquote>
+<ul>
+<li><strong>设置x、y轴标题：plt.xlabel()和plt.ylabel()</strong></li>
+<li><strong>保存图片：plt.savefig()</strong></li>
+<li><strong>画完图之后记得关闭：plt.close()</strong></li>
+<li><strong>画一条水平的线：plt.hlines(y, xmin, xmax)</strong></li>
+<li><strong>画一条垂直的线：plt.vlines(x, ymin, ymax)</strong></li>
+<li><strong>在指定座标处加注释：plt.text(x, y, s)</strong></li>
+</ul>
+<h1 id="Numpy用法"><a href="#Numpy用法" class="headerlink" title="Numpy用法"></a>Numpy用法</h1><ul>
 <li><strong>获取最大值的位置（索引）np.argmax(a, axis=None, …)：</strong></li>
 </ul>
 <blockquote>
@@ -786,7 +876,7 @@
 <li><strong>运行模型：model.fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0., validation_data=None, …)</strong></li>
 </ul>
 <blockquote>
-<p>x/y：可以是numpy数组或者Tensor，这样x/y应一一对应。x也可为DataSet、Generator、Sequence，但是这种情况下就不应该指定y，因为y已经在x中了</p>
+<p>x/y：可以是numpy数组或者Tensor（<strong>不能直接是list</strong>），这样x/y应一一对应。x也可为DataSet、Generator、Sequence，但是这种情况下就不应该指定y，因为y已经在x中了</p>
 <p>batch_size如果未指定则默认32</p>
 <p>callbacks：一个列表，每个元素是一个callbacks中的实例，如EarlyStopping类</p>
 <p>validation_split和validaton_data只需要指定一个，前者是验证集所占比例，后者是直接指定验证集</p>
