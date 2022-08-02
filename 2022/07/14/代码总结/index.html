@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143953768.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725144005108.png">
 <meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
-<meta property="article:modified_time" content="2022-08-01T05:40:16.745Z">
+<meta property="article:modified_time" content="2022-08-02T04:48:05.851Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -212,7 +212,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      16k 字
+      20k 字
     </span>
   
 
@@ -221,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      51 分钟
+      63 分钟
     </span>
   
 
@@ -565,7 +565,7 @@
 <p>语义角色如下：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211544134.png" srcset="/img/loading.gif" lazyload alt="image-20220724211544134" style="zoom:60%;" /></p>
 </blockquote>
-<h1 id="zhconv"><a href="#zhconv" class="headerlink" title="zhconv"></a>zhconv</h1><ul>
+<h1 id="zhconv用法"><a href="#zhconv用法" class="headerlink" title="zhconv用法"></a>zhconv用法</h1><ul>
 <li><p>该库用于中文简繁体转换，但是也可以用<strong>OpenCC库，精准度更高、覆盖率更高、速度更快</strong></p>
 </li>
 <li><p><strong>逐字转换：zhconv.convert(s, locale, update=None)</strong></p>
@@ -776,8 +776,10 @@
 <p>obj为Python对象，s为json对象</p>
 <p>ensure_ascii：如果为False，则返回值可以包含非 ASCII</p>
 <p>indent：为json中每个元素的间隔数，如果为0或None，则每个元素之间紧凑排版</p>
-<p><strong>注意：以上两个函数只是进行对象的转换，而不会进行保存，所以是一般配合<code>open()</code>、<code>f.write()</code>、<code>f.read()</code>使用，给两个示例：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 存储json对象</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br>    f.write(json.dumps(data, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>))<br><span class="hljs-comment"># 读取json对象</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    data = json.loads(f.read())<br></code></pre></td></tr></table></figure>
+<p><strong>注意：</strong></p>
+<p><strong>1. 以上两个函数只是进行对象的转换，而不会进行保存，所以是一般配合<code>open()</code>、<code>f.write()</code>、<code>f.read()</code>使用，给两个示例：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 存储json对象</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:<br> f.write(json.dumps(data, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>))<br><span class="hljs-comment"># 读取json对象</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(file_name, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br> data = json.loads(f.read())<br></code></pre></td></tr></table></figure>
+<p><strong>2. 转换为json格式时，如果键值的类型不是字符串，而是int、float之类的，<code>dumps()</code>后会自动转换为str，加载的时候需要自己转回去</strong></p>
 </blockquote>
 <h1 id="Matplotlib用法"><a href="#Matplotlib用法" class="headerlink" title="Matplotlib用法"></a>Matplotlib用法</h1><ul>
 <li><strong>折线图：plt.plot(x, y)</strong></li>
@@ -830,7 +832,8 @@
 <blockquote>
 <p>axis如果为None，则丢弃所有大小为1的维度</p>
 </blockquote>
-<h1 id="Tensorflow用法"><a href="#Tensorflow用法" class="headerlink" title="Tensorflow用法"></a>Tensorflow用法</h1><h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><ul>
+<h1 id="Tensorflow用法"><a href="#Tensorflow用法" class="headerlink" title="Tensorflow用法"></a>Tensorflow用法</h1><h3 id="禁用GPU"><a href="#禁用GPU" class="headerlink" title="禁用GPU"></a>禁用GPU</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br>os.environ[<span class="hljs-string">&quot;CUDA_VISIBLE_DEVICES&quot;</span>] = <span class="hljs-string">&quot;-1&quot;</span><br></code></pre></td></tr></table></figure>
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><ul>
 <li><strong>填充序列：tf.keras.preprocessing.sequence.pad_sequences(sequences, maxlen=None, dtype=’int32’, padding=’pre’, truncating=’pre’, value=0.)</strong></li>
 </ul>
 <blockquote>
@@ -924,7 +927,7 @@
 <p>save_format可为”tf”或”h5”，TF 1.X默认”h5”，TF 2.X默认”tf”</p>
 </blockquote>
 <ul>
-<li><strong>加载模型：tf.keras.models.load_mode(filepath, custom_objects=None, compile=True)</strong></li>
+<li><strong>加载模型：tf.keras.models.load_model(filepath, custom_objects=None, compile=True)</strong></li>
 </ul>
 <h3 id="模型的反馈"><a href="#模型的反馈" class="headerlink" title="模型的反馈"></a>模型的反馈</h3><ul>
 <li><strong>设置Early Stop：tf.keras.callbacks.EarlyStopping(monitor=’val_loss’, min_delta=0, patience=0, …, restore_best_weights=False)</strong></li>
@@ -945,10 +948,72 @@
 </blockquote>
 <h3 id="Dataset用法"><a href="#Dataset用法" class="headerlink" title="Dataset用法"></a>Dataset用法</h3><ul>
 <li>在<code>model.fit</code>中需要可以选择分别用list等类型指定x和y，也可以直接使用Dataset等类指定x而忽略y。对于前者，需要将所有数据一次性读入内存，内存负担较大。而后者可以使用TFRecordDataset类进行外存到内存的流式读取，只需要牺牲小部分IO性能，可大大减轻内存的负担</li>
-<li>简单来说，一个.tfrecords文件包含多个样本<strong>（官方建议每个文件大小100-200M）</strong>，每个样本都对应着一个tf.train.Example类，每个样本可能有多个特征，每个特征用tf.train.Featrue类封装</li>
+<li>简单来说，一个.tfrecords文件包含多个样本<strong>（官方建议每个文件大小100-200M）</strong>，每个样本都对应着一个<code>tf.train.Example</code>类，每个样本可能有多个特征，每个特征用<code>tf.train.Feature()</code>封装</li>
+<li>tf.train.Featrue可接收以下三种类型，大多数其他通用类型也可以强制转换成下面的其中一种：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>tf.train.BytesList：</strong>string、byte<strong>（非标量数据也使用这个，但是需要先将Tensor序列化）</strong></li>
+<li><strong>tf.train.FloatList：</strong>float、double</li>
+<li><strong>tf.train.Int64List：</strong>bool、enum、int32、unit32、int64、uint64g</li>
+</ol>
+</blockquote>
+<ul>
 <li><strong>首先进行.tfrecords文件的存入：</strong></li>
 </ul>
-<h1 id="keras-bert用法"><a href="#keras-bert用法" class="headerlink" title="keras_bert用法"></a>keras_bert用法</h1>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">save_tfrecords</span>(<span class="hljs-params">data, label, desfile</span>):</span><br>    <span class="hljs-keyword">with</span> tf.io.TFRecordWriter(desfile) <span class="hljs-keyword">as</span> writer:<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(data)):<br>            features = tf.train.Features(<br>                feature = &#123;<br>                    <span class="hljs-string">&quot;data&quot;</span>:tf.train.Feature(bytes_list = tf.train.BytesList(value =[tf.io.serialize_tensor(data[i]).numpy()])),<br>                    <span class="hljs-string">&quot;label&quot;</span>:tf.train.Feature(float_list = tf.train.FloatList(value = label[i])),<br>                &#125;<br>            )<br>            example = tf.train.Example(features = features)<br>            serialized = example.SerializeToString()<br>            writer.write(serialized)<br>   <br><br>save_tfrecords(x_in_sample1, y_in_sample1, <span class="hljs-string">&quot;path1.tfrecords&quot;</span>)<br>save_tfrecords(x_in_sample2, y_in_sample2, <span class="hljs-string">&quot;path2.tfrecords&quot;</span>)<br></code></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>首先要用<code>tf.io.TFRecordWriter()</code>打开写入器，data和label是两个列表，每个元素对应一个Example的特征，desfile是文件名</li>
+<li>对于每个Example的特征，使用一个字典表示，字典还需要被<code>tf.train.Features()</code>封装起来，字典的每个值可以是上述三种类型之一，需要使用<code>tf.train.Feature()</code>封装，其中value的值必须为一个list<strong>（注意前者是Features，后者是Feature）</strong>。并且<strong>由于data是非标量的高维数据，需要先使用<code>tf.io.serialize_tensor()</code>进行序列化，然后再使用其numpy值</strong></li>
+<li>最后通过<code>tf.train.Example</code>封装feature，然后调用<code>SerializeToString()</code>函数，将编码后的字符串写入</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>接下来进行数据读取和使用：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># TFR数据反编译</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">map_func</span>(<span class="hljs-params">example</span>):</span><br>    feature_description = &#123;<br>        <span class="hljs-string">&#x27;data&#x27;</span>: tf.io.FixedLenFeature([], tf.string),<br>        <span class="hljs-string">&#x27;label&#x27;</span>: tf.io.FixedLenFeature([], tf.float32),<br>    &#125;<br>    parsed_example = tf.io.parse_single_example(example, features=feature_description)<br>    <br>    x_sample = tf.io.parse_tensor(parsed_example[<span class="hljs-string">&#x27;data&#x27;</span>], tf.float32)<br>    y_sample = parsed_example[<span class="hljs-string">&#x27;label&#x27;</span>]<br>    <br>    <span class="hljs-keyword">return</span> x_sample, y_sample<br><br><span class="hljs-comment"># 加载数据集</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">load_dataset</span>(<span class="hljs-params">filepaths</span>):</span><br>    shuffle_buffer_size = <span class="hljs-number">3000</span><br>    batch_size = <span class="hljs-number">256</span><br><br>    dataset = tf.data.TFRecordDataset(filepaths)<br>    dataset = dataset.shuffle(shuffle_buffer_size)<br>    dataset = dataset.<span class="hljs-built_in">map</span>(map_func=map_func, num_parallel_calls=tf.data.AOTOTUNE)<br>    dataset = dataset.batch(batch_size).prefetch(<span class="hljs-number">64</span>)<br>    <br>    <span class="hljs-keyword">return</span> dataset<br><br><br>train_set = load_dataset([<span class="hljs-string">&quot;path1.tfrecords&quot;</span>,<span class="hljs-string">&quot;path2.tfrecords&quot;</span>])<br>valid_set = load_dataset([<span class="hljs-string">&quot;path3.tfrecords&quot;</span>,<span class="hljs-string">&quot;path4.tfrecords&quot;</span>])<br>model.fit(train_set,epochs=model_epochs, validation_data=valid_set, callbacks=[early_stopping])<br></code></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>首先要生成<code>tf.data.TFRecordDataset</code>类，传入参数是一个list，其中元素是.tfrecords文件名</li>
+<li>每次读取后要先打乱</li>
+<li>之后调用<code>map()</code>，其中指定的函数是<strong>对每个样本操作的</strong>，由于储存时序列化为了二进制字符串，所以数据是什么类型是的信息是丢失了的，解码时需要自己制定数据类型，所以在<code>map()</code>中首先需要指定feature_description，说明每个数据的类型</li>
+<li>然后使用<code>tf.io.parse_single_example()</code>解码单个样本，结果返回一个字典，字典的每个元素对应一个特征，其中<strong>由于data是string类型，由于是编码后的非标量数据，所以还需要使用<code>tf.io.parse_tensor</code>解码一次（非标量数据的shape的编码解码的过程中是会丢失的，所以需要把shape一起储存）</strong></li>
+<li>如果储存的是列表，需要在<code>tf.io.FixedLenFeature()</code>指定shape，也就是(len(list), )</li>
+</ul>
+</blockquote>
+<h1 id="keras-bert用法"><a href="#keras-bert用法" class="headerlink" title="keras_bert用法"></a>keras_bert用法</h1><ul>
+<li><strong>加载预训练模型：keras_bert.load_trained_model_from_checkpoint(config_file, checkpoint_file, training=False, trainable=None, output_layer_num=1, seq_len=int(1e9), kwargs)</strong></li>
+</ul>
+<blockquote>
+<p>config_file和checkpoint_file分别为bert_config.json文件和bert_model.ckpt文件</p>
+<p>training：如果为True，则将返回带有 MLM 和 NSP输出的模型；否则，将返回输入层和最后一个特征提取层。</p>
+<p>trainable：模型是否可训练（也可通过for循环分别制定每层是否可训练）</p>
+<p>seq_len为最大序列长度</p>
+</blockquote>
+<ul>
+<li><strong>编码输入：keras_bert.Tokenizer(token_dict, …)</strong></li>
+</ul>
+<blockquote>
+<p>bert模型的输入有两个，一个是语义token，一个是序列token，需要创建Tokenizer实例，再对句子进行编码，产生两个token</p>
+<p>token_dict：是输入的映射字典，在vocab.txt中可以获取所有token，但是需要自行建立token -&gt; id的字典</p>
+<p>创建Tokenizer实例后，调用<code>Tokenizer.encode(first, second=None, max_len=None)</code>进行编码，结果返回一个list，元素分别为两个list，分别对应两个token</p>
+</blockquote>
+<ul>
+<li><strong>将数据输入模型：</strong></li>
+</ul>
+<blockquote>
+<p>在<code>model.fit()</code>中，由于是多输入，采用<code>x=[train_token_embeddings, train_seq_embeddings]</code>和<code>validation_data=([test_token_embeddings, test_seq_embeddings], test_labels)</code>这种形式进行输入</p>
+</blockquote>
+<ul>
+<li><strong>加载模型时所需要注意的：</strong></li>
+</ul>
+<blockquote>
+<p>加载保存好的模型时同样是使用<code>tf.keras.models.load_model()</code>，但是会出现如下报错：</p>
+<p><strong>ValueError: Unknown layer: TokenEmbedding</strong></p>
+<p>这种情况需要：先<code>from keras_bert import get_custom_objects</code>，再在<code>load_model()</code>时添加参数<code>custom_objects=get_custom_objects()</code></p>
+</blockquote>
+
             </div>
             <hr>
             <div>
