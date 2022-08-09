@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809170735173.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809170753600.png">
 <meta property="article:published_time" content="2022-08-09T09:08:23.364Z">
-<meta property="article:modified_time" content="2022-08-09T09:08:07.559Z">
+<meta property="article:modified_time" content="2022-08-09T14:02:23.934Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809143220226.png">
@@ -292,10 +292,10 @@
 </ul>
 <blockquote>
 <ol>
-<li>SEGMENT-PAIR+NSP：原BERT使用的方法，<strong>输入是一个segment对，每个segment可以包括多个句子</strong>，只要总长度小于512就行，带有NSP Loss</li>
-<li>SENTENCE-PAIR+NSP：和前者类似，<strong>只是每个segment只能是单个句子</strong>，同样带有NSP Loss。由于两个单句子一般长度都远远不足512，为了实验公平，作者适当的增加了其实验数据</li>
-<li>FULL-SENTENCES：<strong>输入是从一个或多个文档中采样的一个full-sentence（可由多个句子组成）</strong>，当采样到文档的最后时，可以继续采下一个文档的句子，但是需要在中间加一个额外的分隔token。<strong>无NSP Loss</strong></li>
-<li>DOC-SENTENCES：<strong>和前者类似，但是不能跨文档采样，无NSP Loss</strong>。在靠近文档末尾采样，句子长度会较短，所以同样为了实验公平，适当的增加了数据</li>
+<li><strong>SEGMENT-PAIR+NSP：</strong>原BERT使用的方法，<strong>输入是一个segment对，每个segment可以包括多个句子</strong>，只要总长度小于512就行，带有NSP Loss</li>
+<li><strong>SENTENCE-PAIR+NSP：</strong>和前者类似，<strong>只是每个segment只能是单个句子</strong>，同样带有NSP Loss。由于两个单句子一般长度都远远不足512，为了实验公平，作者适当的增加了其实验数据</li>
+<li><strong>FULL-SENTENCES：输入是从一个或多个文档中采样的一个full-sentence（可由多个句子组成）</strong>，当采样到文档的最后时，可以继续采下一个文档的句子，但是需要在中间加一个额外的分隔token。<strong>无NSP Loss</strong></li>
+<li><strong>DOC-SENTENCES：和前者类似，但是不能跨文档采样，无NSP Loss</strong>。在靠近文档末尾采样，句子长度会较短，所以同样为了实验公平，适当的增加了数据</li>
 </ol>
 </blockquote>
 <ul>
@@ -385,6 +385,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/08/10/BART%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">BART总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
