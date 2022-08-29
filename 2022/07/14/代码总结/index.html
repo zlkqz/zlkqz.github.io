@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143953768.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725144005108.png">
 <meta property="article:published_time" content="2022-07-14T06:05:24.916Z">
-<meta property="article:modified_time" content="2022-08-02T04:48:05.851Z">
+<meta property="article:modified_time" content="2022-08-29T07:14:03.484Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -212,7 +212,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      20k 字
+      22k 字
     </span>
   
 
@@ -221,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      63 分钟
+      70 分钟
     </span>
   
 
@@ -506,6 +506,20 @@
 <p>假设一个该对象命名为ne_word，调用<code>ne_word.leaves()</code>可返回一个list，每个元素为一个tuple，tuple[0]为token，tuple[1]为该token的pos_tag。对于NER，list中只有一个tuple，返回结果示例：[(‘FIFA’, ‘NNP’)]</p>
 <p>调用<code>ne_word.label()</code>函数可返回该token对应的NER结果，一定要先使用<code>hasattr()</code>函数才能使用<code>label()</code>函数</p>
 </blockquote>
+<h3 id="计算BLEU"><a href="#计算BLEU" class="headerlink" title="计算BLEU"></a>计算BLEU</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://zlkqz.top/2022/02/20/NLP%E5%9F%BA%E7%A1%80/#5-%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91">BLEU的定义</a></p>
+</li>
+<li><p><strong>nltk.translate.bleu_score.sentence_bleu(references, hypothesis, …, smoothing_function=None, …)</strong></p>
+</li>
+</ul>
+<blockquote>
+<p>references：参照序列，label。<strong>type=list(list(str))，其中的每个str为词或字</strong></p>
+<p>hypothesis：候选序列，也就是预测出的序列。<strong>type=list(str)，其中的每个str为词或字</strong></p>
+<p>smoothing_function，是论文中使用到的平滑技巧，一般输入<code>nltk.translate.bleu_score.SmoothingFunction().methodi()</code>，最后的i为0~7</p>
+</blockquote>
+<ul>
+<li>另外还可以使用<code>corpus_bleu()</code>计算多个句子的BLEU；用<code>modified_precision()</code>计算修正的n-gram精确度</li>
+</ul>
 <h1 id="Pyltp用法"><a href="#Pyltp用法" class="headerlink" title="Pyltp用法"></a>Pyltp用法</h1><ul>
 <li>Pyltp主要用于中文的预处理等，包括中文分词、词性标注、命名实体识别、依存句法分析、语义角色标注</li>
 <li>使用Pyltp时注意其编码使用的都是utf-8，而Windows终端使用GBK编码，如果出现乱码可以将输出重定向到文件，然后用utf-8编码查看</li>
@@ -565,6 +579,34 @@
 <p>语义角色如下：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220724211544134.png" srcset="/img/loading.gif" lazyload alt="image-20220724211544134" style="zoom:60%;" /></p>
 </blockquote>
+<h1 id="rouge用法"><a href="#rouge用法" class="headerlink" title="rouge用法"></a>rouge用法</h1><ul>
+<li>rouge和bleu一样也是一种对序列质量的评估标准，但是相比于bleu更关注召回率而非精准率（通过计算F1_score时改变<script type="math/tex">\beta</script>参数），rouge-n计算公式如下：</li>
+</ul>
+<script type="math/tex; mode=display">
+Rough-N=\frac{\sum_{S \in\{\text { ReferemceSummaries }\}} \sum_{\text {gram }_{n} \in S} \text { Count }_{\text {match }}\left(\text { gram }_{n}\right)}{\sum_{S \in\{\text { ReferenceSummaries }\}} \text { gram }_{n} \in S}</script><ul>
+<li>rouge-1和rouge-2都可通过上述公式计算出来，和bleu中的P1和P2计算公式很像。可以在下面看到，每个rough-N都会输出p和r，其实就是精准率和召回率，两者也就是分母不一样（一个分母是refs的n-gram个数，一个分母是hyps的n-gram个数）</li>
+<li>而rouge-l是rouge-N的改进：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+R_{l c s}=\frac{L C S(X, Y)}{m} \\
+P_{l c s}=\frac{L C S(X, Y)}{n} \\
+F_{l c s}=\frac{\left(1+\beta^{2}\right) R_{l c s} P_{l c s}}{R_{l c s}+\beta^{2} P_{l c s}}
+\end{array}</script><p>其中X、Y为hyps和refs，m、n为他们的长度，LCS(X, Y)为X、Y的最长共同序列</p>
+<ul>
+<li><strong>rouge.Rouge.get_scores(hyps, refs, avg=False, ignore_empty=False)</strong></li>
+</ul>
+<blockquote>
+<p><strong>注意：输入的hyps和refs两个字符串，不管是中文英文，都需要每个字或词使用空格间隔</strong></p>
+<p>输出是list(dict(dict))</p>
+</blockquote>
+<ul>
+<li>直接给栗子吧：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> rouge <span class="hljs-keyword">import</span> Rouge <br><br>hypothesis = <span class="hljs-string">&quot;the #### transcript is a written version of each day &#x27;s cnn student news program use this transcript to he    lp students with reading comprehension and vocabulary use the weekly newsquiz to test your knowledge of storie s you     saw on cnn student news&quot;</span><br><br>reference = <span class="hljs-string">&quot;this page includes the show transcript use the transcript to help students with reading comprehension and     vocabulary at the bottom of the page , comment for a chance to be mentioned on cnn student news . you must be a teac    her or a student age # # or older to request a mention on the cnn student news roll call . the weekly newsquiz tests     students &#x27; knowledge of even ts in the news&quot;</span><br><br>rouge = Rouge()<br>scores = rouge.get_scores(hypothesis, reference)<br></code></pre></td></tr></table></figure>
+<p><strong>output：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs json">[<br>  &#123;<br>    <span class="hljs-attr">&quot;rouge-1&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;f&quot;</span>: <span class="hljs-number">0.4786324739396596</span>,<br>      <span class="hljs-attr">&quot;p&quot;</span>: <span class="hljs-number">0.6363636363636364</span>,<br>      <span class="hljs-attr">&quot;r&quot;</span>: <span class="hljs-number">0.3835616438356164</span><br>    &#125;,<br>    <span class="hljs-attr">&quot;rouge-2&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;f&quot;</span>: <span class="hljs-number">0.2608695605353498</span>,<br>      <span class="hljs-attr">&quot;p&quot;</span>: <span class="hljs-number">0.3488372093023256</span>,<br>      <span class="hljs-attr">&quot;r&quot;</span>: <span class="hljs-number">0.20833333333333334</span><br>    &#125;,<br>    <span class="hljs-attr">&quot;rouge-l&quot;</span>: &#123;<br>      <span class="hljs-attr">&quot;f&quot;</span>: <span class="hljs-number">0.44705881864636676</span>,<br>      <span class="hljs-attr">&quot;p&quot;</span>: <span class="hljs-number">0.5277777777777778</span>,<br>      <span class="hljs-attr">&quot;r&quot;</span>: <span class="hljs-number">0.3877551020408163</span><br>    &#125;<br>  &#125;<br>]<br></code></pre></td></tr></table></figure>
+<p>其中p、r、f分别为精准率、召回率、F1_score</p>
 <h1 id="zhconv用法"><a href="#zhconv用法" class="headerlink" title="zhconv用法"></a>zhconv用法</h1><ul>
 <li><p>该库用于中文简繁体转换，但是也可以用<strong>OpenCC库，精准度更高、覆盖率更高、速度更快</strong></p>
 </li>
@@ -1013,6 +1055,13 @@
 <p><strong>ValueError: Unknown layer: TokenEmbedding</strong></p>
 <p>这种情况需要：先<code>from keras_bert import get_custom_objects</code>，再在<code>load_model()</code>时添加参数<code>custom_objects=get_custom_objects()</code></p>
 </blockquote>
+<h1 id="bert4keras用法"><a href="#bert4keras用法" class="headerlink" title="bert4keras用法"></a>bert4keras用法</h1><ul>
+<li><strong>由于keras和tf.keras的兼容问题，所以最开始需要添加环境变量TF_KERAS=1：</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> os<br>os.environ[<span class="hljs-string">&quot;TF_KERAS&quot;</span>] = <span class="hljs-string">&quot;1&quot;</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>直接看<a target="_blank" rel="noopener" href="https://github.com/Sniper970119/bert4keras_document">民间的API文档</a>，写的还可以</li>
+</ul>
 
             </div>
             <hr>
