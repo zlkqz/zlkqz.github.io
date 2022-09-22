@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220921214432617.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220921215744390.png">
 <meta property="article:published_time" content="2022-09-21T15:52:29.934Z">
-<meta property="article:modified_time" content="2022-09-22T03:25:04.417Z">
+<meta property="article:modified_time" content="2022-09-22T03:29:10.269Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc728ecc27fe.png">
@@ -280,12 +280,13 @@
 <li><strong>信息熵</strong>是度量样本集合程度的最常用的一种指标，设当前样本集合<script type="math/tex">D</script>中第<script type="math/tex">k</script>类样本所占比例为<script type="math/tex">p_k</script>，则<script type="math/tex">D</script>的信息熵定义为：</li>
 </ul>
 <script type="math/tex; mode=display">
-\operatorname{Ent}(D)=-\sum_{k=1}^{|\mathcal{Y}|} p_{k} \log _{2} p_{k}</script><script type="math/tex; mode=display">Ent(D)$$的值越小，$$D$$的纯度越高
-
-- 假设属性a有V个可能的取值$$\{a^1, ..., a^V\}$$，若用a进行划分，则会产生V个分支结点，其中第v个分支包含的数据集为在D中取$$a = a^v$$的样本集，记为$$D^v$$，则选择使用a进行划分的**信息增益**为：</script><p>\operatorname{Gain}(D, a)=\operatorname{Ent}(D)-\sum_{v=1}^{V} \frac{\left|D^{v}\right|}{|D|} \operatorname{Ent}\left(D^{v}\right)</p>
+\operatorname{Ent}(D)=-\sum_{k=1}^{|\mathcal{Y}|} p_{k} \log _{2} p_{k}</script><p> Ent(D)的值越小，D的纯度越高</p>
+<ul>
+<li>假设属性a有V个可能的取值<script type="math/tex">\{a^1, ..., a^V\}</script>，若用a进行划分，则会产生V个分支结点，其中第v个分支包含的数据集为在D中取<script type="math/tex">a = a^v</script>的样本集，记为<script type="math/tex">D^v</script>，则选择使用a进行划分的<strong>信息增益</strong>为： </li>
+</ul>
 <script type="math/tex; mode=display">
-
-其中$$|D^v|/|D|$$表示给不同的分支赋予权重，即样本数越多的分支结点影响越大。一般而言信息增益越大，代表使用a进行划分获得的“纯度提升”越大。而ID3算法就是选择$$a_{*}=\underset{a \in A}{\arg \max } \operatorname{Gain}(D, a)</script><h3 id="2-2-C4-5算法"><a href="#2-2-C4-5算法" class="headerlink" title="2.2 C4.5算法"></a>2.2 C4.5算法</h3><ul>
+\operatorname{Gain}(D, a)=\operatorname{Ent}(D)-\sum_{v=1}^{V} \frac{\left|D^{v}\right|}{|D|} \operatorname{Ent}\left(D^{v}\right)</script><p>其中<script type="math/tex">|D^v|/|D|</script>表示给不同的分支赋予权重，即样本数越多的分支结点影响越大。一般而言信息增益越大，代表使用a进行划分获得的“纯度提升”越大。而ID3算法就是选择<script type="math/tex">a_{*}=\underset{a \in A}{\arg \max } \operatorname{Gain}(D, a)</script></p>
+<h3 id="2-2-C4-5算法"><a href="#2-2-C4-5算法" class="headerlink" title="2.2 C4.5算法"></a>2.2 C4.5算法</h3><ul>
 <li><strong>信息增益准则对可取值数目较多的属性有所偏好</strong>，为减少这种偏好可能带来的不好影响，可以改用<strong>增益率</strong>来进行划分。增益率定义如下：</li>
 </ul>
 <script type="math/tex; mode=display">
