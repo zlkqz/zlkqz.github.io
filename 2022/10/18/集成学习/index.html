@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 基本概念 集成学习（ensemble learning）通过构建并结合多个学习器来完成学习任务。其中每个个体学习器如果都使用同样的算法，则称这种集成是同质的，同质集成中的个体学习器亦称基学习器，反之则为异质的 集成学习的相比于单一学习器可获得更优越的泛化性能，这对弱学习器（泛化性能略优于随机猜测的学习器）尤为明显  对于每个个体学习器，要有一定的准确性，即学习器不能太坏，也要有多样性，即学习器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="集成学习">
+<meta property="og:url" content="https://zlkqz.github.io/2022/10/18/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 基本概念 集成学习（ensemble learning）通过构建并结合多个学习器来完成学习任务。其中每个个体学习器如果都使用同样的算法，则称这种集成是同质的，同质集成中的个体学习器亦称基学习器，反之则为异质的 集成学习的相比于单一学习器可获得更优越的泛化性能，这对弱学习器（泛化性能略优于随机猜测的学习器）尤为明显  对于每个个体学习器，要有一定的准确性，即学习器不能太坏，也要有多样性，即学习器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221015122613734.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221015150202207.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018114212479.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018115801453.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018165945814.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018180852374.png">
+<meta property="article:published_time" content="2022-10-18T12:03:16.246Z">
+<meta property="article:modified_time" content="2022-10-18T10:20:27.525Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221015122613734.png">
+  
+  <title>集成学习 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="集成学习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-10-18 20:03" pubdate>
+        2022年10月18日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">集成学习</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1 基本概念"></a>1 基本概念</h1><ul>
+<li>集成学习（ensemble learning）通过构建并结合多个学习器来完成学习任务。其中每个<strong>个体学习器</strong>如果都使用同样的算法，则称这种集成是<strong>同质</strong>的，同质集成中的个体学习器亦称<strong>基学习器</strong>，反之则为<strong>异质</strong>的</li>
+<li><p>集成学习的相比于单一学习器可获得更优越的泛化性能，这对<strong>弱学习器（泛化性能略优于随机猜测的学习器）</strong>尤为明显</p>
+</li>
+<li><p><strong>对于每个个体学习器，要有一定的准确性，即学习器不能太坏，也要有多样性，即学习器间具有差异</strong></p>
+</li>
+<li><p>做一个简单的分析：</p>
+</li>
+</ul>
+<blockquote>
+<ul>
+<li>考虑一个二分类问题，假设<strong>每个基学习器的错误率相互独立</strong>且为<script type="math/tex">\epsilon</script>，即对每个基学习器<script type="math/tex">h_i</script>有：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(h_i(x) \neq f(x)) = \epsilon</script><ul>
+<li>假设集成时使用简单投票法结合T个基学习器：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\operatorname{sign}\left(\sum_{i=1}^{T} h_{i}(\boldsymbol{x})\right)</script><ul>
+<li>由于每个基学习器的错误率相互独立，则由Hoeffding不等式可知，集成错误率为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+P(H(\boldsymbol{x}) \neq f(\boldsymbol{x})) &=\sum_{k=0}^{\lfloor T / 2\rfloor}C_T^k(1-\epsilon)^{k} \epsilon^{T-k} \\
+& \leqslant \exp \left(-\frac{1}{2} T(1-2 \epsilon)^{2}\right)
+\end{aligned}</script><ul>
+<li><strong>由上式可得：随着T的增大，集成的错误率降指数级下降，最终趋于0</strong></li>
+</ul>
+</blockquote>
+<ul>
+<li>在上面的分析中提到了一个关键的假设：基学习器的误差相互独立。但是在现实任务中是不可能的。目前的集成学习方法可大致分为两类：</li>
+</ul>
+<blockquote>
+<ol>
+<li>个体学习器之间存在强依赖关系，必须串行生成的序列化方法，代表是Boosting</li>
+<li>个体学习器之间不存在强依赖关系，可同时生成的并行化方法，代表是Bagging和随机森林（RF）</li>
+</ol>
+</blockquote>
+<h1 id="2-Boosting"><a href="#2-Boosting" class="headerlink" title="2 Boosting"></a>2 Boosting</h1><ul>
+<li>Boosting是一族可将弱学习器提升为强学习器的算法，工作机制为：<strong>先从初始训练集训练出一个基学习器，再根据基学习器的表现对训练样本分布进行调整，使得先前基学习器做错的训练样本在后续受到更多关注，然后基于调整后的样本分布来训练下一个基学习器，如此重复直至得到事先指定的T</strong></li>
+<li>从偏差-方差的角度看，<strong>Boosting主要关注降低偏差</strong></li>
+</ul>
+<h3 id="2-1-AdaBoost"><a href="#2-1-AdaBoost" class="headerlink" title="2.1 AdaBoost"></a>2.1 AdaBoost</h3><h4 id="2-1-1-算法流程"><a href="#2-1-1-算法流程" class="headerlink" title="2.1.1 算法流程"></a>2.1.1 算法流程</h4><ul>
+<li>其中最著名的代表就是AdaBoost，考虑一个二分类任务，其算法流程如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221015122613734.png" srcset="/img/loading.gif" lazyload alt="image-20221015122613734" style="zoom:80%;" /></p>
+<p>其中的<script type="math/tex">D_t</script>为样本权重分布，反应了每个样本对基学习器的重要程度（反映在对loss的贡献上）。<script type="math/tex">\alpha_t</script>为每个基学习器的权重。在每次更新样本权重分布的时候提升分类错误样本的权重，其中<script type="math/tex">Z_t</script>是一个规范化因子</p>
+<h4 id="2-1-2-损失函数"><a href="#2-1-2-损失函数" class="headerlink" title="2.1.2 损失函数"></a>2.1.2 损失函数</h4><ul>
+<li>AdaBoost是基于加法模型，即基于学习器的线性组合：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\sum_{t=1}^{T} \alpha_{t} h_{t}(\boldsymbol{x})</script><p>来最小化指数损失函数：</p>
+<script type="math/tex; mode=display">
+\ell_{\exp }(H \mid \mathcal{D})=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H(\boldsymbol{x})}\right]</script><p>其实<strong>指数函数是分类任务原本0/1损失函数的一致的替代损失函数</strong>（因为其拥有更好的数学性质）</p>
+<blockquote>
+<p><strong>证明：</strong></p>
+<ul>
+<li>求<script type="math/tex">H(x)</script>关于损失函数的偏导：</li>
+</ul>
+<script type="math/tex; mode=display">
+\frac{\partial \ell_{\exp }(H \mid \mathcal{D})}{\partial H(\boldsymbol{x})}=-e^{-H(\boldsymbol{x})} P(f(\boldsymbol{x})=1 \mid \boldsymbol{x})+e^{H(\boldsymbol{x})} P(f(\boldsymbol{x})=-1 \mid \boldsymbol{x})</script><ul>
+<li>偏导数为0可求得极点：</li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\frac{1}{2} \ln \frac{P(f(x)=1 \mid \boldsymbol{x})}{P(f(x)=-1 \mid \boldsymbol{x})}</script><ul>
+<li>因此有：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+sign(H(x)) =\left\{\begin{array}{l}
+1, \quad P(f(x)=1 \mid \boldsymbol{x})>P(f(x)=-1 \mid \boldsymbol{x}) \\
+-1, \quad P(f(x)=1 \mid \boldsymbol{x})<P(f(x)=-1 \mid \boldsymbol{x})
+\end{array}\right. \\
+=\underset{y \in\{-1,1\}}{\arg \max } P(f(x)=y \mid \boldsymbol{x})
+\end{array}</script></blockquote>
+<h4 id="2-1-3-基学习器的权重"><a href="#2-1-3-基学习器的权重" class="headerlink" title="2.1.3 基学习器的权重"></a>2.1.3 基学习器的权重</h4><ul>
+<li>在通过<script type="math/tex">D_t</script>产生<script type="math/tex">h_t</script>后，该基分类器的权重<script type="math/tex">\alpha_t</script>应使得<script type="math/tex">\alpha_th_t</script>最小化指数损失函数（在<script type="math/tex">D_t</script>分布上而非D分布）：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\ell_{\exp }\left(\alpha_{t} h_{t} \mid \mathcal{D}_{t}\right) &=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}\left[e^{-f(\boldsymbol{x}) \alpha_{t} h_{t}(\boldsymbol{x})}\right] \\
+&=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}\left[e^{-\alpha_{t}} \mathbb{I}\left(f(\boldsymbol{x})=h_{t}(\boldsymbol{x})\right)+e^{\alpha_{t}} \mathbb{I}\left(f(\boldsymbol{x}) \neq h_{t}(\boldsymbol{x})\right)\right] \\
+&=e^{-\alpha_{t}} P_{\boldsymbol{x} \sim \mathcal{D}_{t}}\left(f(\boldsymbol{x})=h_{t}(\boldsymbol{x})\right)+e^{\alpha_{t}} P_{\boldsymbol{x} \sim \mathcal{D}_{t}}\left(f(\boldsymbol{x}) \neq h_{t}(\boldsymbol{x})\right) \\
+&=e^{-\alpha_{t}}\left(1-\epsilon_{t}\right)+e^{\alpha_{t}} \epsilon_{t}
+\end{aligned}</script><ul>
+<li>关于<script type="math/tex">\alpha_t</script>求导：</li>
+</ul>
+<script type="math/tex; mode=display">
+\frac{\partial \ell_{\exp }\left(\alpha_{t} h_{t} \mid \mathcal{D}_{t}\right)}{\partial \alpha_{t}}=-e^{-\alpha_{t}}\left(1-\epsilon_{t}\right)+e^{\alpha_{t}} \epsilon_{t} = 0 \\
+\alpha_t = \frac{1}{2}\ln(\frac{1 - \epsilon_t}{\epsilon_t})</script><h4 id="2-1-4-样本权重分布的更新"><a href="#2-1-4-样本权重分布的更新" class="headerlink" title="2.1.4 样本权重分布的更新"></a>2.1.4 样本权重分布的更新</h4><ul>
+<li>在获得<script type="math/tex">H_{t-1}</script>后样本分布将进行调整，使下一轮的<script type="math/tex">h_t</script>能纠正<script type="math/tex">H_{t-1}</script>的一些错误，理想情况下能纠正<script type="math/tex">H_{t-1}</script>的全部错误，即最小化<script type="math/tex">\ell_{\exp }\left(H_{t-1}+\alpha_th_{t} \mid \mathcal{D}\right)</script>，可简化为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\ell_{\exp }\left(H_{t-1}+h_{t} \mid \mathcal{D}\right) &=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x})\left(H_{t-1}(\boldsymbol{x})+h_{t}(\boldsymbol{x})\right)}\right] \\
+&=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} e^{-f(\boldsymbol{x}) h_{t}(\boldsymbol{x})}\right]
+\end{aligned}</script><p>其中的<script type="math/tex">e^{-f(x)h_t(x)}</script>可用泰勒展示近似：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\ell_{\exp }\left(H_{t-1}+h_{t} \mid \mathcal{D}\right) & \simeq \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\left(1-f(\boldsymbol{x}) h_{t}(\boldsymbol{x})+\frac{f^{2}(\boldsymbol{x}) h_{t}^{2}(\boldsymbol{x})}{2}\right)\right] \\
+&=\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\left(1-f(\boldsymbol{x}) h_{t}(\boldsymbol{x})+\frac{1}{2}\right)\right]
+\end{aligned}</script><ul>
+<li>于是理想的基学习器为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+h_{t}(\boldsymbol{x})=\underset{h}{\arg \min } \ell_{\exp }\left(H_{t-1}+h \mid \mathcal{D}\right) \\
+=\underset{h}{\arg \max } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} f(\boldsymbol{x}) h(\boldsymbol{x})\right] \\
+=\underset{h}{\arg \max } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\frac{e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]} f(\boldsymbol{x}) h(\boldsymbol{x})\right]
+\end{array}</script><p>注意最后添加的分母是一个常数。令<script type="math/tex">D_t</script>表示分布：</p>
+<script type="math/tex; mode=display">
+\mathcal{D}_{t}(\boldsymbol{x})=\frac{\mathcal{D}(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]}</script><p>则：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+h_{t}(\boldsymbol{x}) &=\underset{h}{\arg \max } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[\frac{e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]} f(\boldsymbol{x}) h(\boldsymbol{x})\right] \\
+&=\underset{h}{\arg \max } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}[f(\boldsymbol{x}) h(\boldsymbol{x})]
+\end{aligned}</script><ul>
+<li>而由于<script type="math/tex">f(\boldsymbol{x}) h(\boldsymbol{x})=1-2 \mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))</script>，所以：</li>
+</ul>
+<script type="math/tex; mode=display">
+h_{t}(\boldsymbol{x})=\underset{h}{\arg \min } \mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}_{t}}[\mathbb{I}(f(\boldsymbol{x}) \neq h(\boldsymbol{x}))]</script><p><strong>所以理想的<script type="math/tex">h_t</script>将在<script type="math/tex">D_t</script>分布下最小化分类误差</strong>。因此，弱分类器将基于分布<script type="math/tex">D_t</script>来训练</p>
+<ul>
+<li>考虑由<script type="math/tex">D_t</script>推导到<script type="math/tex">D_{t-1}</script>：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\mathcal{D}_{t+1}(\boldsymbol{x}) &=\frac{\mathcal{D}(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}\right]} \\
+&=\frac{\mathcal{D}(\boldsymbol{x}) e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})} e^{-f(\boldsymbol{x}) \alpha_{t} h_{t}(\boldsymbol{x})}}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}\right]} \\
+&=\mathcal{D}_{t}(\boldsymbol{x}) \cdot e^{-f(\boldsymbol{x}) \alpha_{t} h_{t}(\boldsymbol{x})} \frac{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t-1}(\boldsymbol{x})}\right]}{\mathbb{E}_{\boldsymbol{x} \sim \mathcal{D}}\left[e^{-f(\boldsymbol{x}) H_{t}(\boldsymbol{x})}\right]}
+\end{aligned}</script><p>恰好对应算法流程总的更新公式</p>
+<h3 id="2-2-调整数据分布的方法"><a href="#2-2-调整数据分布的方法" class="headerlink" title="2.2 调整数据分布的方法"></a>2.2 调整数据分布的方法</h3><ul>
+<li>在上述算法流程中，是通过对每个样本赋予不同的权重来调整数据分布，称为<strong>重赋权法（re-weighting）</strong></li>
+<li><p>但是某些基学习算法无法接受带权样本，这时可采样<strong>重采样法（re-sampling）</strong>，即在每一轮中根据样本分布对训练集进行重新采样，然后根据采样到的样本进行训练。<strong>一般而言，两种算法没有显著的优劣差别</strong></p>
+</li>
+<li><p>注意在算法流程中，如果得到的<script type="math/tex">\epsilon_t > 0.5</script>，则整个算法就终止了，如果采用的是重赋权法，可能导致过早停止致使因基学习器过少而导致的性能不佳。但是如果使用重采样法，可以通过重启动避免过早的停止，即如果当前分布训练出来的基学习器不好，则抛弃，然后重新采样再训练</p>
+</li>
+</ul>
+<h1 id="3-Bagging"><a href="#3-Bagging" class="headerlink" title="3 Bagging"></a>3 Bagging</h1><ul>
+<li>欲得到泛化性能强的集成，个体学习器之间应该尽可能相互独立，虽然在现实任务中无法得到，但是可以设法令其具有较大差异。一种方法就是改变每个个体学习器的训练数据集，使每个训练集差异较大，但是又不能过大（每个训练集之间都没有交集），这样只用到了很少的训练数据进行训练。</li>
+<li><p>所以可用<strong>自助采样法（bootstrap sampling）</strong>：给定包含m个样本的数据集，每次随机取出一个样本后，又把该样本放回去，使得下次采样同样有可能采到该样本，这样采样m次得到一个同样大小的数据集。使用这样的采样方法，初始数据集中约有63.2%的样本出现在采样集中</p>
+</li>
+<li><p>自助采样法还有一个优点就是：对于每个基学习器，仅使用了约63.2%的样本，剩下的样本正好可作为每个基学习器的验证集</p>
+</li>
+<li>从偏差-方差分解的角度看，<strong>Bagging主要关注降低方差</strong>（即在不同数据集上表现的稳定性）。因此他在不剪枝的决策树、神经网络等易受样本扰动的学习器上效用更为明显</li>
+</ul>
+<h3 id="3-1-算法流程"><a href="#3-1-算法流程" class="headerlink" title="3.1 算法流程"></a>3.1 算法流程</h3><ul>
+<li>算法是采样出T个采样集，然后基于每个采样集训练出一个基学习器（所以可以并行操作）。最后进行简单投票（即每个基学习器使用相同权重），流程如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221015150202207.png" srcset="/img/loading.gif" lazyload alt="image-20221015150202207" style="zoom:80%;" /></p>
+<p>Bagging的时间复杂度约等于一个基学习器的时间复杂度，所以他是一个很高效的算法。另外，AdaBoost需进行一些算法的更改才可应用于多分类和回归任务，而Bagging算法可直接应用</p>
+<h3 id="3-2-随机森林"><a href="#3-2-随机森林" class="headerlink" title="3.2 随机森林"></a>3.2 随机森林</h3><ul>
+<li>随机森林（Random Forest，RF）是Bagging的一个扩展变体，其在以决策树为基学习器构建Bagging的基础上，进一步在决策树的训练过程中引入<strong>随机属性选择</strong>。</li>
+<li><p>具体来说，<strong>在每个结点选择一个划分属性时，传统决策树是从所有当前结点中（假设有d个）选择一个最优的，而RF先随机选择k个属性的子集，然后再在该子集中选择一个最优的</strong>。推荐<script type="math/tex">k=\log_2d</script></p>
+</li>
+<li><p>RF使用了非常小的额外计算开销，但却在许多任务中展现出了强大的性能。其不仅像Bagging一样通过<strong>样本扰动</strong>来增加基学习器的多样性，还通过<strong>属性扰动</strong>进一步增加多样性，这就使得最终集成的泛化性能可通过个体学习器之间的差异度的增加而进一步增加</p>
+</li>
+<li>RF的收敛性和Bagging类似，但起始性能相对较差，最终结果更佳：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018114212479.png" srcset="/img/loading.gif" lazyload alt="image-20221018114212479" style="zoom:70%;" /></p>
+<h1 id="4-结合策略"><a href="#4-结合策略" class="headerlink" title="4 结合策略"></a>4 结合策略</h1><h3 id="4-1-集成的好处"><a href="#4-1-集成的好处" class="headerlink" title="4.1 集成的好处"></a>4.1 集成的好处</h3><ul>
+<li><strong>统计方面：</strong>因为学习任务的假设空间很大，所以可能有多个假设在训练集上性能一样，使用单学习器可能因为误选导致泛化性能不佳，结合多个学习器则会减少这一风险</li>
+<li><strong>计算方面：</strong>算法可能会陷入局部最小点，而多次运行后结合可降低这种风险</li>
+<li><strong>表示方面：</strong>某些学习任务的真实假设可能不在当前学习算法所考虑的假设空间中，结合多个学习器，由于相应的假设空间有所扩大，有可能学得更好的近似</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018115801453.png" srcset="/img/loading.gif" lazyload alt="image-20221018115801453" style="zoom:70%;" /></p>
+<h3 id="4-2-平均法"><a href="#4-2-平均法" class="headerlink" title="4.2 平均法"></a>4.2 平均法</h3><ul>
+<li><p>针对回归任务</p>
+</li>
+<li><p><strong>简单平均法：</strong></p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\frac{1}{T} \sum_{i=1}^{T} h_{i}(\boldsymbol{x})</script><ul>
+<li><strong>加权平均法：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\sum_{i=1}^{T} w_{i} h_{i}(\boldsymbol{x})</script><ul>
+<li><p>加权平均法的权重一般是通过训练数据学习而得，现实任务中的训练样本通常不充分或存在噪声，所以<strong>学出的权重不一定可靠</strong>。因此，<strong>加权平均法未必优于简单平均法</strong></p>
+</li>
+<li><p>一般而言，<strong>个体学习器性能相差较大时使用加权平均，性能相近时使用简单平均</strong></p>
+</li>
+</ul>
+<h3 id="4-3-投票法"><a href="#4-3-投票法" class="headerlink" title="4.3 投票法"></a>4.3 投票法</h3><ul>
+<li><p>针对分类任务</p>
+</li>
+<li><p>规定第<script type="math/tex">i</script>个学习器<script type="math/tex">h_i</script>在样本x上的预测输出表示为<script type="math/tex">(h_i^1(x), ..., h_i^N(x))</script>，N为类别个数</p>
+</li>
+<li><strong>绝对多数投票法：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=\left\{\begin{array}{ll}
+c_{j}, & \text { if } \sum_{i=1}^{T} h_{i}^{j}(\boldsymbol{x})>0.5 \sum_{k=1}^{N} \sum_{i=1}^{T} h_{i}^{k}(\boldsymbol{x}) \\
+\text { reject, } & \text { otherwise }
+\end{array}\right.</script><p>即某类得到票数过半，才预测为该类，否则拒绝预测</p>
+<ul>
+<li><strong>相对多数投票法：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=c_{j}^{\arg \max } \sum_{i=1}^{T} h_{i}^{j}(\boldsymbol{x})</script><ul>
+<li><strong>加权投票法：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+H(\boldsymbol{x})=c_{j}^{\arg \max } \sum_{i=1}^{T} w_{i} h_{i}^{j}(\boldsymbol{x}) .</script><ul>
+<li>上面的式子中并没有限制个体学习器输出值的类型，一般为类标记（<script type="math/tex">h_i^j(x) \in \{0,1\}</script>）或类概率（<script type="math/tex">h_i^j(x) \in [0,1]</script>）。不能类型的输出不能混用，一般基于类概率效果往往比类标记更好。<strong>若基学习器的类型不同，其类概率之间不能直接进行比较，需要先转化为类标记</strong></li>
+</ul>
+<h3 id="4-4-学习法"><a href="#4-4-学习法" class="headerlink" title="4.4 学习法"></a>4.4 学习法</h3><ul>
+<li><strong>当训练数据很多时</strong>，一种更为强大的结合策略是学习法，即通过另一个学习器来进行结合。其中Stacking是一种典型代表。把个体学习器称为<strong>初级学习器</strong>，用于结合的学习器称为<strong>次级学习器</strong>或<strong>元学习器</strong></li>
+<li>Stacking算法先从初始数据集中训练出多个初级学习器，然后以此生成一个新的数据集：初级学习器的输出被当作样例输入特征，而初始样本的label仍作为新数据集的label，算法流程如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018165945814.png" srcset="/img/loading.gif" lazyload alt="image-20221018165945814" style="zoom:70%;" /></p>
+<ul>
+<li>但是上述算法流程有个问题：<strong>次级训练集是利用初级学习器产生的，若直接用初级学习器的训练集来产生次级训练集，则过拟合风险较大</strong>，因此一般采用交叉验证或留一法，用初级学习器未使用的样本来产生次级学习器的训练样本</li>
+</ul>
+<blockquote>
+<ul>
+<li>以k折交叉验证法为例，训练集为D，对于每个初级学习器都会有k折（所以一共会迭代<script type="math/tex">T * k</script>次），在第<script type="math/tex">i</script>个学习器的第<script type="math/tex">j</script>折的时候，令<script type="math/tex">D_j</script>和<script type="math/tex">\bar{D}_{j}=D \backslash D_{j}</script>为此时的验证集和训练集，通过<script type="math/tex">\bar{D}_j</script>训练出<script type="math/tex">h_i</script>后，在使用<script type="math/tex">D_j</script>进行验证和生成次级训练集</li>
+</ul>
+</blockquote>
+<ul>
+<li>次级学习器的输入和学习算法有很大的影响，效果比较好的是：<strong>将初级学习器的输出类概率作为输入，再采用多响应线性回归（MLR）作为次级学习算法</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>MLR：</strong>对每个类分别进行<strong>线性回归</strong>，训练样例要输入进每一个回归模型，若训练样例属于该类，则对应回归的输出label为1，若不属于该类，label则为0。预测时取输出值最大的那个类</li>
+</ul>
+</blockquote>
+<h1 id="5-多样性"><a href="#5-多样性" class="headerlink" title="5 多样性"></a>5 多样性</h1><h3 id="5-1-误差-分歧分解"><a href="#5-1-误差-分歧分解" class="headerlink" title="5.1 误差-分歧分解"></a>5.1 误差-分歧分解</h3><ul>
+<li>以一个回归问题使用加权平均法进行集成为例，对于样例x，定义学习器<script type="math/tex">h_i</script>的<strong>分歧（ambiguity）</strong>为：</li>
+</ul>
+<script type="math/tex; mode=display">
+A\left(h_{i} \mid \boldsymbol{x}\right)=\left(h_{i}(\boldsymbol{x})-H(\boldsymbol{x})\right)^{2}</script><p>集成的分歧为：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\bar{A}(h \mid \boldsymbol{x}) &=\sum_{i=1}^{T} w_{i} A\left(h_{i} \mid \boldsymbol{x}\right) \\
+&=\sum_{i=1}^{T} w_{i}\left(h_{i}(\boldsymbol{x})-H(\boldsymbol{x})\right)^{2}
+\end{aligned}</script><p><strong>上式表征了个体学习器之间在样本x上的不一致性，即在一定程度上反映了个体学习器之间的多样性</strong></p>
+<ul>
+<li>个体学习器和集成后的MSE误差为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+E\left(h_{i} \mid \boldsymbol{x}\right)=\left(f(\boldsymbol{x})-h_{i}(\boldsymbol{x})\right)^{2} \\
+E(H \mid \boldsymbol{x})=(f(\boldsymbol{x})-H(\boldsymbol{x}))^{2}
+\end{array}</script><p>并且表示出个体学习器误差的加权平均：</p>
+<script type="math/tex; mode=display">
+\bar{E}(h \mid \boldsymbol{x})=\sum_{i=1}^{T} w_{i} \cdot E\left(h_{i} \mid \boldsymbol{x}\right)</script><ul>
+<li>由上式可得：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\bar{A}(h \mid \boldsymbol{x}) &=\sum_{i=1}^{T} w_{i} E\left(h_{i} \mid \boldsymbol{x}\right)-E(H \mid \boldsymbol{x}) \\
+&=\bar{E}(h \mid \boldsymbol{x})-E(H \mid \boldsymbol{x})
+\end{aligned}</script><ul>
+<li>上式对于所有x都成立，引入概率密度函数<script type="math/tex">p(x)</script>，则在全样本上可将上式扩展成：</li>
+</ul>
+<script type="math/tex; mode=display">
+\sum_{i=1}^{T} w_{i} \int A\left(h_{i} \mid \boldsymbol{x}\right) p(\boldsymbol{x}) d \boldsymbol{x}=\sum_{i=1}^{T} w_{i} \int E\left(h_{i} \mid \boldsymbol{x}\right) p(\boldsymbol{x}) d \boldsymbol{x}-\int E(H \mid \boldsymbol{x}) p(\boldsymbol{x}) d \boldsymbol{x} .</script><ul>
+<li>同样，将泛化误差和分歧扩展在全样本上：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+E(h_i) = E_{i}=\int E\left(h_{i} \mid \boldsymbol{x}\right) p(\boldsymbol{x}) d \boldsymbol{x} \\
+A(h_i) = A_{i}=\int A\left(h_{i} \mid \boldsymbol{x}\right) p(\boldsymbol{x}) d \boldsymbol{x} \\
+E(H) = E=\int E(H \mid \boldsymbol{x}) p(\boldsymbol{x}) d \boldsymbol{x}
+\end{array}</script><p>再取个学习器的加权误差和加权分歧：</p>
+<script type="math/tex; mode=display">
+\bar{E}=\sum_{i=1}^{T} w_{i} E_{i} \\
+\bar{A}=\sum_{i=1}^{T} w_{i} A_{i}</script><ul>
+<li>通过上面这些式子可以得到：</li>
+</ul>
+<script type="math/tex; mode=display">
+E=\bar{E}-\bar{A}</script><p>这个式子表明：<strong>个体学习器准确率越高、多样性越大，则集成效果越好</strong></p>
+<h3 id="5-2-多样性度量"><a href="#5-2-多样性度量" class="headerlink" title="5.2 多样性度量"></a>5.2 多样性度量</h3><ul>
+<li>简单介绍几个多样性的度量标准，给定数据集<script type="math/tex">D=\left\{\left(\boldsymbol{x}_{1}, y_{1}\right),\left(\boldsymbol{x}_{2}, y_{2}\right), \ldots,\left(\boldsymbol{x}_{m}, y_{m}\right)\right\}</script>，假定为二分类任务，则两个分类器的预测结果列联表为：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221018180852374.png" srcset="/img/loading.gif" lazyload alt="image-20221018180852374" style="zoom:80%;" /></p>
+<p>该表中，比如c为<script type="math/tex">h_i</script>预测为负类而<script type="math/tex">h_j</script>预测为正类的样本数</p>
+<ul>
+<li><strong>不合度量（disagreement measure）：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+d i s_{i j}=\frac{b+c}{m}</script><p>值越大多样性越大</p>
+<ul>
+<li><strong>相关系数（correlation coefficient）：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\rho_{i j}=\frac{a d-b c}{\sqrt{(a+b)(a+c)(c+d)(b+d)}}</script><p>若<script type="math/tex">h_i, h_j</script>无关，则值为0，若正相关则值为正，若负相关则值为负。绝对值越大，相关性越强</p>
+<ul>
+<li><strong>Q-统计量（Q-statistic）：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+Q_{i j}=\frac{a d-b c}{a d+b c}</script><p>和<script type="math/tex">\rho_{ij}</script>类似</p>
+<ul>
+<li><strong><script type="math/tex">\kappa</script>-统计量（k-statistic）：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\kappa=\frac{p_{1}-p_{2}}{1-p_{2}}</script><p>其中<script type="math/tex">p_i</script>为两个分类器取得一致的概率，<script type="math/tex">p_2</script>为两个分类器偶然达成一致的概率，可由数据集D直接统计估算：</p>
+<script type="math/tex; mode=display">
+p_1 = \frac{a+d}{a+b+c+d} \\
+p_2 = \frac{(a+b)(a+c) + (c+d)(b+d)}{(a+b+c+d)^2}</script><p>若两个分类器在D上完全一致，则<script type="math/tex">\kappa = 1</script>，若只是偶然达成一致，<script type="math/tex">\kappa = 0</script>，<script type="math/tex">\kappa</script>一般非负，尽在两个分类器达成一致的概率甚至低于偶然性的情况下取负值。<script type="math/tex">\kappa</script>越大，多样性越小</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/28/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/">
+                        <span class="hidden-mobile">贝叶斯分类器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/10/18/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/';
+          this.page.identifier = '/2022/10/18/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
