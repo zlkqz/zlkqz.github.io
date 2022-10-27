@@ -31,10 +31,9 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-caa896173185a8f527c037c122122258_720w.jpg">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-b325de65a5bcac196fc0939f346410d7_720w.jpg">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-9b6e8c50c0761c6ac19909c26e0a71d4_720w.jpg">
-<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-2f7fc5ca144d2f85f14d46e88055dd86_720w.jpg">
-<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc843c34e7ff.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221021194004500.png">
 <meta property="article:published_time" content="2022-09-28T05:04:51.019Z">
-<meta property="article:modified_time" content="2022-09-28T05:16:31.915Z">
+<meta property="article:modified_time" content="2022-10-21T12:33:31.191Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220926174528428.png">
@@ -206,7 +205,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      10k 字
+      11k 字
     </span>
   
 
@@ -215,7 +214,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      31 分钟
+      35 分钟
     </span>
   
 
@@ -533,40 +532,71 @@ T: 0.80 * 1=0.8
 <ul>
 <li>如此反复迭代，我们就可以算出最终的参数值。</li>
 </ul>
-<h3 id="6-3-推导"><a href="#6-3-推导" class="headerlink" title="6.3 推导"></a>6.3 推导</h3><ul>
-<li>给定数据集并假设样本间独立，x为已观测变量，z为隐变量，先写出关于参数的似然：</li>
+<h3 id="6-3-算法流程"><a href="#6-3-算法流程" class="headerlink" title="6.3 算法流程"></a>6.3 算法流程</h3><ul>
+<li>给定观测变量Y、隐变量Z，模型参数为<script type="math/tex">\theta</script></li>
 </ul>
-<script type="math/tex; mode=display">
-\begin{aligned}
-L(\theta) &=\sum_{i=1}^{n} \log p\left(x_{i} ; \theta\right) \\
-&=\sum_{i=1}^{n} \log \sum_{z} p\left(x_{i}, z ; \theta\right)
-\end{aligned}</script><ul>
-<li>对于每个样本<script type="math/tex">i</script>，用<script type="math/tex">Q_i(z)</script>表示样本<script type="math/tex">i</script>隐变量z的分布，显然<script type="math/tex">Q_i(z)</script>满足<script type="math/tex">\sum_{z}^{Z} Q_{i}(z)=1, \quad Q_{i}(z) \geq 0</script>，可做出以下变化：</li>
-</ul>
-<script type="math/tex; mode=display">
-\begin{aligned}
-\sum_{i}^{n} \log p\left(x_{i} ; \theta\right) &=\sum_{i}^{n} \log \sum_{z} p\left(x_{i}, z ; \theta\right) \\
-&=\sum_{i}^{n} \log \sum_{z}^{Z} Q_{i}(z) \frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)} \\
-& \geq \sum_{i}^{n} \sum_{z}^{Z} Q_{i}(z) \log \frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)}
-\end{aligned}</script><blockquote>
-<p>上述的不等式是<strong>利用 Jensen 不等式</strong></p>
-<p>Jensen 不等式给出：如果 f 是凹函数，X 是随机变量，则$E[f(X)] \le f(E[X])$ ，当 f 严格是凹函数是，则$E[f(X)] &lt; f(E[X]) $，凸函数反之。当 $X=E[X] $时，即为常数时等式成立。</p>
-<p>把第一行的log看成一个整体，而log(x)为凹函数。把<script type="math/tex">Q_i(z)</script>看成一个概率<script type="math/tex">p_z</script>，<script type="math/tex">\frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)}</script>看成一个z的函数g(z)，那么可以求期望：</p>
-<script type="math/tex; mode=display">
-E(g(z))=p_{z} g(z)=\sum_{z}^{Z} Q_{i}(z)\left[\frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)}\right]</script><p>根据Jensen 不等式可得：</p>
-<script type="math/tex; mode=display">
-f\left(\sum_{z}^{Z} Q_{i}(z)\left[\frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)}\right]\right)=f(E[g(z)]) \geq E[f(g(z))]=\sum_{z}^{Z} Q_{i}(z) f\left(\left[\frac{p\left(x_{i}, z ; \theta\right)}{Q_{i}(z)}\right]\right)</script></blockquote>
-<ul>
-<li>通过上面得出了<script type="math/tex">L(\theta) \ge J(z, Q)</script>，那么只需要不断最大化 $J(z,Q)$ 的下界来使得 $L(\theta)$ 不断提高：</li>
-</ul>
-<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-2f7fc5ca144d2f85f14d46e88055dd86_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
 <blockquote>
-<p><strong>首先我们固定 $\theta$ ，调整$Q(z)$使下界$J(z, Q)$上升至与$L(\theta)$在此点$\theta$处相等（绿色曲线到蓝色曲线），然后固定$Q(z)$，调整$\theta$使下界$J(z, Q)$达到最大值（$\theta^t$到<script type="math/tex">\theta^{t+1}</script>）。再重复上述过程，直至收敛</strong></p>
+<ol>
+<li>首先选定参数的初始值<script type="math/tex">\theta^{(0)}</script>，开始迭代</li>
+<li>E步：在第<script type="math/tex">i+1</script>次迭代时，已知<script type="math/tex">\theta^{(i)}</script>，计算：</li>
+</ol>
+<script type="math/tex; mode=display">
+\begin{aligned}
+Q\left(\theta, \theta^{(i)}\right) &=E_{Z}\left[\log P(Y, Z \mid \theta) \mid Y, \theta^{(i)}\right] \\
+&=\sum_{Z} \log P(Y, Z \mid \theta) P\left(Z \mid Y, \theta^{(i)}\right)
+\end{aligned}</script><ol>
+<li>M步：求得使<script type="math/tex">Q(\theta, \theta^{(i)})</script>最大化的<script type="math/tex">\theta</script>，作为<script type="math/tex">\theta^{(i+1)}</script>：</li>
+</ol>
+<script type="math/tex; mode=display">
+\theta^{(i+1)}=\arg \max _{\theta} Q\left(\theta, \theta^{(i)}\right)</script><ol>
+<li>重复上述的E步和M步，直至收敛</li>
+</ol>
 </blockquote>
-<h3 id="6-4-坐标下降"><a href="#6-4-坐标下降" class="headerlink" title="6.4 坐标下降"></a>6.4 坐标下降</h3><ul>
-<li>EM算法也可以看作一种“坐标下降法”，<strong>首先固定一个值，对另外一个值求极值</strong>，不断重复直到收敛。这时候也许大家就有疑问，问什么不直接这两个家伙求偏导用梯度下降呢？这时候就是坐标下降的优势，有些特殊的函数，例如曲线函数<script type="math/tex">z=y^{2+x^2}+x^{2y}+xy+...</script>，无法直接求导，这时如果先固定其中的一个变量，再对另一个变量求极值，则变得可行。</li>
+<ul>
+<li><strong>注意：</strong>初始值是可以随机选择的，但是<strong>EM算法对初值敏感</strong>，EM有可能收敛到局部最优点</li>
 </ul>
-<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc843c34e7ff.png" srcset="/img/loading.gif" lazyload alt="6.png" style="zoom:80%;" /></p>
+<h3 id="6-4-算法推导"><a href="#6-4-算法推导" class="headerlink" title="6.4 算法推导"></a>6.4 算法推导</h3><ul>
+<li>面对一个含隐变量的概率模型，目标是最大化：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L(\theta) &=\log P(Y \mid \theta)=\log \sum_{Z} P(Y, Z \mid \theta) \\
+&=\log \left(\sum_{Z} P(Y \mid Z, \theta) P(Z \mid \theta)\right)
+\end{aligned}</script><ul>
+<li>在第<script type="math/tex">i+1</script>次迭代时，我们是希望有所提升，即得到的<script type="math/tex">\theta</script>的似然<script type="math/tex">L(\theta)</script>要大于当前的似然<script type="math/tex">L(\theta^{(i)})</script>，所以将两者相减：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L(\theta)-L\left(\theta^{(i)}\right) &= \log \left(\sum_{Z} P(Y \mid Z, \theta) P(Z \mid \theta)\right)-\log P\left(Y \mid \theta^{(i)}\right)\\
+& =\log \left(\sum_{Z} P\left(Y \mid Z, \theta^{(i)}\right) \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Y \mid Z, \theta^{(i)}\right)}\right)-\log P\left(Y \mid \theta^{(i)}\right) \\
+& \geqslant \sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right)}-\log P\left(Y \mid \theta^{(i)}\right) \\
+&=\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}
+\end{aligned}</script><p>上述放缩用到了<strong>Jensen不等式</strong></p>
+<ul>
+<li>令：</li>
+</ul>
+<script type="math/tex; mode=display">
+B\left(\theta, \theta^{(i)}\right) \hat{=} L\left(\theta^{(i)}\right)+\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}</script><p>那么：</p>
+<script type="math/tex; mode=display">
+L(\theta) \geqslant B\left(\theta, \theta^{(i)}\right)</script><p>即<script type="math/tex">B(\theta, \theta^{(i)})</script>为<script type="math/tex">L(\theta)</script>的下界，并且在<script type="math/tex">\theta=\theta^{(i)}</script>时取等号：</p>
+<script type="math/tex; mode=display">
+L\left(\theta^{(i)}\right)=B\left(\theta^{(i)}, \theta^{(i)}\right)</script><ul>
+<li>所以，增大下界<script type="math/tex">B(\theta, \theta^{(i)})</script>，同样可以使得<script type="math/tex">L(\theta)</script>增大，而为了<script type="math/tex">L(\theta)</script>增大得最多，选择<script type="math/tex">\theta^{(i+1)}</script>使得<script type="math/tex">B(\theta, \theta^{(i)})</script>达到极大：</li>
+</ul>
+<script type="math/tex; mode=display">
+\theta^{(i+1)}=\arg \max _{\theta} B\left(\theta, \theta^{(i)}\right)</script><ul>
+<li>由上式就可以推出<script type="math/tex">Q(\theta, \theta^{(i)})</script>函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\theta^{(i+1)} &=\arg \max _{\theta}\left(L\left(\theta^{(i)}\right)+\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}\right) \\
+&=\arg \max _{\theta}\left(\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log (P(Y \mid Z, \theta) P(Z \mid \theta))\right) \\
+&=\arg \max _{\theta}\left(\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log P(Y, Z \mid \theta)\right) \\
+&=\arg \max _{\theta} Q\left(\theta, \theta^{(i)}\right)
+\end{aligned}</script><h3 id="6-5-直观解释"><a href="#6-5-直观解释" class="headerlink" title="6.5 直观解释"></a>6.5 直观解释</h3><ul>
+<li>上方曲线为<script type="math/tex">L(\theta)</script>，下方曲线为<script type="math/tex">B(\theta, \theta^{(i)})</script>，两者在<script type="math/tex">\theta=\theta^{(i)}</script>处相等，此时执行M步：找到<script type="math/tex">\theta^{(i+1)}=\arg \max _{\theta} B\left(\theta, \theta^{(i)}\right)</script>。函数<script type="math/tex">B(\theta, \theta^{(i)})</script>的增加同时也造成了<script type="math/tex">L(\theta)</script>的增加。得到<script type="math/tex">\theta^{(i+1)}</script>后再执行E步：在<script type="math/tex">\theta = \theta^{(i+1)}</script>点重新计算Q函数，然后进行下一次迭代</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221021194004500.png" srcset="/img/loading.gif" lazyload alt="image-20221021194004500"></p>
 
             </div>
             <hr>
