@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221027214008428.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221027214231809.png">
 <meta property="article:published_time" content="2022-10-27T14:04:24.449Z">
-<meta property="article:modified_time" content="2022-10-27T14:10:28.680Z">
+<meta property="article:modified_time" content="2022-10-27T14:13:46.776Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221027204416341.png">
@@ -310,7 +310,7 @@ H(P)=-\sum_{x, y} \tilde{P}(x) P(y \mid x) \log P(y \mid x)</script><p>则模型
 </ul>
 <script type="math/tex; mode=display">
 L(P, w) \equiv-H(P)+w_{0}\left(1-\sum_{y} P(y \mid x)\right)+\sum_{i=1}^{n} w_{i}\left(E_{\tilde{P}}\left(f_{i}\right)-E_{P}\left(f_{i}\right)\right)</script><ul>
-<li><strong>然后将原始问题<script type="math/tex">\min _{P \in \mathbf{C}} \max _{w} L(P, w)</script>转化为对偶问题<script type="math/tex">\max _{w} \min _{P \in \mathbf{C}} L(P, w)</script>，先只考虑里面的最小化问题<script type="math/tex">\min _{P \in \mathbf{C}} L(P, w)</script>，求偏导<script type="math/tex">\frac{\part L(P,w)}{\part P(y|x)} = 0</script>，最后可以解得：</strong></li>
+<li><strong>然后将原始问题<script type="math/tex">\min _{P \in \mathbf{C}} \max _{w} L(P, w)</script>转化为对偶问题<script type="math/tex">\max _{w} \min _{P \in \mathbf{C}} L(P, w)</script>，先只考虑里面的最小化问题<script type="math/tex">\min _{P \in \mathbf{C}} L(P, w)</script>，求偏导<script type="math/tex">\frac{\partial L(P,w)}{\partial P(y|x)} = 0</script>，最后可以解得：</strong></li>
 </ul>
 <script type="math/tex; mode=display">
 P_{w}(y \mid x)=\frac{1}{Z_{w}(x)} \exp \left(\sum_{i=1}^{n} w_{i} f_{i}(x, y)\right)</script><p>其中<script type="math/tex">w_i</script>为每个特征函数对应的权重，也是拉格朗日优化时的拉格朗日乘子。<script type="math/tex">Z_w(x)</script>为规范化因子：</p>
@@ -459,8 +459,8 @@ G_{k+1}=G_{k}+\frac{\delta_{k} \delta_{k}^{\mathrm{T}}}{\delta_{k}^{\mathrm{T}} 
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/18/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
-                        <span class="hidden-mobile">集成学习</span>
+                      <a href="/2022/10/27/HMM%E5%92%8CCRF/">
+                        <span class="hidden-mobile">HMM和CRF</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
