@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>KNN总结</title>
+    <link href="/2022/11/03/KNN/"/>
+    <url>/2022/11/03/KNN/</url>
+    
+    <content type="html"><![CDATA[<h1 id="1-基本思想"><a href="#1-基本思想" class="headerlink" title="1 基本思想"></a>1 基本思想</h1><ul><li>KNN模型是一种非参、惰性的模型，即并不需要显式的训练过程，也不需要参数，可以基于训练集直接进行预测</li><li>给定训练集<script type="math/tex">D = \{(x_1, y_1), ... (x_N, y_N)\}</script>和要预测的输入<script type="math/tex">x</script>，在训练集中找到和<script type="math/tex">x</script>最近的k个样本，然后通过投票的方式来预测<script type="math/tex">x</script>的类别</li></ul><script type="math/tex; mode=display">y=\arg \max _{c_{j}} \sum_{x_{i} \in N_{k}(x)} I\left(y_{i}=c_{j}\right), \quad i=1,2, \cdots, N ; \quad j=1,2, \cdots, K</script><p>其中<script type="math/tex">N_k</script>为和<script type="math/tex">x</script>最近的k个样本</p><ul><li><p>样本之间的距离度量常用<strong>欧氏距离</strong>，但也可以为更一般的<script type="math/tex">L_p,\quad p=1,2,...,\infty</script></p></li><li><p>对于k值的选择具有很大的影响，在应用中，<strong>k值一般取一个比较小的值</strong>，通常用<strong>交叉验证法</strong>选取最优值</p></li></ul><h1 id="2-kd树"><a href="#2-kd树" class="headerlink" title="2 kd树"></a>2 kd树</h1><ul><li>如果要把输入和每个样本都比较，复杂度是和训练及大小成正比的，所以采用kd树来降低复杂度</li></ul><h3 id="2-1-kd树构造"><a href="#2-1-kd树构造" class="headerlink" title="2.1 kd树构造"></a>2.1 kd树构造</h3><ul><li>简单来说，就是<strong>每次选取特征空间的一个维度，然后基于这个维度进行划分（一般选择当前样本在这个维度上的中位数进行划分）</strong>，算法流程如下：</li></ul><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221103120149491.png" alt="image-20221103120149491" style="zoom: 50%;" /></p><ul><li>举个栗子，给定特征空间<script type="math/tex">T=\left\{(2,3)^{\mathrm{T}},(5,4)^{\mathrm{T}},(9,6)^{\mathrm{T}},(4,7)^{\mathrm{T}},(8,1)^{\mathrm{T}},(7,2)^{\mathrm{T}}\right\}</script>，则会产生以下的kd树和空间划分：</li></ul><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221103120509325.png" alt="image-20221103120509325" style="zoom:50%;" /></p><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221103120523272.png" alt="image-20221103120523272" style="zoom:50%;" /></p><h3 id="2-2-kd树搜索"><a href="#2-2-kd树搜索" class="headerlink" title="2.2 kd树搜索"></a>2.2 kd树搜索</h3><ul><li><p>构造好kd树后，就需要对kd树的结点进行搜索得到最近的k个样本，这里只说明搜索最近的样本（k=1），其他情况可以类推</p></li><li><p>可以从上面的栗子中看到，<strong>每次划分会产生一个超矩阵空间，并且叶结点对应的超矩阵空间是最小的</strong></p></li><li><p>给定要预测的输入<script type="math/tex">x</script>，先根据kd树的划分依据，找到<script type="math/tex">x</script>对应的叶结点，然后将该叶节点对应的样本<script type="math/tex">x'</script>作为候选最近样本，那么<strong>更近的样本，一定处于以x为球心，distance(x, x’)为半径的超球面内部</strong>，那么我们依次对每个超矩阵空间进行判定，<strong>若超矩阵空间和超球面没有相交，那么最近邻样本一定不在该超矩阵空间中，则该空间中的所有样本就都不用判断了；反之若相交，则将该子树作为根节点，递归寻找</strong>，算法流程如下：</p></li></ul><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221103155306872.png" alt="image-20221103155306872" style="zoom:50%;" /></p><ul><li>使用kd树使平均时间复杂度从<script type="math/tex">O(N)</script>降为了<script type="math/tex">O(\log N)</script>，但是需要很大的存储空间</li></ul><h1 id="3-一些结论"><a href="#3-一些结论" class="headerlink" title="3 一些结论"></a>3 一些结论</h1><ol><li><strong>KNN对回归、分类都可以用，对数据没有假设，并且对异常点不敏感，但是样本不平衡的时候准确率较低，可以通过投票时引入权值来改善</strong></li><li><p><strong>KNN每次选取最大方差的维度作为划分维度(方差越大，表示此维度上数据越分散)，这样一次划分的两组样本差别越大，搜索的时候可能会减少递归次数</strong></p></li><li><p><strong>KNN要提取中位数，可以在算法最开始的时候，在每个维度进行一次排序并存储下来，而不需要每次选了维度再排序，提升性能</strong></p></li></ol>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>最大熵模型</title>
     <link href="/2022/10/27/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/"/>
     <url>/2022/10/27/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/</url>
