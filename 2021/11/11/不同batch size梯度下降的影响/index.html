@@ -16,23 +16,23 @@
   <meta name="description" content="bia">
   <meta name="author" content="zlk">
   <meta name="keywords" content="">
-  <meta name="description" content="梯度下降法作为机器学习中较常使用的优化算法，其有着3种不同的形式：批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）  1 批量梯度下降（BGD）使用整个训练集的优化算法被称为批量(batch)或确定性(deterministic)梯度算法，">
+  <meta name="description" content="梯度下降法作为机器学习中较常使用的优化算法，针对不同的batch size，有着3种不同的形式：批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）  1 批量梯度下降（BGD）使用整个训练集的优化算法被称为批量(batch)或确定性(dete">
 <meta property="og:type" content="article">
-<meta property="og:title" content="三种梯度下降的方法">
-<meta property="og:url" content="https://zlkqz.github.io/2021/11/11/%E4%B8%89%E7%A7%8D%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:title" content="不同batch size梯度下降的影响">
+<meta property="og:url" content="https://zlkqz.github.io/2021/11/11/%E4%B8%8D%E5%90%8Cbatch%20size%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BD%B1%E5%93%8D/index.html">
 <meta property="og:site_name" content="ZLK">
-<meta property="og:description" content="梯度下降法作为机器学习中较常使用的优化算法，其有着3种不同的形式：批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）  1 批量梯度下降（BGD）使用整个训练集的优化算法被称为批量(batch)或确定性(deterministic)梯度算法，">
+<meta property="og:description" content="梯度下降法作为机器学习中较常使用的优化算法，针对不同的batch size，有着3种不同的形式：批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）  1 批量梯度下降（BGD）使用整个训练集的优化算法被称为批量(batch)或确定性(dete">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/11/11/mCkfeDIPyh3a5iY.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/11/GLBkox67lvnmsOA.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/11/paxvbFh9fRiDKNg.png">
 <meta property="article:published_time" content="2021-11-11T12:56:52.007Z">
-<meta property="article:modified_time" content="2021-12-03T07:55:13.169Z">
+<meta property="article:modified_time" content="2022-11-04T05:35:37.887Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/11/11/mCkfeDIPyh3a5iY.png">
   
-  <title>三种梯度下降的方法 - ZLK</title>
+  <title>不同batch size梯度下降的影响 - ZLK</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -178,7 +178,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="三种梯度下降的方法">
+            <span class="h2" id="subtitle" title="不同batch size梯度下降的影响">
               
             </span>
 
@@ -199,7 +199,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.4k 字
     </span>
   
 
@@ -245,11 +245,11 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">三种梯度下降的方法</h1>
+            <h1 style="display: none">不同batch size梯度下降的影响</h1>
             
             <div class="markdown-body">
               <ul>
-<li>梯度下降法作为机器学习中较常使用的优化算法，其有着3种不同的形式：<strong>批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）</strong></li>
+<li>梯度下降法作为机器学习中较常使用的优化算法，针对不同的batch size，有着3种不同的形式：<strong>批量梯度下降（Batch Gradient Descent）、随机梯度下降（Stochastic Gradient Descent）、小批量梯度下降（Mini-Batch Gradient Descent）</strong></li>
 </ul>
 <h1 id="1-批量梯度下降（BGD）"><a href="#1-批量梯度下降（BGD）" class="headerlink" title="1 批量梯度下降（BGD）"></a>1 批量梯度下降（BGD）</h1><p>使用整个训练集的优化算法被称为<strong>批量</strong>(batch)或<strong>确定性</strong>(deterministic)梯度算法，因为它们会<strong>在一个大批量中同时处理所有样本</strong></p>
 <p><strong>批量梯度下降法</strong>是最原始的形式，它是指在<strong>每一次迭代时</strong>使用<strong>所有样本</strong>来进行梯度的更新</p>
@@ -289,10 +289,11 @@
 </ol>
 <p><img src="https://i.loli.net/2021/11/11/GLBkox67lvnmsOA.png" srcset="/img/loading.gif" lazyload alt="image-20211111201918007" style="zoom: 67%;" /></p>
 <ul>
-<li><strong>对上面期望的证明，SGD的梯度梯度是BGD梯度的无偏估计：</strong></li>
+<li><strong>对上面期望的证明，SGD的梯度是BGD梯度的无偏估计：</strong></li>
 </ul>
 <script type="math/tex; mode=display">
-E(\nabla f_i(x)) = \frac{1}{n}\sum_{i = 1}^n\nabla f_i(x) = \nabla f(x)</script><h1 id="3-Mini-batch梯度下降"><a href="#3-Mini-batch梯度下降" class="headerlink" title="3 Mini-batch梯度下降"></a>3 Mini-batch梯度下降</h1><p>大多数用于深度学习的梯度下降算法介于以上两者之间，<strong>使用一个以上而又不是全部的训练样本</strong></p>
+E(\nabla f_i(x)) = \frac{1}{n}\sum_{i = 1}^n\nabla f_i(x) = \nabla f(x)</script><p><strong>这说明了SGD的总体优化方向仍然是对的</strong></p>
+<h1 id="3-Mini-batch梯度下降"><a href="#3-Mini-batch梯度下降" class="headerlink" title="3 Mini-batch梯度下降"></a>3 Mini-batch梯度下降</h1><p>大多数用于深度学习的梯度下降算法介于以上两者之间，<strong>使用一个以上而又不是全部的训练样本</strong></p>
 <ul>
 <li><p>在一次取样本的时候我们需要在所有样本中<strong>随机</strong>取batch-size个样本</p>
 </li>
@@ -323,6 +324,12 @@ E(\nabla f_i(x)) = \frac{1}{n}\sum_{i = 1}^n\nabla f_i(x) = \nabla f(x)</script>
 </ol>
 <p>使用三种梯度下降的收敛过程：</p>
 <p><img src="https://i.loli.net/2021/11/11/paxvbFh9fRiDKNg.png" srcset="/img/loading.gif" lazyload alt="image-20211111204100788" style="zoom: 80%;" /></p>
+<ul>
+<li><p><strong>Mini-batch梯度下降和SGD一样，其梯度也是BGD梯度的无偏估计</strong></p>
+</li>
+<li><p><strong>从无偏估计可以看出，Mini-batch和SGD其实就是在用部分样本梯度来代替总体梯度</strong></p>
+</li>
+</ul>
 
             </div>
             <hr>
@@ -376,8 +383,8 @@ E(\nabla f_i(x)) = \frac{1}{n}\sum_{i = 1}^n\nabla f_i(x) = \nabla f(x)</script>
     
       <script type="text/javascript">
         var disqus_config = function() {
-          this.page.url = 'https://zlkqz.github.io/2021/11/11/%E4%B8%89%E7%A7%8D%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E6%96%B9%E6%B3%95/';
-          this.page.identifier = '/2021/11/11/%E4%B8%89%E7%A7%8D%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E6%96%B9%E6%B3%95/';
+          this.page.url = 'https://zlkqz.github.io/2021/11/11/%E4%B8%8D%E5%90%8Cbatch%20size%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BD%B1%E5%93%8D/';
+          this.page.identifier = '/2021/11/11/%E4%B8%8D%E5%90%8Cbatch%20size%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BD%B1%E5%93%8D/';
         };
         Fluid.utils.loadComments('#disqus_thread', function() {
           var d = document, s = d.createElement('script');
