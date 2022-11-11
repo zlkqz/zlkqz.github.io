@@ -16,12 +16,12 @@
   <meta name="description" content="bia">
   <meta name="author" content="zlk">
   <meta name="keywords" content="">
-  <meta name="description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 1.3 问题领域 \begin{cases} \pmb{语言识别} \\ \pmb{字符识别} \\ \pmb{计算机视觉}（CV） \\ \pmb{自然语言处理}（NLP）\\ \pmb{知识推理}\\ \pmb{自动控制}\\ \pmb{游戏理论和人机对弈}\\ \pmb{数据挖掘} \end{cases}2 线性回归2.1 基本概念">
+  <meta name="description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 2 线性回归2.1 基本概念  线性回归方程的最小二乘函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析  线性回归输出是⼀个连续值，因此适⽤于回归问题   2.2 损失函数 均方差（mse）：   \ell^{(i)}(W, b) &#x3D; \frac{(\hat{y}^{(i)} - y^{(i)})^2}{2}其中$\hat{y">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习基础总结">
 <meta property="og:url" content="https://zlkqz.github.io/2021/11/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="ZLK">
-<meta property="og:description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 1.3 问题领域 \begin{cases} \pmb{语言识别} \\ \pmb{字符识别} \\ \pmb{计算机视觉}（CV） \\ \pmb{自然语言处理}（NLP）\\ \pmb{知识推理}\\ \pmb{自动控制}\\ \pmb{游戏理论和人机对弈}\\ \pmb{数据挖掘} \end{cases}2 线性回归2.1 基本概念">
+<meta property="og:description" content="1 行业知识体系1.1 机器学习算法 1.2 机器学习分类 2 线性回归2.1 基本概念  线性回归方程的最小二乘函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析  线性回归输出是⼀个连续值，因此适⽤于回归问题   2.2 损失函数 均方差（mse）：   \ell^{(i)}(W, b) &#x3D; \frac{(\hat{y}^{(i)} - y^{(i)})^2}{2}其中$\hat{y">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/romyfLZ5KjP9a3B.jpg">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/7Lvd8NIsezYm1Qy.jpg">
@@ -30,10 +30,11 @@
 <meta property="og:image" content="https://i.loli.net/2021/10/31/rdx3sEtVFGlHink.png">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/6Ioqb3OBldsCuS8.png">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/qA4w6a7Irj3WEJg.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/11/npR3aNjrLOISQC8.png">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/CnUgmA4dVb8vFR2.png">
 <meta property="og:image" content="https://i.loli.net/2021/10/31/4LnFKkrSQHsUYNv.png">
 <meta property="article:published_time" content="2021-11-08T04:46:01.995Z">
-<meta property="article:modified_time" content="2021-11-11T03:27:02.270Z">
+<meta property="article:modified_time" content="2022-11-11T08:27:15.634Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/10/31/romyfLZ5KjP9a3B.jpg">
@@ -205,7 +206,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.9k 字
+      6.2k 字
     </span>
   
 
@@ -214,7 +215,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12 分钟
+      19 分钟
     </span>
   
 
@@ -256,17 +257,7 @@
             <div class="markdown-body">
               <h1 id="1-行业知识体系"><a href="#1-行业知识体系" class="headerlink" title="1 行业知识体系"></a>1 行业知识体系</h1><h3 id="1-1-机器学习算法"><a href="#1-1-机器学习算法" class="headerlink" title="1.1 机器学习算法"></a>1.1 机器学习算法</h3><p><img src="https://i.loli.net/2021/10/31/romyfLZ5KjP9a3B.jpg" srcset="/img/loading.gif" lazyload alt="qq_pic_merged_1635482805011"></p>
 <h3 id="1-2-机器学习分类"><a href="#1-2-机器学习分类" class="headerlink" title="1.2 机器学习分类"></a>1.2 机器学习分类</h3><p><img src="https://i.loli.net/2021/10/31/7Lvd8NIsezYm1Qy.jpg" srcset="/img/loading.gif" lazyload alt="qq_pic_merged_1635482964705"></p>
-<h3 id="1-3-问题领域"><a href="#1-3-问题领域" class="headerlink" title="1.3 问题领域"></a>1.3 问题领域</h3><script type="math/tex; mode=display">
-\begin{cases}
-\pmb{语言识别} \\
-\pmb{字符识别} \\
-\pmb{计算机视觉}（CV） \\
-\pmb{自然语言处理}（NLP）\\
-\pmb{知识推理}\\
-\pmb{自动控制}\\
-\pmb{游戏理论和人机对弈}\\
-\pmb{数据挖掘}
-\end{cases}</script><h1 id="2-线性回归"><a href="#2-线性回归" class="headerlink" title="2 线性回归"></a>2 线性回归</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="https://i.loli.net/2021/10/31/ChVyXvJetFWN5Y8.png" srcset="/img/loading.gif" lazyload alt="image-20211029131504886"></p>
+<h1 id="2-线性回归"><a href="#2-线性回归" class="headerlink" title="2 线性回归"></a>2 线性回归</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="https://i.loli.net/2021/10/31/ChVyXvJetFWN5Y8.png" srcset="/img/loading.gif" lazyload alt="image-20211029131504886"></p>
 <ul>
 <li><p>线性回归方程的最小二乘函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析</p>
 </li>
@@ -274,7 +265,7 @@
 </li>
 </ul>
 <h3 id="2-2-损失函数"><a href="#2-2-损失函数" class="headerlink" title="2.2 损失函数"></a>2.2 损失函数</h3><ul>
-<li>均方差（mse）：</li>
+<li><strong>均方差（mse）：</strong></li>
 </ul>
 <script type="math/tex; mode=display">
 \ell^{(i)}(W, b) = \frac{(\hat{y}^{(i)} - y^{(i)})^2}{2}</script><p>其中$\hat{y}$为计算出的预测值，$y$为真实值（label）</p>
@@ -302,10 +293,9 @@ w_1 = w_1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial{\ell(
 <script type="math/tex; mode=display">
 \hat{y}_i = \frac{e^{o_i}}{\sum_{j = 1}^{3}e^{o_j}}</script><ul>
 <li>容易看出$\sum_{i = 1}^{3}y_i = 1$（即所有概率加起来等于1）</li>
-<li>通常，我 们把预测概率最⼤的类别作为输出类别</li>
+<li>通常，我们把预测概率最⼤的类别作为输出类别</li>
 </ul>
 <h3 id="5-2-损失函数"><a href="#5-2-损失函数" class="headerlink" title="5.2 损失函数"></a>5.2 损失函数</h3><ul>
-<li>mse过于严格，因为并不需要所有的输出都和真实值相近</li>
 <li>这里我们运用交叉熵损失函数（cross entropy）：</li>
 </ul>
 <script type="math/tex; mode=display">
@@ -335,46 +325,115 @@ ReLU(x) = max(0, x)</script><p><img src="https://i.loli.net/2021/10/31/6Ioqb3OBl
 <h3 id="7-4-Leaky-ReLU函数"><a href="#7-4-Leaky-ReLU函数" class="headerlink" title="7.4 Leaky ReLU函数"></a>7.4 Leaky ReLU函数</h3><script type="math/tex; mode=display">
 Leaky\_Relu(x) = max(0.1 * x, x)</script><p><img src="https://i.loli.net/2021/10/31/qA4w6a7Irj3WEJg.png" srcset="/img/loading.gif" lazyload alt="image-20211030005818507"></p>
 <h1 id="8-训练误差和泛化误差"><a href="#8-训练误差和泛化误差" class="headerlink" title="8 训练误差和泛化误差"></a>8 训练误差和泛化误差</h1><h3 id="8-1-基本概念"><a href="#8-1-基本概念" class="headerlink" title="8.1 基本概念"></a>8.1 基本概念</h3><ul>
-<li>训练误差：指模型在训练数据集上表现出的误差</li>
-<li><p>泛化误差：指模型在任意⼀个测试数据样本上表 现出的误差的期望</p>
-</li>
-<li><p>我们通常假设训练数据集（训练题）和测试数据集（测试题）⾥的每⼀个样本都 是从同⼀个概率分布中相互独⽴地⽣成的</p>
-</li>
+<li><strong>训练误差：</strong>指模型在训练数据集上表现出的误差</li>
+<li><strong>泛化误差：</strong>指模型在任意⼀个测试数据样本上表现出的误差的期望</li>
 </ul>
-<h3 id="8-2-验证数据集"><a href="#8-2-验证数据集" class="headerlink" title="8.2 验证数据集"></a>8.2 验证数据集</h3><ul>
-<li>在机器学习中，通常需要评估若⼲候选模型的表现并从中选择模型。这⼀过程称为模型选择 （model selection）。可供选择的候选模型可以是有着不同超参数的同类模型。</li>
-<li>从严格意义上讲，测试集只能在所有超参数和模型参数选定后使⽤⼀次。不可以使⽤测试数据选择模型，如调参。由于⽆法从训练误差估计泛化误差，因此也不应只依赖训练数据选择模型。鉴于此，我们可以预留⼀部分在训练数据集和测试数据集以外的数据来进⾏模型选择。</li>
-<li>我们可以从给定的训练集中随机选取⼀ 小部分作为验证集，而将剩余部分作为真正的训练集</li>
-<li>对于总样本数量比较小的情况，一般训练集：验证集：测试集 = 6：2：1；如果数据量比较大，训练集：验证集：测试集 = 8：1：1</li>
-</ul>
-<h3 id="8-3-k折交叉验证"><a href="#8-3-k折交叉验证" class="headerlink" title="8.3 k折交叉验证"></a>8.3 k折交叉验证</h3><ul>
+<h3 id="8-2-k折交叉验证"><a href="#8-2-k折交叉验证" class="headerlink" title="8.2 k折交叉验证"></a>8.2 k折交叉验证</h3><ul>
 <li>当训练数据不够⽤时，预留⼤量的验证数据显得太奢侈，这时候就可以运用k折交叉验证法</li>
-<li>即我们把原始训练数据 集分割成k个不重合的⼦数据集，然后我们做k次模型训练和验证。每⼀次，我们使⽤⼀个⼦数据集验证模型，并使⽤其他k − 1个⼦数据集来训练模型，最后，我们对这k次训练误差和验证误差分别求平均。</li>
+<li>即我们把原始训练数据 集分割成k个不重合的⼦数据集，然后我们做k次模型训练和验证。每⼀次，我们使⽤⼀个子数据集验证模型，并使⽤其他k − 1个⼦数据集来训练模型，最后，我们对这k次训练误差和验证误差分别求平均。</li>
 </ul>
-<h3 id="8-4-欠拟合和过拟合"><a href="#8-4-欠拟合和过拟合" class="headerlink" title="8.4 欠拟合和过拟合"></a>8.4 欠拟合和过拟合</h3><ul>
-<li>欠拟合：模型⽆法得到较低的训练误差</li>
-<li><p>过拟合：是模型的训练误差远小于它在测试数据集上 的误差</p>
+<h3 id="8-3-欠拟合和过拟合"><a href="#8-3-欠拟合和过拟合" class="headerlink" title="8.3 欠拟合和过拟合"></a>8.3 欠拟合和过拟合</h3><ul>
+<li><p><strong>欠拟合：</strong>训练误差过高</p>
 </li>
-<li><p>如果模型的复杂度过低，很容易出现⽋拟合；如果模型复杂度过⾼，很容易出现过拟合</p>
+<li><p><strong>过拟合：</strong>泛化误差过高</p>
 </li>
-<li><p>⼀般来说，如果训练数据集中样本 数过少，特别是⽐模型参数数量（按元素计）更少时，过拟合更容易发⽣。</p>
+<li><p>我们知道进行反向传播的目的是让学习器去拟合数据，而当拟合程度不够时就称为<strong>欠拟合</strong>，拟合程度过于高时则称为<strong>过拟合</strong>，用下图可以很好的解释：</p>
+<p><img src="https://i.loli.net/2021/11/11/npR3aNjrLOISQC8.png" srcset="/img/loading.gif" lazyload alt="image-20211111215618245"  /></p>
 </li>
-<li>泛化误差不会 随训练数据集⾥样本数量增加而增⼤</li>
+<li><p>欠拟合基本上都会发生在训练刚开始的时候，经过不断训练之后欠拟合应该不怎么考虑了，<strong>可以使用early stop来防止训练时间不足导致的欠拟合</strong>。但是如果真的还是存在的话，可以通过<strong>增加网络复杂度</strong>或者在模型中<strong>增加特征</strong>，这些都是很好解决欠拟合的方法。而一般我们更加关注的是如何如何防止过拟合</p>
+</li>
 </ul>
-<h3 id="8-5-正则化"><a href="#8-5-正则化" class="headerlink" title="8.5 正则化"></a>8.5 正则化</h3><ul>
-<li>正则化通过为模型损失函数添加惩罚项使学出 的模型参数值较小</li>
+<h3 id="8-4-造成过拟合的原因"><a href="#8-4-造成过拟合的原因" class="headerlink" title="8.4 造成过拟合的原因"></a>8.4 造成过拟合的原因</h3><ul>
+<li><strong>训练数据集样本单一，样本不足</strong>。如果训练样本只有负样本，然后那生成的模型去预测正样本，这肯定预测不准。所以训练样本要尽可能的全面，覆盖所有的数据类型</li>
+<li><strong>训练数据中噪声干扰过大</strong>。噪声指训练数据中的干扰数据。过多的干扰会导致记录了很多噪声特征，忽略了真实输入和输出之间的关系</li>
+<li><strong>模型过于复杂。</strong>模型太复杂，已经能够“死记硬背”记下了训练数据的信息，但是遇到没有见过的数据的时候不能够变通，泛化能力太差。我们希望模型对不同的模型都有稳定的输出。<blockquote>
+<ul>
+<li>模型太复杂是过拟合的重要因素，下面提到的正则化方法和Dropout方法都是基于减少模型复杂度来进行的。</li>
+<li>另外，在模型设计方面有一个根本设计原则<strong>奥卡姆剃刀法则：优先选择拟合数据的最简单的假设。 简单的模型才是最好的</strong></li>
+<li><strong>当模型复杂度过高的时候，拟合函数的系数往往非常大，需要顾忌每一个点，最终形成的拟合函数波动很大</strong>，如上图过拟合情况。在某些很小的区间里，函数值的变化很剧烈。这就意味着函数在某些小区间里的梯度非常大，所以才需要惩罚项来降低</li>
+<li><strong>模型复杂度也可以解释为：模型对某些非必要的特征过于看重（即给予了较大的权值）</strong></li>
 </ul>
-<h4 id="8-5-1-L2正则化（权重衰减）"><a href="#8-5-1-L2正则化（权重衰减）" class="headerlink" title="8.5.1 L2正则化（权重衰减）"></a>8.5.1 L2正则化（权重衰减）</h4><ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="8-5-对应过拟合手段"><a href="#8-5-对应过拟合手段" class="headerlink" title="8.5 对应过拟合手段"></a>8.5 对应过拟合手段</h3><h4 id="8-5-1-增加数据"><a href="#8-5-1-增加数据" class="headerlink" title="8.5.1 增加数据"></a>8.5.1 增加数据</h4><ul>
+<li>由于<strong>数据量不足是造成过拟合的根本原因</strong>，所以对应过拟合最有效的手段肯定是增大数据集，但是这种方法成本过高</li>
+<li>在数据层面，还可以进行<strong>数据增强</strong>，创造一些假数据，还可以提升模型的泛化能力</li>
+<li>在CV方面常用的数据增强有旋转图像、缩放图像、随机裁剪等，而在NLP方面还有同义词替换、随机删除词、随机颠倒句子顺序等方法</li>
+</ul>
+<h4 id="8-5-2-正则化"><a href="#8-5-2-正则化" class="headerlink" title="8.5.2 正则化"></a>8.5.2 正则化</h4><ul>
 <li>L2范数惩罚项指的是模型权重参数每个元素的平⽅和与⼀个正的常数的乘积</li>
 <li>损失函数添加一个L2惩罚项：</li>
 </ul>
 <script type="math/tex; mode=display">
 \ell(...) + \frac{\lambda}{2}\begin{Vmatrix} W \end{Vmatrix}^2</script><p>求导后：（每个mini-batch）</p>
 <script type="math/tex; mode=display">
-w1 = (1 - \eta\lambda)w1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial\ell^{(i)}(...)}{\partial{w1}}</script><p>其中超参数$\lambda$ &gt; 0。当权重参数均为0时，惩罚项最小。当$\lambda$较⼤时，惩罚项在损失函数中的⽐重较⼤，这通常会使学到的权重参数的元素较接近0。当$\lambda$设为0时，惩罚项完全不起作⽤。</p>
+w1 = (1 - \eta\lambda)w1 - \frac{\eta}{|\mathbb{B}|}\sum_{i \in \mathbb{B}}\frac{\partial\ell^{(i)}(...)}{\partial{w1}}</script><p>其中超参数$\lambda$ &gt; 0。当权重参数均为0时，惩罚项最小。当$\lambda$较大时，惩罚项在损失函数中的比重较大，这通常会使学到的权重参数的元素较接近0。当$\lambda$设为0时，惩罚项完全不起作⽤。</p>
 <ul>
-<li>一般训练集中的损失函数要加惩罚项，测试集中不用</li>
+<li>除此之外还有L1正则化，使用L1范数作为惩罚项：</li>
 </ul>
+<script type="math/tex; mode=display">
+\ell(...) + \frac{\lambda}{2}\begin{Vmatrix} W \end{Vmatrix}</script><ul>
+<li>一般训练集中的损失函数要加惩罚项，测试集中不用</li>
+<li>正则化的原理可以从<strong>拉格朗日乘子法和最大后验概率估计</strong>两方面解释</li>
+<li>首先是拉格朗日乘子法：</li>
+</ul>
+<blockquote>
+<ul>
+<li>设模型本来的优化目标为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\min _{w} J(w ; X, y)</script><ul>
+<li>而过拟合的原因在于模型复杂度过高，而一般模型复杂度和参数<script type="math/tex">w</script>的稀疏度相关，即<strong>参数越少或参数中0的个数越多，模型复杂度越小</strong></li>
+<li>那么0的个数可以让我们联想到<strong>w的L0范数（代表w中非零元素的个数）</strong>，那么可以<strong>添加一个约束，使得优化目标变为：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+\min _{w} J(w ; X, y) \\
+s \cdot t .\|w\|_{0} \leq C
+\end{array}</script><ul>
+<li>但是<strong>使用L0范数太过困难，主要是L0范数无法进行求导来反向传播，所以我们退而求其次，要求权重w向量中某些维度的非零参数尽可能接近于0，尽可能的小，所以就可以使用L1、L2范数：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+\min _{w} J(w ; X, y) \\
+s \cdot t .\|w\|_{1} \leq C 或 s \cdot t .\|w\|_{2} \leq C 
+\end{array}</script><ul>
+<li>以L2正则化为例，采用拉格朗日乘子法，其拉格朗日函数为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\min _{w} J(w ; X, y)+\alpha^{*}\|w\|_{2}^{2}</script><ul>
+<li>这就是现在的优化目标，而后面的一项恰好就是惩罚项</li>
+</ul>
+</blockquote>
+<ul>
+<li>还可以用最大后验概率估计来解释：</li>
+</ul>
+<blockquote>
+<ul>
+<li>最大后验估计的优化目标是：</li>
+</ul>
+<script type="math/tex; mode=display">
+M A P=\log P(y \mid X, w) P(w)=\log P(y \mid X, w)+\log P(w)</script><ul>
+<li>上式左边的一项即最大化似然的优化目标，也就是本来的不加惩罚项的优化目标；<strong>而右边的一项仅关于参数w的先验分布</strong></li>
+<li>我们对w的先验分布进行不同的假设，即可得到不同的惩罚项</li>
+<li><strong>在L2正则化中，假设<script type="math/tex">w \sim N(0, \sigma^2)</script>，那么有：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\log P(w)=\log \prod_{j} P\left(w_{j}\right)= \\
+\log \prod_{j}\left[\frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(w_{j}\right)^{2}}{2 \sigma^{2}}}\right] \\
+=-\frac{1}{2 \sigma^{2}} \sum_{j} w_{j}^{2}+C
+\end{array}</script><p>那么就得到了L2范数作为惩罚项</p>
+<ul>
+<li><strong>L1正则化也一样，假设<script type="math/tex">w</script>服从均值为0参数为a的拉普拉斯分布，那么有：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\log P(w)=\log \prod_{j} P\left(w_{j}\right)= \\
+\log \prod_{j}\left[\frac{1}{\sqrt{2 a} \sigma} e^{-\frac{w_{j}}{a}}\right] \\
+=-\frac{1}{2 a} \sum_{j}\left|w_{j}\right|+C
+\end{array}</script></blockquote>
 <h4 id="8-5-2-丢弃法（Dropout）"><a href="#8-5-2-丢弃法（Dropout）" class="headerlink" title="8.5.2 丢弃法（Dropout）"></a>8.5.2 丢弃法（Dropout）</h4><ul>
 <li>对于每一层的神经元，有一定的概率被丢弃掉，设丢弃概率为p，计算新的单元：</li>
 </ul>
@@ -392,8 +451,17 @@ h_i' = \frac{\xi_i}{1 - p}h_i</script><p>$\xi_i$为0和1的概率分别为p和1 
 <p><img src="https://i.loli.net/2021/10/31/CnUgmA4dVb8vFR2.png" srcset="/img/loading.gif" lazyload alt="image-20211030141251677"></p>
 <p>可以看到隐藏层中的$h_2$和$h_5$消失了</p>
 <ul>
-<li>每一层的丢弃概率可以不同，通常把靠近输⼊层的丢弃概率设得小⼀点</li>
+<li><p>每一层的丢弃概率可以不同，通常把靠近输⼊层的丢弃概率设得小⼀点</p>
+</li>
+<li><p><strong>Dropout的原理：</strong></p>
+</li>
 </ul>
+<blockquote>
+<ol>
+<li><strong>集成学习：</strong>每次随机置0都可以得到一个新模型，而Dropout可以当作对这些所有新得到的模型的集成</li>
+<li><strong>正则化：</strong>因为Dropout导致两个神经元不一定每次都在一个dropout网络中出现，这样权值的更新不再依赖于有固定关系的隐含节点的共同作用，阻止了某些特征仅仅在其它特定特征下才有效果的情况 ，迫使网络去学习更加鲁棒的特征 ，这些特征在其它的神经元的随机子集中也存在。正因为这样，网络由于不知道浅层的哪些神经元会失活，导致网络不敢赋予浅层神经元太大的权重，这样就减轻了网络对某些局部特征的依赖，换句话说网络不会对一些特定的线索片段太过敏感，即使丢失特定的线索，它也可以从众多其它线索中学习一些共同的特征。从这个角度看Dropout就类似于L1，L2正则，减少权重使得网络对丢失特定神经元连接的鲁棒性提高。</li>
+</ol>
+</blockquote>
 <h1 id="9-正向传播和反向传播"><a href="#9-正向传播和反向传播" class="headerlink" title="9 正向传播和反向传播"></a>9 正向传播和反向传播</h1><h3 id="9-1-正向传播"><a href="#9-1-正向传播" class="headerlink" title="9.1 正向传播"></a>9.1 正向传播</h3><ul>
 <li>正向传播（forward propagation）是指对神经⽹络沿着从输⼊层到输出层的顺序，依次计算并存储模型的中间变量（包括输出）</li>
 <li>中间变量称为缓存，在反向传播中会用到，避免重复计算，如每层的输出值等</li>
@@ -408,37 +476,71 @@ h_i' = \frac{\xi_i}{1 - p}h_i</script><p>$\xi_i$为0和1的概率分别为p和1 
 </ol>
 <h3 id="9-2-反向传播"><a href="#9-2-反向传播" class="headerlink" title="9.2 反向传播"></a>9.2 反向传播</h3><ul>
 <li>反向传播最重要的是通过链式法则求导，从后往前进行计算</li>
-<li>反向传播的梯度计算可能依赖于各变量的当前值，而这些变量的当前值是通过正向传 播计算得到的</li>
+<li>反向传播的梯度计算可能依赖于各变量的当前值，而这些变量的当前值是通过正向传播计算得到的</li>
 </ul>
 <h3 id="9-3-衰减和爆炸"><a href="#9-3-衰减和爆炸" class="headerlink" title="9.3 衰减和爆炸"></a>9.3 衰减和爆炸</h3><ul>
 <li>如果隐藏层的层数很大，$H(l)$的计算可能会出现衰减或爆炸，如：</li>
 </ul>
 <p>假设输⼊和所有层的权重参数都是标量，如权重参数为0.2和5，多层感知 机的第30层输出为输⼊X分别与0.2 30 ≈ 1 × 10−21（衰减）和5 30 ≈ 9 × 1020（爆炸）的乘积</p>
 <h3 id="9-4-随机初始化参数"><a href="#9-4-随机初始化参数" class="headerlink" title="9.4 随机初始化参数"></a>9.4 随机初始化参数</h3><ul>
-<li>例如：</li>
+<li>考虑三种参数的极端情况：</li>
 </ul>
-<p>假设将每个隐藏单元的参数都初始化为相等的值，那么在正向传播时每个隐藏单元将根据相同的输⼊计算出相同的值， 并传递⾄输出层。在反向传播中，每个隐藏单元的参数梯度值相等。因此，这些参数在使⽤基于梯度的优化算法迭代后值依然相等。</p>
+<blockquote>
+<ol>
+<li><strong>参数很稀疏，那么输入的特征会在经过前向计算后逐渐消失（计算出来都接近0）</strong></li>
+<li><strong>参数很大，输出值容易进入激活函数的饱和区，比如Sigmoid函数</strong></li>
+<li>假设将每个隐藏单元的参数都初始化为相等的值，那么在正向传播时每个隐藏单元将根据相同的输⼊计算出相同的值， 并传递⾄输出层。在反向传播中，每个隐藏单元的参数梯度值相等。因此，这些参数在使⽤基于梯度的优化算法迭代后值依然相等。<strong>在这种情况下，无论隐藏单元有多少， 隐藏层本质上只有1个隐藏单元在发挥作用</strong></li>
+</ol>
+</blockquote>
 <ul>
-<li><strong>在这种情况下，⽆论隐藏单元有多少， 隐藏层本质上只有1个隐藏单元在发挥作⽤</strong></li>
+<li>可以看出，我们<strong>希望每一层的输出方差能够固定</strong>，因为这样能够防止我们的信号变得很大/直接消失。换句话来说，<strong>我们需要一种权重初始化的手段，使得输入、输出的方差保持不变，</strong>这就是Xavier初始化做的事。</li>
 </ul>
 <h3 id="9-5-Xavier随机初始化"><a href="#9-5-Xavier随机初始化" class="headerlink" title="9.5 Xavier随机初始化"></a>9.5 Xavier随机初始化</h3><ul>
-<li>假设某全连接层的输⼊个数为a， 输出个数为b，Xavier随机初始化将使该层中权重参数的每个元素都随机采样于均匀分布：</li>
+<li>假设某层的参数，前一层神经元个数为a，后一层神经元个数为b，Xavier随机初始化将使该层中权重参数的每个元素都随机采样于均匀分布：</li>
 </ul>
 <script type="math/tex; mode=display">
 U(-\sqrt{\frac{6}{a + b}}, \sqrt{\frac{6}{a + b}})</script><ul>
-<li>该设计主要为了每层输出的⽅差不该受该层输⼊个数影响，且每层梯度的⽅差也不该受该层输出个数影响</li>
+<li><p>该设计主要为了<strong>在前向计算的时候，经过此层的参数后得到的输出方差不变（即输入输出方差相等）；并且在反向计算的时候，后一层的梯度和前一层的梯度方差也相等</strong></p>
+</li>
+<li><p><strong>Xavier初始化在sigmoid和tanh激活函数上有很好的表现，但是在Relu激活函数上表现很差。</strong></p>
+</li>
+<li><p>现在开始推导，这里只展示前向计算时，首先是有3个假设：</p>
+</li>
 </ul>
-<h1 id="10-Block类"><a href="#10-Block类" class="headerlink" title="10 Block类"></a>10 Block类</h1><ul>
-<li>Block类是⼀个模型构造类，我们可以继承它来定义我们想要的模型。</li>
-<li>它的⼦类既可以是⼀个层（如Dense类），⼜可以是深度学习计算的⼀个模型，或者是模型的⼀个部分</li>
+<blockquote>
+<ul>
+<li>激活函数为<script type="math/tex">f(x) = x</script></li>
+<li>偏置项b初始化为0</li>
+<li>输入和参数的期望都为0</li>
 </ul>
-<h1 id="11-模型参数的延后初始化"><a href="#11-模型参数的延后初始化" class="headerlink" title="11 模型参数的延后初始化"></a>11 模型参数的延后初始化</h1><h3 id="11-1-基本概念"><a href="#11-1-基本概念" class="headerlink" title="11.1 基本概念"></a>11.1 基本概念</h3><ul>
-<li>如果我们在创建层时没有指定输入输出的个数，那么和该层相邻的参数的维度一开始我们是不知道的，只有我们将最开始的输入值输进去，这时系统才能推断出参数的维度，才能开始参数初始化。系统将这种真正的参数初始化延后到获得⾜够信息时才执⾏的⾏为叫作延后初始化（deferred initialization）</li>
-<li>这个初始化只会在第⼀次前向计算时被调⽤</li>
+</blockquote>
+<ul>
+<li>设某一层值为<script type="math/tex">x</script>，参数为<script type="math/tex">w</script>，对应输入为<script type="math/tex">y = x^Tw</script>（注意<script type="math/tex">x,w</script>为向量，<script type="math/tex">y</script>为标量），那么我们的目的是：</li>
 </ul>
-<h3 id="11-2-避免延后初始化"><a href="#11-2-避免延后初始化" class="headerlink" title="11.2 避免延后初始化"></a>11.2 避免延后初始化</h3><ul>
-<li>可以额外做⼀次前向计算来迫使参数被真正地初始化</li>
-<li>也可以在创建层的时候指定了它的输⼊个数</li>
+<script type="math/tex; mode=display">
+Var[y] = Var[x] \\
+Var[x^Tw] = Var[x]</script><ul>
+<li>引入公式：</li>
+</ul>
+<script type="math/tex; mode=display">
+Var[XY] = E[X^2]E[Y^2] - E^2[X]E^2[Y] \\
+在E[X] = E[Y]时，可以得出： Var[XY] = Var[X]Var[Y]</script><ul>
+<li>而由于<script type="math/tex">E[w] = E[x] = 0</script>，所以：</li>
+</ul>
+<script type="math/tex; mode=display">
+Var[x] = Var[x^Tw] = Var[\sum^{N}_ix_iw_i] = N* Var[x]Var[w]</script><p>其中<script type="math/tex">N = dim(x) = dim(w)</script>，即当前层的神经元个数</p>
+<ul>
+<li>由上式可以得出：</li>
+</ul>
+<script type="math/tex; mode=display">
+N * Var[w] = 1 \\
+Var[w] = \frac{1}{N}</script><ul>
+<li>而在反向传播的时候，我们同样可以推出<script type="math/tex">Var[w] = \frac{1}{N'}</script>，其中<script type="math/tex">N'</script>为下一层神经元个数</li>
+<li>而由于方差取值无法同时满足前后向，所以采用两者的平均数：</li>
+</ul>
+<script type="math/tex; mode=display">
+Var[w] = \frac{2}{N + N'}</script><ul>
+<li>我们可以通过<script type="math/tex">N(0, \frac{2}{N+N'})</script>对w取样，也可以使用均匀分布采样，采用均匀函数的时候需要进行一定的放缩（Var[w]的分子不一定为2）</li>
 </ul>
 
             </div>
