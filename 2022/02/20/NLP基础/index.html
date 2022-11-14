@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png">
 <meta property="article:published_time" content="2022-02-20T09:03:58.941Z">
-<meta property="article:modified_time" content="2022-05-10T03:32:17.093Z">
+<meta property="article:modified_time" content="2022-11-14T12:22:08.166Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
@@ -431,11 +431,11 @@ P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right) = \left\{\begin{array}{ll}
 1-\sigma\left(v_c^T u_{n_(w, j)}\right), & d_{j}^{w}=1
 \end{array}\right.</script><p>可以将两式合并，并且由于<script type="math/tex">\sigma(x) + \sigma(-x) = 1</script>，可以将上式转化为：</p>
 <script type="math/tex; mode=display">
-P(w_0|w_c)=\left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]^{1-d_{j}^{w}} \cdot\left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]^{d^{w}}</script><p>我们取目标函数的对数：</p>
+P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right)=\left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]^{1-d_{j}^{w}} \cdot\left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]^{d^{w}}</script><p>我们取目标函数的对数：</p>
 <script type="math/tex; mode=display">
-\mathcal{L} = \sum_{w \in \mathcal{V}} P(Context(w) | w) = \sum_{w \in \mathcal{V}} \sum_{j=2}^{L(w)}\left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>要最大化上述目标函数是比较困难的，但是我们可以最大化每一子项（即下式），达到局部最大化的效果，层序Softmax的Softmax其实就是体现在此处</strong>：</p>
+\mathcal{L} = \sum_{w \in \mathcal{V}}\log P(Context(w) | w) = \sum_{w \in \mathcal{V}} \sum_{j=2}^{L(w)}\left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>要最大化上述目标函数是比较困难的，但是我们可以最大化每一子项（即下式），达到局部最大化的效果，层序Softmax的Softmax其实就是体现在此处</strong>：</p>
 <script type="math/tex; mode=display">
-\mathcal{L}(w, j) = \left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>这样就可以将于<script type="math/tex">L(wo) − 1</script>数量级的计算复杂度降为<script type="math/tex">O(log_2 |\mathcal{V}|)</script>，当词典<script type="math/tex">\mathcal{V}</script>很大时，层序softmax在训练中每⼀步的梯度计算开销相较未使用近似训练时大幅降低。</strong></p>
+\mathcal{L}(w, j) = \left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>这样就可以将计算复杂度降为<script type="math/tex">O(log_2 |\mathcal{V}|)</script>，当词典<script type="math/tex">\mathcal{V}</script>很大时，层序softmax在训练中每⼀步的梯度计算开销相较未使用近似训练时大幅降低。</strong></p>
 <p>显然，上式的<script type="math/tex">d_j^w</script>是用来<strong>判断下一个节点是否是本节点的左孩子的</strong>，其作用是为了满足给定任意中心词<script type="math/tex">w_c</script>，生成背景词的条件概率和为1：</p>
 <script type="math/tex; mode=display">
 \sum_{w \in \mathcal{V}} P\left(w \mid w_{c}\right)=1</script><p>这样才能使似然函数不至于训练到无穷大（和负采样要添加负样本是一样的原因），并且符合概率和为1</p>
@@ -447,7 +447,7 @@ P(w_0|w_c)=\left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]^{1-d_{j}^{w}} \cdo
 <li>英语单词通常有其内部结构和形成⽅式。例如，我们可以从“dog” “dogs”和“dogcatcher”的 字面上推测它们的关系。这些词都有同⼀个词根“dog”，但使⽤不同的后缀来改变词的含义。而 且，这个关联可以推⼴⾄其他词汇。例如，“dog”和“dogs”的关系如同“cat”和“cats”的关 系，“boy”和“boyfriend”的关系如同“girl”和“girlfriend”的关系。这方面的研究称为构词学</li>
 <li><p>在word2vec中，我们并没有直接利⽤构词学中的信息。⽆论是在跳字模型还是连续词袋模型中， 我们都将形态不同的单词⽤不同的向量来表示。例如，“dog”和“dogs”分别⽤两个不同的向量表示，而模型中并未直接表达这两个向量之间的关系。鉴于此，fastText提出了子词嵌⼊（subword embedding）的⽅法，从而试图将构词信息引⼊word2vec中的跳字模型</p>
 </li>
-<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：”<wh" "whe" "her" "ere" "re>“以及特殊子词”where”。</p>
+<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：<script type="math/tex">"<wh" "whe" "her" "ere" "re>"</script>以及特殊子词<script type="math/tex">"where"</script>。</p>
 </li>
 <li>在fastText中，对于⼀个词w，我们将它所有⻓度在3 ∼ 6的子词和特殊子词的并集记为<script type="math/tex">\mathcal{G}_{w}</script>。<strong>那么词典则是所有词的子词集合的并集</strong>。假设词典中子词<script type="math/tex">g</script>的向量为<script type="math/tex">z_g</script>，那么跳字模型中词w的作为中⼼词的向量<script type="math/tex">v_w</script>则表⽰成：</li>
 </ul>
@@ -479,41 +479,41 @@ v_{w}=\sum_{g \in \mathcal{G}_{w}} z_{g}</script><ul>
 <p>假设<script type="math/tex">i, j, k</script>三者的词向量都已经得到<script type="math/tex">w_i, w_j, w_k</script>，那么我们现在就要找一个函数F，使得：</p>
 <script type="math/tex; mode=display">
 F\left(w_{i}, w_{j}, w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><h3 id="3-2-损失函数推导"><a href="#3-2-损失函数推导" class="headerlink" title="3.2 损失函数推导"></a>3.2 损失函数推导</h3><ul>
-<li><strong>上述等式的右边是通过统计得到的已知量，左侧的三个词向量<script type="math/tex">w_i, w_j, w_k</script>是模型要求的量，F是未知的，如果能够将F的形式确定下来， 那么我们就可以通过优化算法求解词向量了，下面是求解过程：</strong></li>
+<li><p><strong>上述等式的右边是通过统计得到的已知量，左侧的三个词向量<script type="math/tex">w_i, w_j, w_k</script>是模型要求的量，F是未知的，如果能够将F的形式确定下来， 那么我们就可以通过优化算法求解词向量了，下面是求解过程</strong></p>
+</li>
+<li><p><script type="math/tex">\frac{P_{i k}}{P_{j k}}</script>考察了<script type="math/tex">i,j,k</script>三个词的相关性，不妨先只考虑<script type="math/tex">i,j</script>两个词的词向量<script type="math/tex">w_i, w_j</script>的相关性，向量相关关系的度量可以用两个向量的差，所以上述等式可以先改为：</p>
+</li>
 </ul>
-<ol>
-<li><script type="math/tex">\frac{P_{i k}}{P_{j k}}</script>考察了<script type="math/tex">i,j,k</script>三个词的相关性，不妨先只考虑<script type="math/tex">i,j</script>两个词的词向量<script type="math/tex">w_i, w_j</script>的相关性，向量相关关系的度量可以用两个向量的差，所以上述等式可以先改为：</li>
-</ol>
 <script type="math/tex; mode=display">
-F\left((w_{i}-w_{j}), w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ol>
+F\left((w_{i}-w_{j}), w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ul>
 <li>由于右边是标量，左边是向量，所以可以联想到使用向量的内积转化为标量：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-F\left(\left(w_{i}-w_{j}\right)^{T} w_{k}\right)=F\left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ol>
+F\left(\left(w_{i}-w_{j}\right)^{T} w_{k}\right)=F\left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ul>
 <li>因为左边是差，右边是商，所以将F设为exp运算，将差转化为商：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-\exp \left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{\exp \left(w_{i}^{T} w_{k}\right)}{\exp \left(w_{j}^{T} w_{k}\right)}=\frac{P_{i k}}{P_{j k}}</script><ol>
+\exp \left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{\exp \left(w_{i}^{T} w_{k}\right)}{\exp \left(w_{j}^{T} w_{k}\right)}=\frac{P_{i k}}{P_{j k}}</script><ul>
 <li>现在只需让分子分母分别相等就能成立：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-\exp \left(w_{i}^{T} w_{k}\right)= \alpha P_{i k}, \exp \left(w_{j}^{T} w_{k}\right)= \alpha P_{j k}，\quad  \alpha为常数</script><ol>
+\exp \left(w_{i}^{T} w_{k}\right)= \alpha P_{i k}, \exp \left(w_{j}^{T} w_{k}\right)= \alpha P_{j k}，\quad  \alpha为常数</script><ul>
 <li>现在只需要在整个词料库中考察<script type="math/tex">\exp \left(w_{i}^{T} w_{k}\right)= \alpha P_{i k}= \alpha \frac{X_{i k}}{X_{i}}</script>，即：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-w_{i}^{T} w_{k}=\log \left(\alpha \frac{X_{i k}}{X_{i}}\right)=\log X_{i k}-\log X_{i} + log\alpha</script><ol>
+w_{i}^{T} w_{k}=\log \left(\alpha \frac{X_{i k}}{X_{i}}\right)=\log X_{i k}-\log X_{i} + log\alpha</script><ul>
 <li>所以我们需要设置一个偏差项<script type="math/tex">b_i</script>来拟合<script type="math/tex">log X_i - log \alpha</script>，由于如果上式<script type="math/tex">i,k</script>位置交换，左式的值不变，但是右式的值会变，所以我们还要设置一个偏差项<script type="math/tex">b_k</script>，即：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-w_{i}^{T} w_{k}  + b_i + b_k=log X_{ik}</script><ol>
+w_{i}^{T} w_{k}  + b_i + b_k=log X_{ik}</script><ul>
 <li>上面公式只是理想状态下，实际中只能要求两者接近    从而就有了代价函数：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-J=\sum_{i k}\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><ol>
+J=\sum_{i, k}\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><ul>
 <li>如果两个词共同出现的次数越多，那么其在代价函数中的影响就越大，所以要设计一个权重函数：</li>
-</ol>
+</ul>
 <script type="math/tex; mode=display">
-J=\sum_{i k} f\left(X_{i k}\right)\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><blockquote>
+J=\sum_{i, k} f\left(X_{i k}\right)\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><blockquote>
 <p>对于函数f要满足一下条件：</p>
 <ol>
 <li>如果两个词没有共同出现过，那么权重就是0，即f(0) = 0</li>
@@ -529,10 +529,10 @@ f(x)=\left\{\begin{array}{r}
 <p>作者认为<script type="math/tex">x_{max} = 100, \alpha = \frac{3}{4}</script>比较合适</p>
 </blockquote>
 <ul>
-<li>值得强调的是，如果词<script type="math/tex">w_i</script>出现在词<script type="math/tex">w_j</script>的背景窗口里，那么词<script type="math/tex">w_j</script>也会出现在词<script type="math/tex">w_i</script>的背景窗口⾥。也就是说，<script type="math/tex">x_{ij} = x_{ji}</script>。不同于<strong>word2vec中拟合的是非对称的条件概率<script type="math/tex">p_{ij}</script>，GloVe模型拟合的是对称的<script type="math/tex">log x_{ij}</script></strong>。因此，<strong>任意词的中心词向量和背景词向量在GloVe模型中是等价的。但由于初始化值的不同，同⼀个词最终学习到的两组词向量可能不同</strong>。当学习得到所有词向量以后，GloVe模型使⽤<strong>中心词向量与背景词向量之和作为该词的最终词向量，这样做是为了提高鲁棒性（两者的初始化不同相当于加了不同的随机噪声，所以能提高鲁棒性）</strong></li>
+<li>值得强调的是，如果词<script type="math/tex">w_i</script>出现在词<script type="math/tex">w_j</script>的背景窗口里，那么词<script type="math/tex">w_j</script>也会出现在词<script type="math/tex">w_i</script>的背景窗口⾥。也就是说，<script type="math/tex">x_{ij} = x_{ji}</script>。不同于<strong>word2vec中拟合的是非对称的条件概率<script type="math/tex">p_{ij}</script>，GloVe模型拟合的是对称的<script type="math/tex">\log X _{ij}</script></strong>。因此，<strong>任意词的中心词向量和背景词向量在GloVe模型中是等价的。但由于初始化值的不同，同⼀个词最终学习到的两组词向量可能不同</strong>。当学习得到所有词向量以后，GloVe模型使⽤<strong>中心词向量与背景词向量之和作为该词的最终词向量，这样做是为了提高鲁棒性（两者的初始化不同相当于加了不同的随机噪声，所以能提高鲁棒性）</strong></li>
 </ul>
 <h1 id="4-词嵌入应用"><a href="#4-词嵌入应用" class="headerlink" title="4 词嵌入应用"></a>4 词嵌入应用</h1><ul>
-<li>下列应用均为在训练好的预训练模型上进行训练的。预训练的GloVe模型的命名规范⼤致是<strong>“模型.（数据集.）数据集词数.词向量维度.txt”</strong>。如 ‘glove.twitter.27B.100d.txt’。</li>
+<li>下列应用均为在训练好的预训练模型上进行训练的</li>
 </ul>
 <h3 id="4-1-求近义词和类比词"><a href="#4-1-求近义词和类比词" class="headerlink" title="4.1 求近义词和类比词"></a>4.1 求近义词和类比词</h3><ul>
 <li>求近义词可以运用词向量之间的余弦相似度</li>
@@ -545,7 +545,10 @@ f(x)=\left\{\begin{array}{r}
 <li>注意由于是预训练的模型，所以<strong>嵌入层的模型参数是不需要更新的</strong>，直接由训练好的模型参数导入即可。但是<strong>导入的模型的词向量维度要和预先设置的嵌入层词向量维度一致</strong></li>
 </ul>
 <h3 id="4-3-使用卷积神经网络（textCNN）进行文本情感分类："><a href="#4-3-使用卷积神经网络（textCNN）进行文本情感分类：" class="headerlink" title="4.3 使用卷积神经网络（textCNN）进行文本情感分类："></a>4.3 使用卷积神经网络（textCNN）进行文本情感分类：</h3><ul>
-<li>我们可以将⽂本数据看作只有⼀个维度的时间序列，并很⾃然地使⽤循环神经⽹络来表征这样的数据。其实，我们也可以将⽂本当作⼀维图像，从而可以⽤⼀维卷积神经⽹络来捕捉临近词之间的关联</li>
+<li><p>我们可以将⽂本数据看作只有⼀个维度的时间序列，并很⾃然地使⽤循环神经⽹络来表征这样的数据。其实，我们也可以将⽂本当作⼀维图像，从而可以⽤⼀维卷积神经⽹络来捕捉临近词之间的关联</p>
+</li>
+<li><p><strong>textCNN基于的假设是：一个词和其相邻的词（即卷积核中的词）是相关的</strong></p>
+</li>
 </ul>
 <h5 id="4-3-1-一维卷积层"><a href="#4-3-1-一维卷积层" class="headerlink" title="4.3.1 一维卷积层"></a>4.3.1 一维卷积层</h5><ul>
 <li>和二维卷积层一样，一维卷积层卷积窗口从输⼊数组的最左⽅开始，按从左往右的顺序，依次在输⼊数组上滑动，举个例子：</li>
@@ -555,8 +558,8 @@ f(x)=\left\{\begin{array}{r}
 <p>对于多通道操作也是和二维卷积层一样的：<br><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png" srcset="/img/loading.gif" lazyload alt="image-20220212155747478"></p>
 <p>每个通道分别操作，然后各通道结果相加。如果想要输出多通道，则核还要增加一个维度</p>
 <h5 id="4-3-2-时序最大池化层"><a href="#4-3-2-时序最大池化层" class="headerlink" title="4.3.2 时序最大池化层"></a>4.3.2 时序最大池化层</h5><ul>
-<li>假设输⼊包含多个通道，各通道由不同时间步上的数值组成，<strong>各通道的输出即该通道所有时间步中最⼤的数值</strong>。因此，<strong>时序最⼤池化层的输⼊在各个通道上的时间 步数可以不同</strong></li>
-<li>为提升计算性能，我们常常将不同⻓度的时序样本组成⼀个小批量，<strong>并通过在较短序列后附加特殊字符（如0）令批量中各时序样本⻓度相同</strong>。这些⼈为添加的特殊字符当然是⽆意义的。由于时 序最⼤池化的主要⽬的是抓取时序中最重要的特征，它通常能<strong>使模型不受⼈为添加字符的影响</strong></li>
+<li>假设输⼊包含多个通道，各通道由不同时间步上的数值组成，<strong>各通道的输出即该通道所有时间步中最⼤的数值</strong>。因此，<strong>时序最⼤池化层的输⼊在各个通道上的时间步数可以不同</strong></li>
+<li>为提升计算性能，我们常常将不同⻓度的时序样本组成⼀个小批量，<strong>并通过在较短序列后附加特殊字符（如0）令批量中各时序样本⻓度相同</strong>。这些⼈为添加的特殊字符当然是⽆意义的。由于时序最⼤池化的主要⽬的是抓取时序中最重要的特征，它通常能<strong>使模型不受⼈为添加字符的影响</strong></li>
 </ul>
 <h5 id="4-3-3-textCNN模型"><a href="#4-3-3-textCNN模型" class="headerlink" title="4.3.3 textCNN模型"></a>4.3.3 textCNN模型</h5><ul>
 <li>textCNN模型主要使⽤了⼀维卷积层和时序最⼤池化层。假设输⼊的⽂本序列由n个词组成，每 个词⽤d维的词向量表⽰。那么输⼊样本的宽为n，⾼为1，输⼊通道数为d。textCNN的计算主要分为以下⼏步：</li>
