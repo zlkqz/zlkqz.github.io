@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png">
 <meta property="article:published_time" content="2022-02-20T09:03:58.941Z">
-<meta property="article:modified_time" content="2022-11-15T03:07:28.358Z">
+<meta property="article:modified_time" content="2022-11-15T03:15:32.445Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
@@ -447,7 +447,7 @@ P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right)=\left[\sigma\left(v_c^T u_{n_(w, 
 <li>英语单词通常有其内部结构和形成⽅式。例如，我们可以从“dog” “dogs”和“dogcatcher”的 字面上推测它们的关系。这些词都有同⼀个词根“dog”，但使⽤不同的后缀来改变词的含义。而 且，这个关联可以推⼴⾄其他词汇。例如，“dog”和“dogs”的关系如同“cat”和“cats”的关 系，“boy”和“boyfriend”的关系如同“girl”和“girlfriend”的关系。这方面的研究称为构词学</li>
 <li><p>在word2vec中，我们并没有直接利⽤构词学中的信息。⽆论是在跳字模型还是连续词袋模型中， 我们都将形态不同的单词⽤不同的向量来表示。例如，“dog”和“dogs”分别⽤两个不同的向量表示，而模型中并未直接表达这两个向量之间的关系。鉴于此，fastText提出了子词嵌⼊（subword embedding）的⽅法，从而试图将构词信息引⼊word2vec中的跳字模型</p>
 </li>
-<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：”\<wh" "whe" "her" "ere" "re\>“以及特殊子词”where”。</p>
+<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：”<wh"、"whe"、"her"、"ere"、"re>“以及特殊子词”where”。</p>
 </li>
 <li>在fastText中，对于⼀个词w，我们将它所有⻓度在3 ∼ 6的子词和特殊子词的并集记为<script type="math/tex">\mathcal{G}_{w}</script>。<strong>那么词典则是所有词的子词集合的并集</strong>。假设词典中子词<script type="math/tex">g</script>的向量为<script type="math/tex">z_g</script>，那么跳字模型中词w的作为中⼼词的向量<script type="math/tex">v_w</script>则表⽰成：</li>
 </ul>

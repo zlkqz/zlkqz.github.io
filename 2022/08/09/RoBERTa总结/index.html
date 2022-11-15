@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809170735173.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809170753600.png">
 <meta property="article:published_time" content="2022-08-09T09:08:23.364Z">
-<meta property="article:modified_time" content="2022-08-09T14:02:23.934Z">
+<meta property="article:modified_time" content="2022-11-15T03:34:43.104Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809143220226.png">
@@ -347,7 +347,7 @@
 </li>
 </ul>
 <h1 id="4-在特定下游任务的表现"><a href="#4-在特定下游任务的表现" class="headerlink" title="4 在特定下游任务的表现"></a>4 在特定下游任务的表现</h1><h3 id="4-1-GLUE"><a href="#4-1-GLUE" class="headerlink" title="4.1 GLUE"></a>4.1 GLUE</h3><ul>
-<li>实验考虑了<script type="math/tex">batch\_size \in {16, 32}</script>，<script type="math/tex">lr \in {1e-5, 2e-5, 3e-5}</script>，并在前6%的steps使用线性warm up，之后使用线性衰减至0，使用10个epochs，但是设置了early stop，实验结果如下：</li>
+<li>实验考虑了<script type="math/tex">batch\_size \in \{16, 32\}</script>，<script type="math/tex">lr \in \{1e-5, 2e-5, 3e-5\}</script>，并在前6%的steps使用线性warm up，之后使用线性衰减至0，使用10个epochs，但是设置了early stop，实验结果如下：</li>
 </ul>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220809170036407.png" srcset="/img/loading.gif" lazyload alt="image-20220809170036407" style="zoom:75%;" /></p>
 <h3 id="4-2-SQuAD"><a href="#4-2-SQuAD" class="headerlink" title="4.2 SQuAD"></a>4.2 SQuAD</h3><ul>

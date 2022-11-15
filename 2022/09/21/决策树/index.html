@@ -16,19 +16,19 @@
   <meta name="description" content="bia">
   <meta name="author" content="zlk">
   <meta name="keywords" content="">
-  <meta name="description" content="1 基本概念 一颗决策树包括一个根结点、若干内部结点和若干叶结点，叶结点对应于决策结果，易知：    每个非叶节点表示一个特征属性测试。 每个分支代表这个特征属性在某个值域上的输出。 每个叶子节点存放一个类别。 每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。-     决策树的构造：决策树的构造是一个递归的过程，有三种情形会导致递归返回： 当前结点包含的样本全属于同一类别">
+  <meta name="description" content="1 基本概念 一颗决策树包括一个根结点、若干内部结点和若干叶结点，叶结点对应于决策结果，易知：    每个非叶节点表示一个特征属性测试。 每个分支代表这个特征属性在某个值域上的输出。 每个叶子节点存放一个类别。 每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。    决策树的构造：决策树的构造是一个递归的过程，有三种情形会导致递归返回：  当前结点包含的样本全属于同一类别，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="决策树总结">
 <meta property="og:url" content="https://zlkqz.github.io/2022/09/21/%E5%86%B3%E7%AD%96%E6%A0%91/index.html">
 <meta property="og:site_name" content="ZLK">
-<meta property="og:description" content="1 基本概念 一颗决策树包括一个根结点、若干内部结点和若干叶结点，叶结点对应于决策结果，易知：    每个非叶节点表示一个特征属性测试。 每个分支代表这个特征属性在某个值域上的输出。 每个叶子节点存放一个类别。 每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。-     决策树的构造：决策树的构造是一个递归的过程，有三种情形会导致递归返回： 当前结点包含的样本全属于同一类别">
+<meta property="og:description" content="1 基本概念 一颗决策树包括一个根结点、若干内部结点和若干叶结点，叶结点对应于决策结果，易知：    每个非叶节点表示一个特征属性测试。 每个分支代表这个特征属性在某个值域上的输出。 每个叶子节点存放一个类别。 每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。    决策树的构造：决策树的构造是一个递归的过程，有三种情形会导致递归返回：  当前结点包含的样本全属于同一类别，">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc728ecc27fe.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220921212202836.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220921214432617.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220921215744390.png">
 <meta property="article:published_time" content="2022-09-21T15:52:29.934Z">
-<meta property="article:modified_time" content="2022-09-22T03:29:10.269Z">
+<meta property="article:modified_time" content="2022-11-15T11:00:39.328Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc728ecc27fe.png">
@@ -257,22 +257,20 @@
 <li>每个非叶节点表示一个特征属性测试。</li>
 <li>每个分支代表这个特征属性在某个值域上的输出。</li>
 <li>每个叶子节点存放一个类别。</li>
-<li>每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。- </li>
+<li>每个节点包含的样本集合通过属性测试被划分到子节点中，根节点包含样本全集。</li>
 </ul>
 </blockquote>
 <ul>
-<li><strong>决策树的构造：</strong>决策树的构造是一个递归的过程，有三种情形会导致递归返回：<ol>
+<li><p><strong>决策树的构造：</strong>决策树的构造是一个递归的过程，有三种情形会导致递归返回：</p>
+<ol>
 <li>当前结点包含的样本全属于同一类别，这时直接将该节点标记为叶节点，并设为相应的类别</li>
 <li>当前属性集为空，或是所有样本在所有属性上取值相同，无法划分，这时将该节点标记为叶节点，并将其类别设为该节点所含样本最多的类别</li>
+<li>当前结点包含的样本集合为空，不能划分，这时也将该节点标记为叶节点，并将其类别设为父节点中所含样本最多的类别。</li>
 </ol>
-</li>
-</ul>
-<ol>
-<li><p>当前结点包含的样本集合为空，不能划分，这时也将该节点标记为叶节点，并将其类别设为父节点中所含样本最多的类别。</p>
 <p>算法的基本流程如下图所示：</p>
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/5bc728ecc27fe.png" srcset="/img/loading.gif" lazyload alt="2.png" style="zoom:80%;" /></p>
 </li>
-</ol>
+</ul>
 <h1 id="2-划分算法"><a href="#2-划分算法" class="headerlink" title="2 划分算法"></a>2 划分算法</h1><ul>
 <li>各种算法的不同之处在于用什么指标来选择属性，来对每个结点划分</li>
 </ul>
@@ -372,7 +370,7 @@ T_{a}=\left\{\frac{a^{i}+a^{i+1}}{2} \mid 1 \leqslant i \leqslant n-1\right\}</s
 <li>在选择划分点的时候，可以不使用中位点，而是将中位点换成在训练集中出现过的不大于中位点的最大值，从而使得最终决策树使用的划分点在训练集中出现过</li>
 </ul>
 <h1 id="5-缺失值处理"><a href="#5-缺失值处理" class="headerlink" title="5 缺失值处理"></a>5 缺失值处理</h1><ul>
-<li>当存在属性值缺失的时候，有两个问题需要解决：(1).如何在属性值缺失的情况下进行划分属性的选择；(2).给定划分属性，若样本在该属性值上确实，则如何划分该样本</li>
+<li>当存在属性值缺失的时候，有两个问题需要解决：(1).如何在属性值缺失的情况下进行划分属性的选择；(2).给定划分属性，若样本在该属性值上缺失，则如何划分该样本</li>
 <li>给定数据集D和属性a，<script type="math/tex">\tilde{D}</script>表示属性a的值不缺失的样本子集，<script type="math/tex">\tilde{D}^v</script>表示<script type="math/tex">\tilde{D}</script>的a属性取值为<script type="math/tex">a^v</script>的样本子集，<script type="math/tex">\tilde{D}_k</script>表示<script type="math/tex">\tilde{D}</script>的类别为k的子集。我们可以为每个样本赋予一个权重<script type="math/tex">w_x</script><strong>（训练开始时将根节点所有样本权重初始化为1）</strong>，并定义：</li>
 </ul>
 <script type="math/tex; mode=display">

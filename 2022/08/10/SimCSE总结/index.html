@@ -16,12 +16,12 @@
   <meta name="description" content="bia">
   <meta name="author" content="zlk">
   <meta name="keywords" content="">
-  <meta name="description" content="作者提出了一种对比学习的方法，分为有监督和无监督两种。其中只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，时向量空间更为均匀，并且在有监督方法时，还能对齐正样本  1 评估标准 本篇文章的目的是改善embedding，并且作者在后面的实验发现，进行了SimCSE后有部分下游任务上的表现甚至出现了下降，但是这并不影响SimCSE的作用。句子嵌入的主要目标是对语">
+  <meta name="description" content="作者提出了一种对比学习的方法，分为有监督和无监督两种。其中只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，使向量空间更为均匀，并且在有监督方法时，还能对齐正样本  1 评估标准 本篇文章的目的是改善embedding，并且作者在后面的实验发现，进行了SimCSE后有部分下游任务上的表现甚至出现了下降，但是这并不影响SimCSE的作用。句子嵌入的主要目标是对语">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SimCSE总结">
 <meta property="og:url" content="https://zlkqz.github.io/2022/08/10/SimCSE%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="ZLK">
-<meta property="og:description" content="作者提出了一种对比学习的方法，分为有监督和无监督两种。其中只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，时向量空间更为均匀，并且在有监督方法时，还能对齐正样本  1 评估标准 本篇文章的目的是改善embedding，并且作者在后面的实验发现，进行了SimCSE后有部分下游任务上的表现甚至出现了下降，但是这并不影响SimCSE的作用。句子嵌入的主要目标是对语">
+<meta property="og:description" content="作者提出了一种对比学习的方法，分为有监督和无监督两种。其中只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，使向量空间更为均匀，并且在有监督方法时，还能对齐正样本  1 评估标准 本篇文章的目的是改善embedding，并且作者在后面的实验发现，进行了SimCSE后有部分下游任务上的表现甚至出现了下降，但是这并不影响SimCSE的作用。句子嵌入的主要目标是对语">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220810133558725.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220810140539627.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220810195101507.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220810195709648.png">
 <meta property="article:published_time" content="2022-08-10T12:19:32.225Z">
-<meta property="article:modified_time" content="2022-08-10T12:16:36.984Z">
+<meta property="article:modified_time" content="2022-11-15T08:34:49.448Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220810133558725.png">
@@ -260,7 +260,7 @@
             
             <div class="markdown-body">
               <ul>
-<li>作者提出了一种对比学习的方法，分为<strong>有监督和无监督两种</strong>。其中<strong>只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，时向量空间更为均匀，并且在有监督方法时，还能对齐正样本</strong></li>
+<li>作者提出了一种对比学习的方法，分为<strong>有监督和无监督两种</strong>。其中<strong>只用dropout作为噪音，也可以当作一种数据增强，可以改善语义空间，提升其同向异性，使向量空间更为均匀，并且在有监督方法时，还能对齐正样本</strong></li>
 </ul>
 <h1 id="1-评估标准"><a href="#1-评估标准" class="headerlink" title="1 评估标准"></a>1 评估标准</h1><ul>
 <li>本篇文章的目的是改善embedding，并且作者在后面的实验发现，进行了SimCSE后有部分下游任务上的表现甚至出现了下降，但是这并不影响SimCSE的作用。<strong>句子嵌入的主要目标是对语义相似的句子进行聚类，所以为了更加综合的评估实验结果，肯定不能使用某个下游任务的实验结果</strong>，作者采用了另一篇论文中一种评估embedding质量的方法：<strong>采用语义相关的正样本之间的对齐（alignment）和整个表示空间的一致性（uniformity）来衡量学习嵌入的质量</strong></li>
@@ -272,7 +272,7 @@
 <li>总的来说，对比学习所做的任务就是：<strong>拉近正样本的距离，剩余的随机样本应该均匀分布在一个超平面上（也就是减少其各向异性）</strong>，所以对比学习的任务就变为了降低以下两个指标：</li>
 </ul>
 <script type="math/tex; mode=display">
-\ell_{\text {align }} \triangleq \underset{\left(x, x^{+}\right) \sim p_{\text {pos }}}{\mathbb{E}}\left\|f(x)-f\left(x^{+}\right)\right\|^{2} \\
+\ell_{\text {align }} \triangleq \underset{\left(x, x^{+}\right) \sim p_{\text {pos }}}{\mathbb{E}}\left\|f(x)-f\left(x^{+}\right)\right\|^{2}, \\
 \ell_{\text {uniform }} \triangleq log \underset{\left(x, y\right) \sim p_{\text {data }}}{\mathbb{E}}e^{-2\left\|f(x)-f\left(y\right)\right\|^{2}}</script><p>其中<script type="math/tex">p_{pos}</script>为正样本对，<script type="math/tex">p_{data}</script>为所有数据对，<script type="math/tex">f(x)</script>为输入<script type="math/tex">x</script>经过encoder的输出</p>
 <ul>
 <li><p>并且作者还发现无监督的SimCSE能够向量空间的均匀性，并且并不会降低正样本之间的对齐。然后对于有监督，作者指出NLI任务最为适合训练出好的sentence embedding，并且有监督能够进一步提升正样本之间的对齐</p>
