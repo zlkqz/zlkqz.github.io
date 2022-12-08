@@ -1,0 +1,802 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 图像增广 图像增⼴（image augmentation）技术通过对训练图像做⼀系列随机改变，来产⽣相似但⼜不同的训练样本，从而扩大训练数据集的规模 随机改变训练样本可以降低模型对某些属性的依赖，从而提高模型的泛化能力。例如，我们可以对图像进⾏不同 方式的裁剪，使感兴趣的物体出现在不同位置，从而减轻模型对物体出现位置的依赖性  常用的方法有：翻转、裁剪、变换颜色。对于翻转，大部分情况左右翻转比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CV基础">
+<meta property="og:url" content="https://zlkqz.github.io/2022/12/08/CV%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 图像增广 图像增⼴（image augmentation）技术通过对训练图像做⼀系列随机改变，来产⽣相似但⼜不同的训练样本，从而扩大训练数据集的规模 随机改变训练样本可以降低模型对某些属性的依赖，从而提高模型的泛化能力。例如，我们可以对图像进⾏不同 方式的裁剪，使感兴趣的物体出现在不同位置，从而减轻模型对物体出现位置的依赖性  常用的方法有：翻转、裁剪、变换颜色。对于翻转，大部分情况左右翻转比">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123170934001.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123173756721.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123182624112.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123184832784.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123185433036.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123191333584.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123191545146.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123193610616.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123194304346.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220124154145643.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190819135319360.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-ad3d95548a97aa47ca85867cd0f2e161_720w.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220124175546385.png">
+<meta property="article:published_time" content="2022-12-08T08:40:30.537Z">
+<meta property="article:modified_time" content="2022-05-10T03:30:20.000Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123170934001.png">
+  
+  <title>CV基础 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="CV基础">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 16:40" pubdate>
+        2022年12月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CV基础</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-图像增广"><a href="#1-图像增广" class="headerlink" title="1 图像增广"></a>1 图像增广</h1><ul>
+<li>图像增⼴（image augmentation）技术通过对训练图像做⼀系列随机改变，来产⽣相似但⼜不同的训练样本，从而<strong>扩大训练数据集的规模</strong></li>
+<li><p>随机改变训练样本可以<strong>降低模型对某些属性的依赖，从而提高模型的泛化能力</strong>。例如，我们可以对图像进⾏不同 方式的裁剪，使感兴趣的物体出现在不同位置，从而减轻模型对物体出现位置的依赖性</p>
+</li>
+<li><p>常用的方法有：<strong>翻转</strong>、<strong>裁剪</strong>、<strong>变换颜色</strong>。对于翻转，大部分情况左右翻转比上下翻转更通用一些。对于颜色，我们可以从亮度、对比度、饱和度和⾊调四方面进行改变</p>
+</li>
+<li>实际应⽤中我们会将多个图像增⼴方法叠加使⽤</li>
+</ul>
+<h1 id="2-微调"><a href="#2-微调" class="headerlink" title="2 微调"></a>2 微调</h1><ul>
+<li><strong>迁移学习（transfer learning）</strong>：<strong>将从源数据集学到的知识迁移到目标数据集上</strong>。例如，虽然ImageNet数据集的图像大多跟椅⼦⽆关，但在该数据集上训练的模型可以抽 取较通⽤的图像特征，从而能够帮助识别边缘、纹理、形状和物体组成等。这些类似的特征对于 识别椅⼦也可能同样有效。</li>
+<li>迁移学习中的一种常用技术“微调（<strong>fine tuning）</strong>”，由一下四步构成：</li>
+</ul>
+<blockquote>
+<ol>
+<li>在源数据集（如ImageNet数据集）上预训练⼀个神经⽹络模型，即源模型</li>
+<li>创建⼀个新的神经⽹络模型，即目标模型。它复制了源模型上除了输出层外的所有模型设 计及其参数。我们假设这些模型参数包含了源数据集上学习到的知识，且这些知识同样适⽤于目标数据集。我们还假设源模型的输出层与源数据集的标签紧密相关，因此在目标模 型中不予采⽤。</li>
+<li>为目标模型添加⼀个输出大小为目标数据集类别个数的输出层，并随机初始化该层的模型参数。</li>
+<li>在目标数据集（如椅⼦数据集）上训练目标模型。我们将从头训练输出层，而其余层的参数都是基于源模型的参数微调得到的。</li>
+</ol>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123170934001.png" srcset="/img/loading.gif" lazyload alt="image-20220123170934001" style="zoom: 67%;" /></p>
+<ul>
+<li>可以选择保留除输出层以外的所有层，也可以保留除临近输出层的几层以外的所有层</li>
+<li>由于预训练模型是比较接近正确结果的，而新添加的层是随机初始化。<strong>所以两者的学习率是不同的，预训练的学习率更小</strong></li>
+</ul>
+</blockquote>
+<h1 id="3-目标检测和边界框"><a href="#3-目标检测和边界框" class="headerlink" title="3 目标检测和边界框"></a>3 目标检测和边界框</h1><ul>
+<li>很多时候图像⾥有多个我们感兴趣的目标，我们 不仅想知道它们的类别，还想得到它们在图像中的具体位置。在计算机视觉⾥，我们将这类任务 称为目标检测（object detection）或物体检测</li>
+<li>在目标检测⾥，我们通常使⽤<strong>边界框（bounding box）</strong>来描述目标位置。边界框是⼀个矩形框， 可以由矩形左上⻆的x和y轴坐标与右下⻆的x和y轴坐标确定</li>
+<li>它以每个像素为中⼼⽣ 成多个大小和宽高比（aspect ratio）不同的边界框。这些边界框被称为<strong>锚框（anchor box）</strong></li>
+</ul>
+<h3 id="3-1-锚框的生成"><a href="#3-1-锚框的生成" class="headerlink" title="3.1 锚框的生成"></a>3.1 锚框的生成</h3><ul>
+<li>假设输⼊图像高为h，宽为w。我们分别以图像的每个像素为中⼼⽣成不同形状的锚框。设大小为s <script type="math/tex">\in</script> (0, 1]且宽高比为r &gt; 0，那么锚框的宽和高将分别为<script type="math/tex">ws\sqrt{r}</script>和<script type="math/tex">hs/\sqrt{r}</script>。当中⼼位置给定时，已 知宽和高的锚框是确定的。⾯我们分别设定好⼀组大小<script type="math/tex">s_1, . . . , s_n</script>和⼀组宽高比<script type="math/tex">r_1, . . . , r_m</script>，s和r两两配对能覆盖所有的真实边界框，但是计算复杂度容易更高，所以我们通常只对包含<script type="math/tex">s_1</script>或<script type="math/tex">r_1</script>的大小与宽高比的组合感兴趣，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+\left(s_{1}, r_{1}\right),\left(s_{1}, r_{2}\right), \ldots,\left(s_{1}, r_{m}\right),\left(s_{2}, r_{1}\right),\left(s_{3}, r_{1}\right), \ldots,\left(s_{n}, r_{1}\right)</script><h3 id="3-2-交并比"><a href="#3-2-交并比" class="headerlink" title="3.2 交并比"></a>3.2 交并比</h3><ul>
+<li>Jaccard系数 （Jaccard index）可以衡量两个集合的相似度。给定集合A和B，它们的Jaccard系数即⼆者交集大小除以⼆者并集大小：</li>
+</ul>
+<script type="math/tex; mode=display">
+J(\mathcal{A}, \mathcal{B})=\frac{|\mathcal{A} \cap \mathcal{B}|}{|\mathcal{A} \cup \mathcal{B}|}</script><ul>
+<li>我们通 常将Jaccard系数称为交并比（intersection over union，IoU），即两个边界框相交⾯积与相并⾯积之比</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123173756721.png" srcset="/img/loading.gif" lazyload alt="image-20220123173756721" style="zoom: 80%;" /></p>
+<h3 id="3-3-标注训练集的锚框"><a href="#3-3-标注训练集的锚框" class="headerlink" title="3.3 标注训练集的锚框"></a>3.3 标注训练集的锚框</h3><ul>
+<li>在训练集中，我们<strong>将每个锚框视为⼀个训练样本</strong>。为了训练目标检测模型，我们需要为每个锚框标注两类标签：<strong>⼀是锚框所含目标的类别，简称类别；⼆是真实边界框相对锚框的偏移量，简称偏移量（offset)</strong></li>
+<li>在目标检测时，我们⾸先⽣成多个锚框，然后为每个锚框预测类别以及偏移量， 接着根据预测的偏移量调整锚框位置从而得到预测边界框，最后筛选需要输出的预测边界框</li>
+</ul>
+<ul>
+<li><p>假设图像中锚框分别为<script type="math/tex">A_1, A_2, . . . , A_{n_a}</script>，真实边界框分别为<script type="math/tex">B_1, B_2, . . . , B_{n_b}</script>，且<script type="math/tex">n_a</script> ≥ <script type="math/tex">n_b</script>。定义矩 阵<script type="math/tex">X \in R^{n_a\times n_b}</script>，其中第i⾏第j列的元素<script type="math/tex">x_{ij}</script>为锚框<script type="math/tex">A_i</script>与真实边界框<script type="math/tex">B_j</script>的交并比</p>
+<blockquote>
+<ol>
+<li>找到矩阵中最大元素，并将该值对应的真实边界框赋值给锚框，然后从矩阵中去除该行和该列所有元素。然后继续找最大元素，重复上述操作，直到所有真实边界框都被分配完</li>
+<li>这个时候，我们已为<script type="math/tex">n_b</script>个锚框各分配了⼀个真实边界框。接下来，我们 只遍历剩余的<script type="math/tex">n_a − n_b</script>个锚框：给定其中的锚框<script type="math/tex">A_i</script>，根据矩阵<script type="math/tex">X</script>的第i⾏找到与<script type="math/tex">A_i</script>交并比最大的真实边界框<script type="math/tex">B_j</script>，<strong>且只有当该交并比大于预先设定的阈值时，才为锚框<script type="math/tex">A_i</script>分配真实边界框<script type="math/tex">B_j</script></strong></li>
+</ol>
+</blockquote>
+</li>
+<li><p><strong>如果⼀个锚框A被分配了真实边界框B，将锚框A的类别设为B的类别，并根据B和A的中心坐标的相对位置以及两个框的相对大小为锚框A标注偏 移量。</strong></p>
+</li>
+<li><strong>由于数据集中各个框的位置和大小各异，因此这些相对位置和相对大小通常需要⼀些特殊变换，才能使偏移量的分布更均匀从而更容易拟合</strong>。设锚框A及其被分配的真实边界框B的中 ⼼坐标分别为<script type="math/tex">(x_a, y_a)</script>和<script type="math/tex">(x_b, y_b)</script>，A和B的宽分别为<script type="math/tex">w_a</script>和<script type="math/tex">w_b</script>，高分别为<script type="math/tex">h_a</script>和<script type="math/tex">h_b</script>，⼀个常⽤的技巧是将A的偏移量标注为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\left(\frac{\frac{x_{b}-x_{a}}{w_{a}}-\mu_{x}}{\sigma_{x}}, \frac{\frac{y_{b}-y_{a}}{h_{a}}-\mu_{y}}{\sigma_{y}}, \frac{\log \frac{w_{b}}{w_{a}}-\mu_{w}}{\sigma_{w}}, \frac{\log \frac{h_{b}}{h_{a}}-\mu_{h}}{\sigma_{h}}\right)</script><p>其中常数的默认值为<script type="math/tex">µ_x = µ_y = µ_w = µ_h = 0, σ_x = σ_y = 0.1, σ_w = σ_h = 0.2</script></p>
+<ul>
+<li><p>如果一个锚框没有被分配真实边界框，我们只需将该锚框的类别设为<strong>背景</strong>。类别为背景的锚框通常被称为<strong>负类锚框</strong>，其余则被称为<strong>正类锚框</strong></p>
+</li>
+<li><p><strong>掩码（mask）：</strong> <strong>形状为(批量大小, 锚框个数的四倍)</strong>。掩码变量中的元素 与每个锚框的4个偏移量⼀⼀对应。由于我们不关⼼对背景的检测，有关负类的偏移量不应影响 目标函数。<strong>通过按元素乘法，掩码变量中的0可以在计算目标函数之前过滤掉负类的偏移量</strong></p>
+</li>
+</ul>
+<h3 id="3-4-非极大值抑制"><a href="#3-4-非极大值抑制" class="headerlink" title="3.4 非极大值抑制"></a>3.4 非极大值抑制</h3><ul>
+<li>为了使结果更加简洁，我们可以移除相似的预测边界框。常⽤的方法叫作非极大值抑制（non-maximum suppression，NMS)：</li>
+</ul>
+<blockquote>
+<ol>
+<li>在同⼀图像上，我们将预测类别非背景的预测边界框按置信度从高到低排序， 得到列表L</li>
+<li>从L中选取置信度最高的预测边界框<script type="math/tex">B_1</script>作为基准，将所有与<script type="math/tex">B_1</script>的交并比大于某阈值 的非基准预测边界框从L中移除。这⾥的阈值是预先设定的超参数</li>
+<li>继续重复上述操作，直到L中所有的预测边界框都曾作为基准</li>
+</ol>
+</blockquote>
+<ul>
+<li>实践中，我们可以在执⾏非极大值抑制前将置信度较低的预测边界框移除，从而减小非极大值抑制的计算量。我们还可以筛选非极大值抑制的输出，例如，只保留其中置信度较高的结果作为最终输出。</li>
+</ul>
+<h3 id="3-5-多尺度目标检测"><a href="#3-5-多尺度目标检测" class="headerlink" title="3.5 多尺度目标检测"></a>3.5 多尺度目标检测</h3><ul>
+<li>在不同尺度下，我们可以⽣成不同数量和不同大小的锚框。值得注意的是，较小目标比较大目标在图像上出现位置的可能性更多</li>
+<li>因此，当使⽤较小 锚框来检测较小目标时，我们可以采样较多的区域；而当使⽤较大锚框来检测较大目标时，我们可以采样较少的区域。</li>
+<li>我们可以通过<strong>控制特征图的大小来控制尺度（特征图每个单元在输入图像上对应的感受野可大可小）</strong>。本质上，我们⽤输⼊图像在某个感 受野区域内的信息来预测输⼊图像上与该区域位置相近的锚框的类别和偏移量</li>
+</ul>
+<h3 id="3-6-单发多框检测（SSD）"><a href="#3-6-单发多框检测（SSD）" class="headerlink" title="3.6 单发多框检测（SSD）"></a>3.6 单发多框检测（SSD）</h3><ul>
+<li>它主要由<strong>⼀个基础⽹络块和若干个多尺度特征块串联而成</strong>。其中<strong>基础⽹络块⽤来从原始图像中抽取特征</strong>，因此⼀般会选择常⽤的深度卷积神经⽹络。单 发多框检测论⽂中选⽤了在分类层之前截断的VGG，现在也常⽤ResNet替代</li>
+<li>我们可以设计 基础⽹络，使它输出的高和宽较大。这样⼀来，基于该特征图⽣成的锚框数量较多，可以⽤来检 测尺⼨较小的目标</li>
+<li>接下来的每个多尺度特征块将上⼀层提供的特征图的<strong>高和宽缩小（如减半）</strong>， 并使<strong>特征图中每个单元在输⼊图像上的感受野变得更⼴阔</strong>。如此⼀来，下图中<strong>越靠近顶部的多 尺度特征块输出的特征图越小，故而基于特征图⽣成的锚框也越少，加之特征图中每个单元感受 野越大，因此更适合检测尺⼨较大的目标</strong></li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123182624112.png" srcset="/img/loading.gif" lazyload alt="image-20220123182624112" style="zoom:80%;" /></p>
+<h5 id="3-6-1-类别预测层"><a href="#3-6-1-类别预测层" class="headerlink" title="3.6.1 类别预测层"></a>3.6.1 类别预测层</h5><ul>
+<li>设目标的类别个数为q。每个锚框的类别个数将是q + 1，其中类别0表⽰锚框只包含背景</li>
+<li>设特征图的高和宽分别为h和w，如果以其中每个单元为中⼼⽣成a个锚框，那么我们需 要对hwa个锚框进⾏分类。如果使⽤全连接层作为输出，<strong>很容易导致模型参数过多。所以我们可以通过通道输出类别</strong></li>
+<li>类别预测层使⽤⼀个<strong>保持输⼊高和宽的卷积层</strong>。这样⼀来，输出和输⼊在特征图宽和高上的空间坐标⼀⼀对应。考虑输出和输⼊同⼀空间坐标(x, y)：<strong>输出特征图上(x, y)坐标的通道里包含了以输⼊特征图(x, y)坐标为中心生成的所有锚框的类别预测</strong>。因此<strong>输出通道数为a(q + 1)， 其中索引为i(q + 1) + j（0 ≤ j ≤ q）的通道代表了索引为i的锚框有关类别索引为j的预测</strong></li>
+</ul>
+<h5 id="3-6-2-边界框预测层"><a href="#3-6-2-边界框预测层" class="headerlink" title="3.6.2 边界框预测层"></a>3.6.2 边界框预测层</h5><ul>
+<li>边界框预测层的设计与类别预测层的设计类似。唯⼀不同的是，这⾥需要为每个锚框预测4个偏移量，而不是q + 1个类别</li>
+</ul>
+<h5 id="3-6-3-连结多尺度的预测"><a href="#3-6-3-连结多尺度的预测" class="headerlink" title="3.6.3 连结多尺度的预测"></a>3.6.3 连结多尺度的预测</h5><ul>
+<li>每个尺度的输出，除了批量大小一样，其他维度的大小均不一样。我们需要将它们变形成统⼀的格式并将多尺度的预测连结，从而让后续计算更简单</li>
+<li>所以我们需要将为(批量大小, 通道数, 高, 宽)格式转换成⼆维的(批量大小, 高×宽×通道数)的格式，以方便之后在维度1上的连结。</li>
+</ul>
+<h5 id="3-6-4-损失函数和评价函数"><a href="#3-6-4-损失函数和评价函数" class="headerlink" title="3.6.4 损失函数和评价函数"></a>3.6.4 损失函数和评价函数</h5><ul>
+<li>目标检测有两个损失：<strong>⼀是有关锚框类别的损失</strong>，我们可以重⽤之前图像分类问题⾥⼀直使⽤ 的交叉熵损失函数；<strong>⼆是有关正类锚框偏移量的损失</strong></li>
+<li>。预测偏移量是⼀个回归问题，但这⾥不 使⽤前⾯介绍过的平方损失，而使⽤L1范数损失，即预测值与真实值之间差的绝对值（其中 使用掩码变量令负类锚框和填充锚框不参与损失的计算）</li>
+<li>最后，我们将有关锚框类别和偏移量的损失相加得到模型的最终损失函数。</li>
+<li>可以将<script type="math/tex">L_1</script>损失换成<strong>平滑的<script type="math/tex">L_1</script>范数损失</strong>，它在零点附近使⽤平方函数从而更加平滑，这是通过⼀个超参数<script type="math/tex">\sigma</script>来控制平滑区域的：</li>
+</ul>
+<script type="math/tex; mode=display">
+f(x)=\left\{\begin{array}{ll}
+(\sigma x)^{2} / 2, & \text { if }|x|<1 / \sigma^{2} \\
+|x|-0.5 / \sigma^{2}, & \text { otherwise }
+\end{array}\right.</script><p>当<script type="math/tex">\sigma</script>很⼤时该损失类似于<script type="math/tex">L_1</script>范数损失。当它较小时，损失函数较平滑。</p>
+<ul>
+<li>还可以将交叉熵损失换成<strong>焦点损失（focal loss）</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+-\alpha\left(1-p_{j}\right)^{\gamma} \log p_{j}</script><p>焦点损失适用于比较密集的目标检测，即要判定的类别比较多的情况。我们将一个锚框标签的类别作为正类，其余都作为负类（包括背景），那么这就转换成了一个二分类问题，回顾二分类的交叉熵损失函数：</p>
+<script type="math/tex; mode=display">
+\mathrm{L}=-\mathrm{ylog} y^{\prime}-(1-y) \log \left(1-y^{\prime}\right)=\left\{\begin{array}{ll}
+-\log y^{\prime} & , \quad y=1 \\
+-\log \left(1-y^{\prime}\right), & y=0
+\end{array}\right.</script><p>可以看到当标签为负类（y=0），且正类预测概率<script type="math/tex">y'</script>较大时，会产生较大的损失。而由于正负样本的极其不均衡（比如有1000个类别，正类只有1种，负类则有999种），所以负样本会主导梯度的更新方向，使得整体学习方向跑偏</p>
+<p>上述的负类因为正负样本的不均衡，所以负类是是易分类的样本（<script type="math/tex">p_j > 0.5</script>），而焦点损失中的<script type="math/tex">(1-p_j)^{\gamma}</script>就是为了减轻易分类样本的权重，让对象检测器更关注难分类的样本（即正样本）</p>
+<h1 id="4-区域卷积神经网络（R-CNN）"><a href="#4-区域卷积神经网络（R-CNN）" class="headerlink" title="4 区域卷积神经网络（R-CNN）"></a>4 区域卷积神经网络（R-CNN）</h1><h3 id="4-1-R-CNN"><a href="#4-1-R-CNN" class="headerlink" title="4.1 R-CNN"></a>4.1 R-CNN</h3><ul>
+<li>R-CNN⾸先对图像<strong>选取若干提议区域</strong>（如锚框也是⼀种选取方法）并标注它们的类别和边界框 （如偏移量）。然后，<strong>⽤卷积神经⽹络对每个提议区域做前向计算抽取特征。之后，我们⽤每个提议区域的特征预测类别和边界框</strong></li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123184832784.png" srcset="/img/loading.gif" lazyload alt="image-20220123184832784" style="zoom:80%;" /></p>
+<ul>
+<li><p>具体来说，R-CNN主要由以下4步构成：</p>
+<blockquote>
+<ol>
+<li>对输⼊图像使⽤选择性搜索（selective search）来<strong>选取多个高质量的提议区域</strong>。这些提议区域通常是在<strong>多个尺度下</strong>选取的，并具有不同的形状和大小。<strong>每个提议区域将被标注类 别和真实边界框。</strong></li>
+<li>选取⼀个预训练的卷积神经⽹络，并将其在输出层之前截断</li>
+<li>将每个提议区域的特征连同其标注的类别作为⼀个样本，训练多个⽀持向量机对目标分类。 其中每个⽀持向量机⽤来判断样本是否属于某⼀个类别</li>
+<li>将每个提议区域的特征连同其标注的边界框作为⼀个样本，训练线性回归模型来预测真实边界框</li>
+</ol>
+</blockquote>
+</li>
+<li><p>一张图片中可能会有很多个提议区域，每个区域都要进行卷积运算。这个<strong>巨大的计算量令R-CNN难以在实际应⽤中被⼴泛采⽤</strong></p>
+</li>
+</ul>
+<h3 id="4-2-Fast-R-CNN"><a href="#4-2-Fast-R-CNN" class="headerlink" title="4.2 Fast R-CNN"></a>4.2 Fast R-CNN</h3><ul>
+<li>R-CNN提议区域通常<strong>有大量重叠， 独⽴的特征抽取会导致大量的重复计算</strong>。Fast R-CNN对R-CNN的⼀个主要改进在于<strong>只对整个图像 做卷积神经⽹络的前向计算。</strong></li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123185433036.png" srcset="/img/loading.gif" lazyload alt="image-20220123185433036" style="zoom:80%;" /></p>
+<ul>
+<li>主要步骤：</li>
+</ul>
+<blockquote>
+<ol>
+<li>与R-CNN相比，Fast R-CNN⽤来提取特征的卷积神经⽹络的输⼊是整个图像，而不是各个提议区域。而且，<strong>这个⽹络通常会参与训练</strong>，即更新模型参数。设输⼊为⼀张图像，将卷积神经⽹络的输出的形状记为<script type="math/tex">1 × c × h_1 × w_1</script></li>
+<li>假设选择性搜索⽣成n个提议区域。<strong>这些形状各异的提议区域在卷积神经网络的输出上分别标出形状各异的兴趣区域</strong>。这些兴趣区域需要抽取出<strong>形状相同</strong>的特征（假设高和宽均分别指定为<script type="math/tex">h_2</script>和<script type="math/tex">w_2</script>）以便于连结后输出（使用<strong>兴趣区域池化（region of interest pooling，RoI池化）层，将卷积神经⽹络的输出和提议区域作为输⼊，输出连结后的各个提议区域抽取的特征</strong>）</li>
+<li>通过全连接层将输出形状变换为n × d，其中超参数d取决于模型设计</li>
+<li>预测类别时，将全连接层的输出的形状再变换为n × q并使⽤softmax回归（q为类别个数）。 预测边界框时，将全连接层的输出的形状变换为n × 4。也就是说，我们为每个提议区域预 测类别和边界框。</li>
+</ol>
+</blockquote>
+<ul>
+<li>兴趣区域池化层：兴趣区域池化层对每个区域的输 出形状是可以直接指定的如下图：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123191333584.png" srcset="/img/loading.gif" lazyload alt="image-20220123191333584"></p>
+<p>第一张图的蓝色区域是一个提议区域，将其经过2x2兴趣区域池化层后，划分成了4个区域，分别含有元素0、1、4、5（5最 大），2、6（6最大），8、9（9最大），10。输出每个区域的最大元素</p>
+<h3 id="4-3-Faster-R-CNN"><a href="#4-3-Faster-R-CNN" class="headerlink" title="4.3 Faster R-CNN"></a>4.3 Faster R-CNN</h3><ul>
+<li>Fast R-CNN通常需要在选择性搜索中⽣成较多的提议区域，以获得较精确的目标检测结果。Faster R-CNN提出<strong>将选择性搜索替换成区域提议⽹络（region proposal network）</strong>，从而<strong>减少提议区域 的⽣成数量</strong>，并保证目标检测的精度</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123191545146.png" srcset="/img/loading.gif" lazyload alt="image-20220123191545146" style="zoom:67%;" /></p>
+<ul>
+<li>与Fast R-CNN相比，只有⽣成提议区域的方法从选择性搜索变成了区域提议⽹络，而其他部分均保持不变。具体来说，区域提议⽹络的计算步骤如下：</li>
+</ul>
+<blockquote>
+<ol>
+<li>使⽤填充为1的3 × 3卷积层变换卷积神经⽹络的输出，并将输出通道数记为c</li>
+<li>. 以特征图每个单元为中⼼，⽣成多个不同大小和宽高比的锚框并标注它们</li>
+<li>. ⽤锚框中⼼单元⻓度为c的特征分别预测该锚框的<strong>二元类别（含目标还是背景，需要reshape）</strong>和边界框</li>
+<li>使⽤非极大值抑制，从预测类别为目标的预测边界框中移除相似的结果。最终输出的预测 边界框即兴趣区域池化层所需要的提议区域。</li>
+</ol>
+</blockquote>
+<ul>
+<li>区域提议⽹络作为Faster R-CNN的⼀部分，是和整个模型⼀起训练得到的。也就 是说，<strong>Faster R-CNN的目标函数既包括目标检测中的类别和边界框预测，⼜包括区域提议⽹络中 锚框的⼆元类别和边界框预测</strong></li>
+</ul>
+<h3 id="4-4-Mask-R-CNN"><a href="#4-4-Mask-R-CNN" class="headerlink" title="4.4 Mask R-CNN"></a>4.4 Mask R-CNN</h3><ul>
+<li>如果训练数据还标注了每个目标在图像上的像素级位置，那么Mask R-CNN能有效利⽤这些详尽 的标注信息进⼀步提升目标检测的精度。</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123193610616.png" srcset="/img/loading.gif" lazyload alt="image-20220123193610616" style="zoom: 80%;" /></p>
+<ul>
+<li>Mask R-CNN将兴趣区域池化层 替换成了兴趣区域对⻬层，即通过<strong>双线性插值（bilinear interpolation）（一种常用的上采样方法，目的是将下一层的特征图的单元于上一层特征图单元对齐）</strong>来保留特征图上的空间信息，从而更适于像素级预测</li>
+</ul>
+<h1 id="5-语义分割"><a href="#5-语义分割" class="headerlink" title="5 语义分割"></a>5 语义分割</h1><ul>
+<li>语义分割（semantic segmentation）关注如何将图像分割成属于不同语义类别的区域。值得⼀提的是，这些语义区域的标注和预测都是像素级的</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220123194304346.png" srcset="/img/loading.gif" lazyload alt="image-20220123194304346" style="zoom: 67%;" /></p>
+<ul>
+<li>计算机视觉领域还有2个与语义分割相似的重要问题，即<strong>图像分割（image segmentation）</strong>和<strong>实例分割（instance segmentation）</strong></li>
+<li><strong>图像分割</strong>将图像分割成若干组成区域。<strong>这类问题的方法通常利⽤图像中像素之间的相关性</strong>。 它在训练时不需要有关图像像素的标签信息，在预测时也⽆法保证分割出的区域具有我们希望得到的语义。如上图图像分割可能将狗分割成两个区域：⼀个覆盖以⿊⾊为主的嘴巴和眼睛，而另⼀个覆盖以⻩⾊为主的其余部分⾝体</li>
+<li><strong>实例分割</strong>研究如何 识别图像中各个目标实例的像素级区域。与语义分割有所不同，实例分割<strong>不仅需要区分语 义，还要区分不同的目标实例</strong>。如果图像中有两只狗，实例分割需要区分像素属于这两只 狗中的哪⼀只。</li>
+</ul>
+<ul>
+<li>如果我们通过缩放图像使其符合模型的输⼊形状。然而在语义分割⾥，<strong>需要将预测的像素类别重新映射回原始尺⼨的输⼊图像</strong>。这样的映射难以做到精确，尤其在不同语义的分割区域。为了避免这个问题，<strong>我们将图像裁剪成固定尺⼨而不是缩放</strong>（对于实际尺寸小于规定尺寸的图像，需要移除）</li>
+</ul>
+<h1 id="6-全卷积网络（FCN）"><a href="#6-全卷积网络（FCN）" class="headerlink" title="6 全卷积网络（FCN）"></a>6 全卷积网络（FCN）</h1><ul>
+<li>全卷积⽹络（fully convolutional network，FCN）采⽤卷积神经⽹络实现了从图像像素到像素类别的变换。</li>
+<li>全卷积⽹络通过<strong>转置卷积（transposed convolution）层将中间层特征图的高和宽变换回输⼊图像的尺⼨</strong></li>
+</ul>
+<ul>
+<li>因为卷积运算可以用矩阵乘法来实现，假设input进行卷积运算相当于input矩阵乘一个<script type="math/tex">W</script>矩阵得到特征图featrue。那么可以通过featrue乘一个<script type="math/tex">W^T</script>来变回input的形状。<strong>所以可以通过转置卷积层来交换卷积层输入和输出的形状</strong></li>
+</ul>
+<h3 id="6-1-模型构造"><a href="#6-1-模型构造" class="headerlink" title="6.1 模型构造"></a>6.1 模型构造</h3><ul>
+<li>全卷积⽹络先使⽤卷积神经⽹络抽取图像特征，然后通过1 × 1卷积层将通道数变换为类别个数，最后通过转置卷积层将特征图的⾼和宽变换为输⼊图像的尺⼨</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220124154145643.png" srcset="/img/loading.gif" lazyload alt="image-20220124154145643" style="zoom: 67%;" /></p>
+<h3 id="6-2-初始化转置卷积层"><a href="#6-2-初始化转置卷积层" class="headerlink" title="6.2 初始化转置卷积层"></a>6.2 初始化转置卷积层</h3><ul>
+<li><strong>双线性插值：</strong>首先介绍一下单线性插值（一维）：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190819135319360.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom:67%;" /></p>
+<p>我们知道<script type="math/tex">x_0,x_1,y_0,y_1,x</script>的值，要求<script type="math/tex">y</script>的值：</p>
+<script type="math/tex; mode=display">
+y = y_0 + \frac{y_1 - y_0}{x_1 - x_0}(x - x_0)</script><p>而<strong>双线性插值其实就是在不同的维度上单线性插值两次</strong>，已知<script type="math/tex">Q_{11}(x_1,y_1),Q_{12}(x_1,y_2),Q_{21}(x_2,y_1),Q_{22}(x_2,y_2)</script>，求其中点P(x,y)的函数值：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-ad3d95548a97aa47ca85867cd0f2e161_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:67%;" /></p>
+<p>首先在x方向单线性插值两次：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+f\left(R_{1}\right)=\frac{x_{2}-x}{x_{2}-x_{1}} f\left(Q_{11}\right)+\frac{x-x_{1}}{x_{2}-x_{1}} f\left(Q_{21}\right) \\
+f\left(R_{2}\right)=\frac{x_{2}-x}{x_{2}-x_{1}} f\left(Q_{12}\right)+\frac{x-x_{1}}{x_{2}-x_{1}} f\left(Q_{22}\right)
+\end{array}</script><p>然后再在y方向单线性插值一次：</p>
+<script type="math/tex; mode=display">
+f(P)=\frac{y_{2}-y}{y_{2}-y_{1}} f\left(R_{1}\right)+\frac{y-y_{1}}{y_{2}-y_{1}} f\left(R_{2}\right)</script><p>即可得到结果。</p>
+<ul>
+<li>在全卷积⽹络中，我们一般<strong>将转置卷积层初始化为双线性插值的上采样</strong>，具体方法是：</li>
+</ul>
+<blockquote>
+<ol>
+<li>为了得到输出图像在坐 标(x, y)上的像素，先将该坐标映射到输⼊图像的坐标(x ′ , y′ )，例如，根据输⼊与输出的尺⼨之⽐来映射。</li>
+<li>映射后的x ′和y ′通常是实数。然后，在输⼊图像上找到与坐标(x ′ , y′ )最近的4像素。最后， 输出图像在坐标(x, y)上的像素依据输⼊图像上这4像素及其与(x ′ , y′ )的相对距离来计算（用双线性插值）</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>如果步幅为s、填充为s/2（假设s/2为整数）、卷积核的⾼和宽为2s，转置卷积核将输⼊的⾼和宽分别放⼤s倍</p>
+</li>
+<li><p>转置卷积层的输出形状可能会不一样，这是因为当<strong>输入图像的高宽无法整除步幅时，输出的高宽会有所偏差</strong>。为了解决这个问题，我们可以在图像中<strong>截取多块⾼和宽为步幅的整数倍的矩形区域</strong>，并分别对这些区域中的像素做前向计算。<strong>这些区域的并集需要完整覆盖输⼊图像</strong>。当⼀个像素被多个区域所覆盖时，它在不同区域 前向计算中转置卷积层输出的<strong>平均值可以作为softmax运算的输⼊</strong>，从而预测类别</p>
+</li>
+</ul>
+<h1 id="7-样式迁移"><a href="#7-样式迁移" class="headerlink" title="7 样式迁移"></a>7 样式迁移</h1><ul>
+<li><p>使⽤卷积神经⽹络⾃动将某图像中的样式应⽤在另⼀图像之上，即样式迁移（style transfer）。需要两张输⼊图像，⼀张是<strong>内容图像</strong>，另⼀张是<strong>样式图像</strong>， 我们将使⽤神经⽹络<strong>修改内容图像使其在样式上接近样式图像</strong></p>
+</li>
+<li><p>主要步骤：</p>
+</li>
+</ul>
+<blockquote>
+<ol>
+<li>⾸先，我们初始化合成图像，例如 将其<strong>初始化成内容图像</strong>。该合成图像是样式迁移过程中<strong>唯⼀需要更新的变量</strong>，</li>
+<li>我们选择⼀个预训练的卷积神经⽹络来<strong>抽取图像的特征</strong>，其中的<strong>模型参数在训练中⽆须更新</strong>。深度卷积神经⽹络<strong>凭借多个层逐级抽取图像的特征。我们可以选择其中某些 层的输出作为内容特征或样式特征</strong>，例如下图，这⾥选取的预训练的神经⽹络含有3个卷积 层，其中第⼆层输出图像的内容特征，而第⼀层和第三层的输出被作为图像的样式特征</li>
+<li>样式迁移常⽤的损失函数由3部分组成：<strong>内容损失（content loss）</strong>使合成图像与内容图像在内容特征上接近，<strong>样式损失（style loss）</strong>令合成图像与样式图像 在样式特征上接近，而<strong>总变差损失（total variation loss）</strong>则有助于减少合成图像中的噪点</li>
+</ol>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220124175546385.png" srcset="/img/loading.gif" lazyload alt="image-20220124175546385" style="zoom:50%;" /></p>
+</blockquote>
+<h3 id="7-1-内容层和样式层的选择"><a href="#7-1-内容层和样式层的选择" class="headerlink" title="7.1 内容层和样式层的选择"></a>7.1 内容层和样式层的选择</h3><ul>
+<li><strong>⼀般来说，越靠近输⼊层的输出越容易抽取图像的细节信息，反之则越容易抽取图像的全局信息。为了避免合成 图像过多保留内容图像的细节，我们选择较靠近输出的层来输出图像的内容特征</strong></li>
+<li><strong>我们还可以选择不同层的输出来匹配局部和全局的样式，这些层也叫样式层</strong></li>
+<li>例如VGG-19,使⽤了5个卷积块。我们可以选择第四卷积块的最后⼀个卷积层作为内容层，以及每个卷积块的第⼀个卷积层作为样式层</li>
+</ul>
+<h3 id="7-2-损失函数"><a href="#7-2-损失函数" class="headerlink" title="7.2 损失函数"></a>7.2 损失函数</h3><ul>
+<li><p><strong>内容损失：</strong>与线性回归中的损失函数类似，内容损失通过平⽅误差函数衡量合成图像与内容图像在内容特征上的差异。平⽅误差函数的两个输⼊均为内容层的输出。</p>
+</li>
+<li><p><strong>样式损失：</strong>样式损失也⼀样通过平⽅误差函数衡量合成图像与样式图像在样式上的差异。我们将样式层的输出（长为h，宽为w，通道数为c），转化成c行hw列的矩阵X，矩阵X可以看作由c个长度为hw的向量<script type="math/tex">x_1, . . . , x_c</script>组成的。其中向量<script type="math/tex">x_i</script>代表了通道<script type="math/tex">i</script>上的样式特征。</p>
+<p>这些向量的<strong>格拉姆矩阵 （Gram matrix）<script type="math/tex">XX^T\in R^{c\times c}</script>中<script type="math/tex">i</script>⾏<script type="math/tex">j</script>列的元素<script type="math/tex">x_{ij}</script>即向量<script type="math/tex">x_i</script>与<script type="math/tex">x_j</script>的内积</strong>，它表达了通道<script type="math/tex">i</script>和通道<script type="math/tex">j</script>上样式特征的相关性。我们⽤这样的格拉姆矩阵表达样式层输出的样式。</p>
+<p>需要注意的是，当hw的值较⼤时，格拉姆矩阵中的元素容易出现较⼤的值。此外，格拉姆矩阵的⾼和宽皆为通道数c。为了让样式损失不受这些值的⼤小影响，<strong>需要除以矩阵中元素的个数，即chw</strong></p>
+</li>
+<li><p><strong>总变量损失：</strong>有时候，我们学到的合成图像⾥⾯有⼤量⾼频噪点，即有特别亮或者特别暗的颗粒像素。⼀种常⽤的降噪⽅法是总变差降噪（total variation denoising）。</p>
+<p>假设<script type="math/tex">x_{i,j}</script>表⽰坐标为<script type="math/tex">(i, j)</script>的像素值，降低总变差损失：</p>
+<script type="math/tex; mode=display">
+\sum_{i, j}\left|x_{i, j}-x_{i+1, j}\right|+\left|x_{i, j}-x_{i, j+1}\right|</script><p>能够尽可能使邻近的像素值相似。</p>
+</li>
+</ul>
+<ul>
+<li>样式迁移的损失函数即内容损失、样式损失和总变差损失的<strong>加权和</strong>。通过调节这些<strong>权值超参数</strong>， 我们可以权衡合成图像在保留内容、迁移样式以及降噪三⽅⾯的相对重要性。</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/08/EDA%E5%92%8CAEDA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">EDA和AEDA</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/08/CNN/">
+                        <span class="hidden-mobile">CNN基本概念</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/12/08/CV%E5%9F%BA%E7%A1%80/';
+          this.page.identifier = '/2022/12/08/CV%E5%9F%BA%E7%A1%80/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

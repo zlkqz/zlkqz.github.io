@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="T5（Text-to-Text Transfer Transformer）模型采用了一种Text-to-text（文本到文本）的框架，想要把NLP领域的许多常见任务，如文本分类、QA等，都套到这个框架中解决 如机器翻译任务，输入”translate English to German: That is good.”，目标输出是”Das ist gut.”，在输入中” : “前面称为prompt，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="T5 &amp;&amp; mT5">
+<meta property="og:url" content="https://zlkqz.github.io/2022/12/08/T5%20&&%20mT5/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="T5（Text-to-Text Transfer Transformer）模型采用了一种Text-to-text（文本到文本）的框架，想要把NLP领域的许多常见任务，如文本分类、QA等，都套到这个框架中解决 如机器翻译任务，输入”translate English to German: That is good.”，目标输出是”Das ist gut.”，在输入中” : “前面称为prompt，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126211139471.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126223744785.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126230434585.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126230815635.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127105905994.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127110614966.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112236904.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112315271.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112647149.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112657299.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112910646.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127115209871.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127120459146.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221128120902619.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129191709077.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193118134.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193253828.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193755886.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129195942926.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129201243017.png">
+<meta property="article:published_time" content="2022-12-08T09:23:31.751Z">
+<meta property="article:modified_time" content="2022-12-08T09:23:08.750Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126211139471.png">
+  
+  <title>T5 &amp;&amp; mT5 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="T5 &amp;&amp; mT5">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 17:23" pubdate>
+        2022年12月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">T5 &amp;&amp; mT5</h1>
+            
+            <div class="markdown-body">
+              <ul>
+<li>T5（Text-to-Text Transfer Transformer）模型采用了一种Text-to-text（文本到文本）的框架，想要把NLP领域的许多常见任务，如文本分类、QA等，都套到这个框架中解决</li>
+<li>如机器翻译任务，输入”translate English to German: That is good.”，目标输出是”Das ist gut.”，在输入中” : “前面称为prompt，代指现在需要执行的任务</li>
+<li>这样的好处是可以把所有的问题都套进去一个统一的范式，从而可以采用同样的模型架构、同样的训练策略、同样的损失函数、同样的解码手段。</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126211139471.png" srcset="/img/loading.gif" lazyload alt="image-20221126211139471" style="zoom:80%;" /></p>
+<ul>
+<li>这里我们讲的是T51.0，之后再介绍T51.1的不同点</li>
+</ul>
+<h3 id="1-1-C4数据集"><a href="#1-1-C4数据集" class="headerlink" title="1.1 C4数据集"></a>1.1 C4数据集</h3><ul>
+<li>C4全称Colossal Clean Crawled Corpus，跟GPT2、GPT3的训练数据来源一样，是从网上爬的文本数据，由于是爬的数据，所以数据量足够大，而且类型丰富，缺点是数据质量差，需要过滤，过滤手段包括</li>
+<li>经过一番数据清洗后得到了一个750G的数据集</li>
+</ul>
+<h3 id="1-2-Baseline"><a href="#1-2-Baseline" class="headerlink" title="1.2 Baseline"></a>1.2 Baseline</h3><ul>
+<li>其实T5就是经过很多个实验，对不同的模型结构、训练策略等进行对比，然后挑出效果最好的，所以我们先给出实验中用于对比的baseline</li>
+<li><strong>模型结构：</strong>和Transformer一模一样，12层的encoder-decoder架构</li>
+<li><strong>训练/预测策略：</strong>训练时采用teacher-forcing，预测时采用贪婪搜索</li>
+<li><strong>预训练：</strong>在C4上面训练<script type="math/tex">2^{19}</script>个steps，batch_size=128，seq_len=512。<strong>预训练并没有覆盖所有C4数据集，即没一个样本会重复训练</strong>。预训练目标稍后介绍</li>
+<li><strong>学习率调整：</strong>采用平方根倒数：</li>
+</ul>
+<script type="math/tex; mode=display">
+l r=\frac{1}{\sqrt{\max (n, k)}}, k=10^{4}</script><ul>
+<li><strong>微调：</strong>对每个下游任务训练<script type="math/tex">2^{18}</script>个steps</li>
+<li><strong>词表：</strong>采用WordPiece，大约有32000个token，有部分非英语词</li>
+</ul>
+<h3 id="1-3-无监督预训练目标"><a href="#1-3-无监督预训练目标" class="headerlink" title="1.3 无监督预训练目标"></a>1.3 无监督预训练目标</h3><ul>
+<li>预训练目标和BERT一样，都是采用随机mask破坏文本，然后通过上下文将这个词训练出来，称为<strong>Denoising</strong>的预训练目标</li>
+<li><strong>对输入随机挑选15%的token，然后使用一个哨兵token进行替换，注意挑选出来的token如果时连续的text span，则只用一个哨兵token进行替换。然后target文本变为：每个哨兵token+其对应的值的形式，最后再接一个特殊的哨兵token，表示结束</strong></li>
+<li>举例栗子：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126223744785.png" srcset="/img/loading.gif" lazyload alt="image-20221126223744785"></p>
+<p>如上图，将for inviting和last分别替换成了两个不同的哨兵token，然后target变为了分别预测每个哨兵token，然后文本最后预测出另一个哨兵token\，表示结束</p>
+<h3 id="1-4-不同模型结构的对比"><a href="#1-4-不同模型结构的对比" class="headerlink" title="1.4 不同模型结构的对比"></a>1.4 不同模型结构的对比</h3><ul>
+<li>针对self-atttion，有三种mask方式：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126230434585.png" srcset="/img/loading.gif" lazyload alt="image-20221126230434585"></p>
+<p>分别为：</p>
+<blockquote>
+<ol>
+<li>fully-visible：每个时间步都对其他时间步可见</li>
+<li>causal：对未来的时间步不可见</li>
+<li>causal with prefix：前面两者的结合，prefix部分的token能看到prefix所有token的信息，非prefix的token只能看到它的上文信息。那么什么是prefix，如上面提到的英文翻译德文的例子，prefix就是”translate English to German: That is good.”，说白了就是输入部分的时间步是fully-visible，输出部分的时间步是causal</li>
+</ol>
+</blockquote>
+<ul>
+<li>针对三种不一样的mask方式，作者对如下三种模型架构进行了比较：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221126230815635.png" srcset="/img/loading.gif" lazyload alt="image-20221126230815635"></p>
+<ul>
+<li>对此，作者提出了五种模型（为了公平，只有两个模型有同样数量的参数或者同样的计算效率才能进行比较）：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Encoder-decoder：</strong>编码层和解码层各有L层</li>
+<li><strong>Enc-dec, shared：</strong>编码层和解码层各有L层，但它们参数共享，所以参数减半</li>
+<li><strong>Enc-dec, 6 layers：</strong>编码层和解码层各有L/2层</li>
+<li><strong>LM：</strong>只有L层解码层，采用语言模型的形式</li>
+<li><strong>Prefix LM：</strong>只有L层解码层，但采用Prefix语言模型的形式</li>
+</ol>
+</blockquote>
+<ul>
+<li>并且还对比使用了两种预训练目标：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Denoising：</strong>即baseline中使用的随机mask词然后预测出来</li>
+<li><strong>LM：</strong>LM中常用的自回归预测，即每个时间步预测通过上个时间步的输出来进行当前时间步的输出预测</li>
+</ol>
+</blockquote>
+<ul>
+<li>最后得到以下结果：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127105905994.png" srcset="/img/loading.gif" lazyload alt="image-20221127105905994" style="zoom:67%;" /></p>
+<h3 id="1-5-不同的无监督预训练目标对比"><a href="#1-5-不同的无监督预训练目标对比" class="headerlink" title="1.5 不同的无监督预训练目标对比"></a>1.5 不同的无监督预训练目标对比</h3><ul>
+<li>首先介绍采用的预训练目标：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127110614966.png" srcset="/img/loading.gif" lazyload alt="image-20221127110614966" style="zoom: 80%;" /></p>
+<blockquote>
+<ol>
+<li><strong>Prefix LM：</strong>输入前部分文本，预测剩余的文本</li>
+<li><strong>BERT-style：</strong>利用和BERT中一样的mask策略，然后预测出原文本</li>
+<li><strong>Deshuffling：</strong>随机打乱文本，然后预测出原文本</li>
+<li><strong>MASS-style：</strong>和BERT-style的不同在于，mask时直接用[M]替换</li>
+<li><strong>noise, replace spans：</strong>baseline中使用的策略</li>
+<li><strong>noise, drop tokens：</strong>和5差不多，但是不用哨兵token替换，直接drop</li>
+<li><strong>Random spans：</strong>和5差不多，但是每次选择的是一个长为3的text span</li>
+</ol>
+</blockquote>
+<ul>
+<li>作者首先对前三种目标进行对比：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112236904.png" srcset="/img/loading.gif" lazyload alt="image-20221127112236904" style="zoom:80%;" /></p>
+<ul>
+<li>结果发现BERT-style效果最好，然后再使用余下的方法和BERT-style进行比较：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112315271.png" srcset="/img/loading.gif" lazyload alt="image-20221127112315271" style="zoom:80%;" /></p>
+<p><strong>其实这三种和BERT-style差不多，但是后两种不需要预测出整个原文本，更快，</strong></p>
+<ul>
+<li>此外，作者还对比了<strong>不同的文本corruption率和允许的最长text span的长度</strong>（由于连续的mask掉的token都处理为一个哨兵token，允许最长的text span即指最多只有3个token可以替换成一个哨兵token，超过三个要使用另一个哨兵token）</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112647149.png" srcset="/img/loading.gif" lazyload alt="image-20221127112647149" style="zoom:80%;" /></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112657299.png" srcset="/img/loading.gif" lazyload alt="image-20221127112657299" style="zoom:80%;" /></p>
+<ul>
+<li>最后对这部分实验做个总结，作者是逐层递进来进行的对比试验：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127112910646.png" srcset="/img/loading.gif" lazyload alt="image-20221127112910646" style="zoom:80%;" /></p>
+<h3 id="1-6-数据集对比"><a href="#1-6-数据集对比" class="headerlink" title="1.6 数据集对比"></a>1.6 数据集对比</h3><ul>
+<li>作者还对不同类型和不同大小的预训练数据集进行了对比</li>
+<li>最后得出：<strong>用更专的数据来做预训练，对下游任务的提升越明显，或者换句更准确的话来说，预训练的语料跟任务语料domain越接近，效果越好，并且数据越多越好，即使预训练不能覆盖完</strong></li>
+<li>所以个人认为最佳的策略是<strong>在丰富的数据上进行预训练，然后再在领域相关、任务相关的语料上继续预训练，最后再fine-tuning</strong></li>
+</ul>
+<h3 id="1-7-训练策略"><a href="#1-7-训练策略" class="headerlink" title="1.7 训练策略"></a>1.7 训练策略</h3><ul>
+<li><strong>fine-tuning方法：</strong>作者对三种微调方法进行了对比：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>All parameters：</strong>微调时更新所有参数</li>
+<li><strong>Adapter layers：</strong>adapter layers接在编码器和解码器的每一个block的全连接层后面，在fine-tuning的时候只更新它们。adapter layers有一个内部维度d作为超参</li>
+<li><strong>Gradual unfreezing：</strong>一开始离任务层近的参数先更新，其它保持不动，随着训练的进行，逐渐放开其它层的参数。</li>
+</ol>
+</blockquote>
+<p>实验结果：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127115209871.png" srcset="/img/loading.gif" lazyload alt="image-20221127115209871" style="zoom:80%;" /></p>
+<p>发现还是更新所有参数效果最好，但是会慢很多</p>
+<ul>
+<li><strong>多任务学习：</strong>得益于提出的text-to-text范式，我们可以<strong>在预训练的时候把有监督的训练也加进来，一起做预训练（注意：多任务学习预训练中的数据集包括原本的无监督数据集+多个有监督数据集）</strong>。现在问题就变为了<strong>给定多个不同任务的数据集，怎样对数据进行采样</strong>，作者使用了以下三种策略：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Examples-proportional mixing：</strong>设第<script type="math/tex">i</script>个任务的数据集大小为<script type="math/tex">e_i</script>，那么采样自第<script type="math/tex">j</script>个数据集的概率为<script type="math/tex">r_j=\min(e_j,K)/∑_i\min(e_i,K)</script>，其中K为提前设置好的超参</li>
+<li><strong>Temperature-scaled mixing：</strong>在上面的策略下，再做一些软化，具体来说就是求得<script type="math/tex">r_j</script>后再开1/T方根，T为提前设置好的超参，T越大，各个任务数据集采样越均衡</li>
+<li><strong>Equal mixing：</strong>各数据集均匀采样</li>
+</ol>
+</blockquote>
+<p>实验结果：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221127120459146.png" srcset="/img/loading.gif" lazyload alt="image-20221127120459146" style="zoom:80%;" /></p>
+<p>实验结果都一般，<strong>不过注意，这里的多任务学习是多个任务一起做训练，相当于把pre-training和fine-tuning两个合并了，而不会对单个任务进行fine-tuning</strong>，所以效果不好也可以理解。</p>
+<ul>
+<li><strong>多任务学习+fine-tuning：</strong>作者采用了一下集中训练策略进行比较：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Unsupervised pre-training + fine-tuning：</strong>baseline中使用的方法，先无监督预训练再在特定的下游任务上微调</li>
+<li><strong>Multi-task training：</strong>直接在多任务数据集上训练（注意mutl-task的训练集中有有监督的也有无监督的）</li>
+<li><strong>Multi-task pre-training + fine-tuning：</strong>多任务预训练+微调</li>
+<li><strong>Leave-one-out multi-task training：</strong>在预训练的时候同样使用多任务，但是要去除和下游任务相关的那个数据集，然后再在下游任务微调</li>
+<li><strong>Supervised multi-task pre-training：</strong>在多任务预训练的时候把无监督任务剔除掉，然后再微调</li>
+</ol>
+</blockquote>
+<p>实验结果：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221128120902619.png" srcset="/img/loading.gif" lazyload alt="image-20221128120902619"></p>
+<p>通过实验结果得到以下结论：</p>
+<blockquote>
+<ol>
+<li>使用Multi-task pre-training + fine-tuning的结果和baseline差不多，表明<strong>在多任务后使用微调可以减轻不同的数据集mixing比例之间的权衡</strong>，即你选用的Mixing方式（比如上文的三种）不一定是最好的，但是微调可以减轻这种错选带来的干扰</li>
+<li>Leave-one-out的效果只有一点点下降，表明<strong>多任务学习不会导致严重的任务干扰</strong></li>
+<li>使用Supervised multi-task pre-training几乎除了翻译任务都导致了下降，表明<strong>翻译任务从英语预训练中学得的很少，反之其他任务仍然很依赖无监督预训练</strong></li>
+</ol>
+</blockquote>
+<h3 id="1-8-Scaling"><a href="#1-8-Scaling" class="headerlink" title="1.8 Scaling"></a>1.8 Scaling</h3><ul>
+<li>此外，作者还对模型规模等进行了测试，得出<strong>使用更多的数据、训练更大的模型、模型融合都能提高性能</strong></li>
+<li>最后提一句，经过一系列实验，T5还是选择了<strong>Multi-task pre-training + fine-tuning</strong>以及预测时采用束搜索，无监督预训练目标采用了<strong>noise, replace spans</strong></li>
+</ul>
+<h1 id="2-T5-v1-1"><a href="#2-T5-v1-1" class="headerlink" title="2 T5 v1.1"></a>2 T5 v1.1</h1><ul>
+<li>上文讲的是T5 v1.0，谷歌之后又发布了一个T5 v1.1，只有一些细微差别，改进如下：</li>
+</ul>
+<blockquote>
+<ol>
+<li>前馈神经层的激活函数由ReLU改为了GEGLU</li>
+<li>在pre-training的时候关闭Dropout，在微调的时候重新开启</li>
+<li>预训练的时候只使用C4数据集，而不混入下游数据集</li>
+<li>Embedding层和最后的分类层没有使用Weight Tying</li>
+<li>模型形状有点不同，较大的 d_model 和较小的 num_heads 和 d_ff</li>
+</ol>
+</blockquote>
+<h1 id="3-mT5"><a href="#3-mT5" class="headerlink" title="3 mT5"></a>3 mT5</h1><ul>
+<li>mT5的预训练目标和策略等等和T5基本相同， 值得注意的是mT5使用的是T5 v1.1</li>
+</ul>
+<h3 id="3-1-mC4数据集"><a href="#3-1-mC4数据集" class="headerlink" title="3.1 mC4数据集"></a>3.1 mC4数据集</h3><ul>
+<li>一个多语言版的C4数据集，但是使用的数据清洗方法和T5不同：</li>
+<li>对于多语言模型，一个很重要的部分是如何多多种语言进行采样，<strong>不同语种数据占比不同，有的语言样本少（low-resource languages ），如果不常采样到，模型就会由于样本过少而过拟合；如果样本量太大（high-resource languages ），内容丰富，模型又可能欠拟合，所以不能让模型遍历太多high-resource languages</strong></li>
+<li>要解决上述问题，直观上来说可以使用均匀分布来采样，但是使用均匀分布效果肯定比较差，因为很多high-resource languages 压根用不到</li>
+<li>所以采用了：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(L) \propto L^{\alpha}</script><p>其中L为对应语言的样本数，<script type="math/tex">\alpha \in [0,1]</script>为超参，<script type="math/tex">\alpha</script>越小分布越接近均匀分布，<strong>mT5经过实验发现<script type="math/tex">\alpha=0.3</script>最合适</strong>。那么这样就可以<strong>适当提升low-resource languages的采样概率而适当减少high-resource languages的采样概率</strong></p>
+<ul>
+<li>mC4中不同语言的样本数，以及使用不同<script type="math/tex">\alpha</script>的采样概率：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129191709077.png" srcset="/img/loading.gif" lazyload alt="image-20221129191709077" style="zoom:80%;" /></p>
+<h3 id="3-2-微调策略"><a href="#3-2-微调策略" class="headerlink" title="3.2 微调策略"></a>3.2 微调策略</h3><ul>
+<li>模型在mC4上预训练之后，作者采用了一下三种微调方式进行对比（微调采用lr = 0.001）：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>zero-shot：</strong>仅在英语训练集上微调</li>
+<li><strong>translate-train：</strong>在英语+由英语翻译到所有目标语言的数据集上微调</li>
+<li><strong>in-language multitask：</strong>在目标语言的gold data上微调（这里是真实的人工表述的数据，而tanslate-train的目标语言数据是翻译过来的）</li>
+</ol>
+</blockquote>
+<p>结果如下：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193118134.png" srcset="/img/loading.gif" lazyload alt="image-20221129193118134" style="zoom:80%;" /></p>
+<ul>
+<li>此外，作者还对比了采用不同的模型参数量对这三种微调方式的提升：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193253828.png" srcset="/img/loading.gif" lazyload alt="image-20221129193253828"></p>
+<h3 id="3-3-T5-vs-mT5"><a href="#3-3-T5-vs-mT5" class="headerlink" title="3.3 T5 vs mT5"></a>3.3 T5 vs mT5</h3><ul>
+<li>作者还对比了T5和mT5在英语QA任务上的效果差异：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129193755886.png" srcset="/img/loading.gif" lazyload alt="image-20221129193755886" style="zoom:80%;" /></p>
+<ul>
+<li>发现<strong>mT5还是略逊色于T5，但是随着模型规模的增大，之间的差异越来越小。也证明了多语言模型同样有能力比肩单语言模型</strong></li>
+</ul>
+<h3 id="3-4-消融实验"><a href="#3-4-消融实验" class="headerlink" title="3.4 消融实验"></a>3.4 消融实验</h3><ul>
+<li>作者还对训练的各方面进行了一些消融实验，策略如下：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Dropout 0.1：</strong>由于使用的是T5 v1.1，所以在预训练时没有使用Dropout，这里为了对照又把Dropout加上了</li>
+<li><strong>Sequence length 512：</strong>将最大序列长度减少为512</li>
+<li><strong>Span length 10：</strong>将连续token的长度由3变为10</li>
+<li><strong><script type="math/tex">\alpha=0.7,0.2</script>：</strong>采样时的超参改一下</li>
+<li><strong>No line length filter：</strong>数据清洗时的策略改一下</li>
+<li><strong>Add Wikipedia data：</strong>预训练使用mC4+Wikipedia data</li>
+</ol>
+</blockquote>
+<h3 id="3-5-zero-shot微调策略的问题"><a href="#3-5-zero-shot微调策略的问题" class="headerlink" title="3.5 zero-shot微调策略的问题"></a>3.5 zero-shot微调策略的问题</h3><ul>
+<li>采用zero-shot会造成预测时产生一些非法输出：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>Normalization：</strong>prediction是合法的，但是unicode characters被替代了，可以通过Unicode NFKC normalization来恢复</li>
+<li><strong>Grammatical adjustment：</strong>answer本身就存在语法问题</li>
+<li><strong>Accidental translation：</strong>模型直接做了翻译，将目标语言翻译成英文了，以至于生成部分或者完整英文</li>
+</ol>
+<p>同时，在一些短语生成的时候，出现正确答案之前可能会先预测出两个英语词</p>
+<p>上面最常出现的是Accidental translation</p>
+</blockquote>
+<p>以下是非法输出的一些栗子：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129195942926.png" srcset="/img/loading.gif" lazyload alt="image-20221129195942926" style="zoom:80%;" /></p>
+<ul>
+<li><strong>产生原因：</strong>模型在微调的时候压根没有接触过non-English的target文本，在non-English上做推理时，non-English的likelihood会降低，以至于English变成最可能的输出</li>
+<li><strong>解决方法：</strong>在微调时再次使用<strong>少量的mC4数据进行无监督二次预训练</strong>（和微调的样本数比例是1：100，并且包含全部101种语言），并且二次预训练时<strong>删除了target文本中的哨兵token</strong>，因为最后的结果发现在下游任务时就偶尔会预测出哨兵token，然后还将α从0.3降为0.1，<strong>使采样分布十分近似于均匀分布</strong>。结果提升显著：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221129201243017.png" srcset="/img/loading.gif" lazyload alt="image-20221129201243017" style="zoom:80%;" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/08/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
+                        <span class="hidden-mobile">集成学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/12/08/T5%20&amp;&amp;%20mT5/';
+          this.page.identifier = '/2022/12/08/T5%20&amp;&amp;%20mT5/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

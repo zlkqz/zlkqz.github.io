@@ -1,0 +1,859 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 词嵌入（word embedding） 词向量是⽤来表示词的向量，也可被认为是词的特征向量或表征。把词映射为实数域向量的技术也叫词嵌⼊（word embedding）  1.1 词嵌入相比于one-hot向量的优点 虽然one-hot词向量构造起来很容易，但通常并不是⼀个好选择。⼀个主要的原因是，one-hot词 向量⽆法准确表达不同词之间的相似度，如我们常常使⽤的余弦相似度。对于向量x, y">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NLP基础">
+<meta property="og:url" content="https://zlkqz.github.io/2022/12/08/NLP%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 词嵌入（word embedding） 词向量是⽤来表示词的向量，也可被认为是词的特征向量或表征。把词映射为实数域向量的技术也叫词嵌⼊（word embedding）  1.1 词嵌入相比于one-hot向量的优点 虽然one-hot词向量构造起来很容易，但通常并不是⼀个好选择。⼀个主要的原因是，one-hot词 向量⽆法准确表达不同词之间的相似度，如我们常常使⽤的余弦相似度。对于向量x, y">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526195633208.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526202027163.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125172417014.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211153340493.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220210181128975.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235403111.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235553030.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212005820238.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155418239.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png">
+<meta property="article:published_time" content="2022-12-08T08:40:30.590Z">
+<meta property="article:modified_time" content="2022-11-15T03:15:34.000Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png">
+  
+  <title>NLP基础 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="NLP基础">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-12-08 16:40" pubdate>
+        2022年12月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      12k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">NLP基础</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-词嵌入（word-embedding）"><a href="#1-词嵌入（word-embedding）" class="headerlink" title="1 词嵌入（word embedding）"></a>1 词嵌入（word embedding）</h1><ul>
+<li>词向量是⽤来表示词的向量，也可被认为是词的特征向量或表征。把词映射为实数域向量的技术也叫词嵌⼊（word embedding）</li>
+</ul>
+<h3 id="1-1-词嵌入相比于one-hot向量的优点"><a href="#1-1-词嵌入相比于one-hot向量的优点" class="headerlink" title="1.1 词嵌入相比于one-hot向量的优点"></a>1.1 词嵌入相比于one-hot向量的优点</h3><ul>
+<li>虽然one-hot词向量构造起来很容易，但通常并不是⼀个好选择。⼀个主要的原因是，<strong>one-hot词 向量⽆法准确表达不同词之间的相似度</strong>，如我们常常使⽤的余弦相似度。对于向量<script type="math/tex">x, y \in R^d</script>，它 们的余弦相似度是它们之间夹⻆的余弦值：</li>
+</ul>
+<script type="math/tex; mode=display">
+\frac{\boldsymbol{x}^{\top} \boldsymbol{y}}{\|\boldsymbol{x}\|\|\boldsymbol{y}\|} \in[-1,1]</script><p>由于任何两个不同词的one-hot向量的余弦相似度都为0，多个不同词之间的相似度难以通过one-hot向量准确地体现出来。</p>
+<p>word2vec⼯具的提出正是为了解决上⾯这个问题。它将每个词表示成⼀个定⻓的向量，并使得这些向量能较好地表达不同词之间的相似和类⽐关系。word2vec⼯具包含了两个模型，即<strong>跳字模型（skip-gram）</strong> 和<strong>连续词袋模型（continuous bag of words，CBOW）</strong></p>
+<h3 id="1-2-跳字模型（skip-gram）"><a href="#1-2-跳字模型（skip-gram）" class="headerlink" title="1.2 跳字模型（skip-gram）"></a>1.2 跳字模型（skip-gram）</h3><ul>
+<li>跳字模型假设基于某个词来生成它在⽂本序列周围的词</li>
+<li>举个例子，假设⽂本序列是 “the” “man” “loves” “his” “son”。以“loves”作为中⼼词，设背景窗口大小为2。如下图所示，跳字模型所关⼼的是，给定中⼼词“loves”，生成与它距离不超过2个词的背景词 “the” “man” “his” “son”的条件概率，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(the, man, his, son | loves)</script><p>假设给定中⼼词的情况下，背景词的生成是相互独⽴的，那么上式可以改写成：</p>
+<script type="math/tex; mode=display">
+P(the| loves) \times P(man | loves) \times P(his | loves) \times P(son | loves)</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125151903218.png" srcset="/img/loading.gif" lazyload alt="image-20220125151903218" style="zoom: 80%;" /></p>
+<ul>
+<li>在跳字模型中，<strong>每个词被表示成两个<script type="math/tex">d</script>维向量</strong>，⽤来计算条件概率。假设这个词在词典中索引为<script type="math/tex">i</script>， 当它为中心词时向量表示为<script type="math/tex">v_i \in R^d</script>，而为背景词时向量表示为<script type="math/tex">u_i \in R^d</script>。设中⼼词<script type="math/tex">w_c</script>在词典中索引为<script type="math/tex">c</script>，背景词<script type="math/tex">w_o</script>在词典中索引为<script type="math/tex">o</script>，<strong>给定中⼼词<script type="math/tex">w_c</script>生成背景词<script type="math/tex">w_o</script>的条件概率可以通过对向量内积做softmax运算而得到：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(w_{o} \mid w_{c}\right)=\frac{\exp \left(\boldsymbol{u}_{o}^{\top} \boldsymbol{v}_{c}\right)}{\sum_{i \in \mathcal{V}} \exp \left(\boldsymbol{u}_{i}^{\top} \boldsymbol{v}_{c}\right)},</script><p>其中词典索引集<script type="math/tex">V = \{0, 1, . . . , |V|−1\}</script></p>
+<ul>
+<li>假设给定⼀个⻓度为T的⽂本序列，设时间步t的词为<script type="math/tex">w^{(t)}</script>。 假设给定中⼼词的情况下背景词的生成相互独⽴，当背景窗口大小为m时，跳字模型的<strong>似然函数</strong>即给定任⼀中⼼词生成所有背景词的概率：</li>
+</ul>
+<script type="math/tex; mode=display">
+\prod_{t=1}^{T} \prod_{-m \leq j \leq m, j \neq 0} P\left(w^{(t+j)} \mid w^{(t)}\right),</script><p>这⾥小于1或大于T的时间步可以被忽略</p>
+<ul>
+<li><strong>跳字模型的训练：</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>跳字模型的参数是每个词所对应的中心词向量和背景词向量</strong></li>
+<li>先把把最大似然函数取负对数：</li>
+</ul>
+<script type="math/tex; mode=display">
+-\sum_{t=1}^{T} \sum_{-m \leq j \leq m, j \neq 0} \log P\left(w^{(t+j)} \mid w^{(t)}\right)</script><p>如果使⽤随机梯度下降，那么在每⼀次迭代⾥我们随机采样⼀个较短的子序列来计算有关该子序列的损失，然后计算梯度来更新模型参数</p>
+<ul>
+<li>由Softmax的运算结果可以得到：</li>
+</ul>
+<script type="math/tex; mode=display">
+\log P\left(w_{o} \mid w_{c}\right)=\boldsymbol{u}_{o}^{\top} \boldsymbol{v}_{c}-\log \left(\sum_{i \in \mathcal{V}} \exp \left(\boldsymbol{u}_{i}^{\top} \boldsymbol{v}_{c}\right)\right)</script><p>那么我们可以求得上式关于各中心词向量和背景词向量的梯度，比如关于<script type="math/tex">v_c</script>的梯度：</p>
+<script type="math/tex; mode=display">
+\frac{\partial \log P\left(w_{o} \mid w_{c}\right)}{\partial v_{c}}=\boldsymbol{u}_{o}-\sum_{j \in \mathcal{V}} P\left(w_{j} \mid w_{c}\right) \boldsymbol{u}_{j} .</script><p>训练结束后，对于词典中的任⼀索引为<script type="math/tex">i</script>的词，我们均得到该词作为中⼼词和背景词的两组词向量<script type="math/tex">v_i</script>和<script type="math/tex">u_i</script>。在⾃然语⾔处理应⽤中，<strong>⼀般使⽤跳字模型的中心词向量作为词的表征向量</strong></p>
+</blockquote>
+<ul>
+<li><strong>跳字模型的具体实现：</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li>可以用一个input-hidden-output的三层神经网络来建模上面的skip-model：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526195633208.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 50%;" /></p>
+<ul>
+<li><p>输入的表示：输入层中每个词由独热编码方式表示，即所有词均表示成一个N维向量，其中N为词汇表中单词的总数。在向量中，每个词都将与之对应的维度置为1,其余维度的值均为0</p>
+</li>
+<li><p>网络中传播的前向过程：输出层向量的值可以通过<strong>隐含层向量（K维，即每一个词向量的维度）</strong>，以及连接隐藏层和输出层之间的<strong>KxN维权重矩阵</strong>计算得到。输出层也是一个N维向量，每维与词汇表中的一个单词相对应。最后对输出层向量应用Softmax激活函数，可以计算每一个单词的生成概率。</p>
+</li>
+<li><strong>input层和hidden层之间的N<script type="math/tex">\times</script>K权重矩阵即N个词的中心词向量，从input层到hidden层的运算即对中心词向量的提取，具体见下图。而hidden层和output层之间的K<script type="math/tex">\times</script>N权重矩阵即N个词的背景词向量，hidden层到output层的运算即实现<script type="math/tex">u^T_ov_c</script>，然后再在最后做一个softmax</strong></li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20190526202027163.jpg" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述" style="zoom: 67%;" /></p>
+<p>左边矩阵是input，右边矩阵是input到hidden的权重矩阵，即N个词的中心词向量，由于输入是ont-hot向量，所以运算结果其实就是对中心词向量的一个提取</p>
+<ul>
+<li>在代码实现中是直接使用一个<strong>嵌入层（Embedding层）</strong>，此层的权值形状为<strong>词典大小<script type="math/tex">\times</script>每个词的维度</strong>，可以直接将中心词和背景词对应的one-hot向量转化为词向量。以skip-gram举例，中心词的one-hot向量形状为(批量大小，1)，背景词为(批量大小，词典大小)，两者皆通过嵌入层转化成词向量后形状分别为(批量大小，1，每个词维度)、(批量大小，词典大小，每个词维度)。然后通过<strong>小批量乘法</strong>实现中心词向量和背景词向量的相乘<script type="math/tex">u^T_ov_c</script>，得到形状为(批量大小，词典大小)的结果，然后进行Softmax</li>
+<li>上面的背景词one-hot向量第二维度不一定要为词典大小，如果我们采用<strong>负采样</strong>，则应该改为<strong>正负样本和的大小</strong>，具体可看下方负采样原理</li>
+<li>现在我们来解释一下<strong>小批量乘法</strong>，假设第⼀个小批量包含n个形状为<script type="math/tex">a \times b</script>的矩阵<script type="math/tex">X_1, . . . , X_n</script>，第⼆个小批量包含n个形状为<script type="math/tex">b \times c</script>的矩阵<script type="math/tex">Y_1, . . . , Y_n</script>。 这两个小批量的矩阵乘法输出为n个形状为<script type="math/tex">a \times c</script>的矩阵<script type="math/tex">X_1Y_1, . . . , X_nY_n</script></li>
+</ul>
+</blockquote>
+<h3 id="1-3-连续词袋模型（CBOW）"><a href="#1-3-连续词袋模型（CBOW）" class="headerlink" title="1.3 连续词袋模型（CBOW）"></a>1.3 连续词袋模型（CBOW）</h3><ul>
+<li><p>连续词袋模型与跳字模型类似。与跳字模型最大的不同在于，<strong>连续词袋模型假设基于某中⼼词在 ⽂本序列前后的背景词来生成该中心词</strong></p>
+</li>
+<li><p>如下图，在同样的⽂本序列“the” “man” “loves” “his” “son” ⾥，以“loves”作为中⼼词，且背景窗口大小为2时，连续词袋模型关心的是，给定背景词 “the” “man” “his” “son”生成中心词“loves”的条件概率，也就是：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+P(loves|the,man,his,son)</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220125172417014.png" srcset="/img/loading.gif" lazyload alt="image-20220125172417014" style="zoom:80%;" /></p>
+<ul>
+<li><p>因为连续词袋模型的背景词有多个，我们<strong>将这些背景词向量取平均</strong>，然后使⽤和跳字模型⼀样的 ⽅法来计算条件概率</p>
+<p>设<script type="math/tex">v_i \in R^d</script>和<script type="math/tex">u_i \in R^d</script>分别表示词典中索引为<script type="math/tex">i</script>的词作为背景词和中⼼词的向 量（<strong>注意符号的含义与跳字模型中的相反</strong>）。设中⼼词<script type="math/tex">w_c</script>在词典中索引为<script type="math/tex">c</script>，背景词<script type="math/tex">w_{o1} , . . . , w_{o2m}</script>在 词典中索引为<script type="math/tex">o_1, . . . , o_{2m}</script>，那么给定背景词生成中⼼词的条件概率：</p>
+<script type="math/tex; mode=display">
+.P\left(w_{c} \mid w_{o_{1}}, \ldots, w_{o_{2 m}}\right)=\frac{\exp \left(\frac{1}{2 m} \boldsymbol{u}_{c}^{\top}\left(\boldsymbol{v}_{o_{1}}+\ldots+\boldsymbol{v}_{o_{2 m}}\right)\right)}{\sum_{i \in \mathcal{V}} \exp \left(\frac{1}{2 m} \boldsymbol{u}_{i}^{\top}\left(\boldsymbol{v}_{o_{1}}+\ldots+\boldsymbol{v}_{o_{2 m}}\right)\right)}</script><p>设<script type="math/tex">W_o = \{w_{o1} , . . . , w_{o2m}\}</script>，<script type="math/tex">\overline{\boldsymbol{v}}_{o}=\left(\boldsymbol{v}_{o_{1}}+\ldots+\boldsymbol{v}_{o_{2 m}}\right) /(2 m)</script>，可将上式简化为：</p>
+<script type="math/tex; mode=display">
+P\left(w_{c} \mid \mathcal{W}_{o}\right)=\frac{\exp \left(\boldsymbol{u}_{c}^{\top} \overline{\boldsymbol{v}}_{o}\right)}{\sum_{i \in \mathcal{V}} \exp \left(\boldsymbol{u}_{i}^{\top} \overline{\boldsymbol{v}}_{o}\right)}</script></li>
+<li><p>给定⼀个⻓度为T的⽂本序列，设时间步t的词为<script type="math/tex">w^{(t)}</script>，背景窗口大小为m。连续词袋模型的似然函数是由背景词生成任⼀中⼼词的概率：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+\prod_{t=1}^{T} P\left(w^{(t)} \mid w^{(t-m)}, \ldots, w^{(t-1)}, w^{(t+1)}, \ldots, w^{(t+m)}\right)</script><ul>
+<li>接着再像跳字模型一样求似然函数的负对数，然后再求关于背景向量和中心向量的梯度。<strong>同跳字模型不⼀样的⼀点在于，我们⼀般使⽤连续词袋模型的背景词向量作为词的表征向量</strong></li>
+</ul>
+<ul>
+<li><strong>跳字模型更适合大型语料库，CBOW更适合小型的语料库</strong></li>
+</ul>
+<h3 id="1-4-近似训练"><a href="#1-4-近似训练" class="headerlink" title="1.4 近似训练"></a>1.4 近似训练</h3><ul>
+<li>无论是跳字模型还是连续词袋模型，在求梯度的时候，由于条件概率使⽤了softmax运 算，每⼀步的梯度计算都包含词典大小数⽬的项的累加。对于含⼏⼗万或上百万词的较大词典， 每次的梯度计算开销可能过大。为了降低该计算复杂度，本节将介绍两种近似训练⽅法，即<strong>负采样（negative sampling）</strong>或<strong>层序softmax（hierarchical softmax）</strong></li>
+</ul>
+<h5 id="1-4-1-高频词抽样"><a href="#1-4-1-高频词抽样" class="headerlink" title="1.4.1 高频词抽样"></a>1.4.1 高频词抽样</h5><ul>
+<li>首先介绍一下对高频词进行抽样（也称⼆次采样(subsampling)）。对于文本中的高频词，比如”the”，不进行抽样会带来两个问题：</li>
+</ul>
+<blockquote>
+<ol>
+<li>当我们得到成对的单词训练样本时，<strong>(“fox”, “the”) 这样的训练样本并不会给我们提供关于“fox”更多的语义信息</strong>，因为“the”在每个单词的上下文中几乎都会出现</li>
+<li>由于在文本中“the”这样的常用词出现概率很大，因此我们将会有大量的（”the“，…）这样的训练样本，而这些样本数量远远超过了我们学习“the”这个词向量所需的训练样本数</li>
+</ol>
+</blockquote>
+<ul>
+<li>Word2Vec通过“抽样”模式来解决这种高频词问题。它的基本思想如下：<strong>对于我们在训练原始文本中遇到的每一个单词，它们都有一定概率被我们从文本中删掉，而这个被删除的概率与单词的频率有关，词频越高被删除的概率就越大</strong></li>
+</ul>
+<h5 id="1-4-2-负采样（negative-sampling）"><a href="#1-4-2-负采样（negative-sampling）" class="headerlink" title="1.4.2 负采样（negative sampling）"></a>1.4.2 负采样（negative sampling）</h5><ul>
+<li><strong>负采样（negative sampling）</strong>解决了因为词典大小过大的计算开销问题。不同于原本每个训练样本更新所有的权重，<strong>负采样每次让一个训练样本仅仅更新一小部分的权重</strong>，这样就会降低梯度下降过程中的计算量。</li>
+<li>当我们用训练样本 ( input word: “fox”，output word: “quick”) 来训练我们的神经网络时，“ fox”和“quick”都是经过one-hot编码的。如果我们的vocabulary大小为10000时，在输出层，我们期望对应“quick”单词的那个神经元结点输出1，其余9999个都应该输出0。在这里，这9999个我们<strong>期望输出为0的神经元结点</strong>所对应的单词我们称为<strong>“negative” word</strong>。</li>
+<li><p>当使用负采样时，我们将随机选择一小部分的negative words（比如选5个negative words）来更新对应的权重。我们也会对我们的“positive” word进行权重更新（在我们上面的例子中，这个单词指的是”quick“）。<strong>（在论文中，作者指出指出对于小规模数据集，选择5-20个negative words会比较好，对于大规模数据集可以仅选择2-5个negative words。）</strong></p>
+</li>
+<li><p><strong>每个单词被选为“negative words”的概率计算公式与其出现的频次有关，词频越高，被选上的概率就越高</strong>，论文中给的公式是：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(w_{i}\right)=\frac{f\left(w_{i}\right)^{3 / 4}}{\sum_{j=0}^{n}\left(f\left(w_{j}\right)^{3 / 4}\right)}</script><ul>
+<li><strong>负采样概述：</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li>负采样修改了原来的⽬标函数。给定中⼼词<script type="math/tex">w_c</script>的⼀个背景窗口，我们把背景词<script type="math/tex">w_o</script>出现在该背景窗口看作⼀个事件，并将该事件的概率计算为：</li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(D=1 \mid w_{c}, w_{o}\right)=\sigma\left(\boldsymbol{u}_{o}^{\top} \boldsymbol{v}_{c}\right)</script><ul>
+<li>我们先考虑最大化⽂本序列中所有该事件的联合概率来训练词向量。具体来说，给定⼀个⻓度为T的⽂本序列，设时间步t的词为<script type="math/tex">w^{(t)}</script>且背景窗口大小为m，考虑最大化联合概率：</li>
+</ul>
+<script type="math/tex; mode=display">
+\prod_{t=1}^{T} \prod_{-m \leq j \leq m, j \neq 0} P\left(D=1 \mid w^{(t)}, w^{(t+j)}\right)</script><p>然而，以上模型中包含的事件仅考虑了正类样本。这导致当所有词向量相等且值为⽆穷大时，以上的联合概率才被最大化为1。很明显，这样的词向量毫⽆意义。<strong>负采样通过采样并添加负类样本使⽬标函数更有意义。</strong></p>
+<ul>
+<li>在采集了K个负样本后，我们可以将所求概率近似为：</li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(w^{(t+j)} \mid w^{(t)}\right)=P\left(D=1 \mid w^{(t)}, w^{(t+j)}\right) \prod_{k=1, w_{k} \sim P(w)}^{K} P\left(D=0 \mid w^{(t)}, w_{k}\right)</script><ul>
+<li>取负对数后变成了：</li>
+</ul>
+<script type="math/tex; mode=display">
+-\log P\left(w^{(t+j)} \mid w^{(t)}\right)=-\log \sigma\left(\boldsymbol{u}_{i_{t+j}}^{\top} v_{i_{t}}\right)-\sum_{k=1, w_{k} \sim P(w)}^{K} \log \sigma\left(-\boldsymbol{u}_{h_{k}}^{\top} v_{i_{t}}\right)</script><p>现在，<strong>训练中每⼀步的梯度计算开销不再与词典大小相关，而与K线性相关</strong>。当K取较小的常数时，负采样在每⼀步的梯度计算开销较小。</p>
+</blockquote>
+<ul>
+<li><strong>负采样的具体实现：</strong></li>
+</ul>
+<blockquote>
+<ul>
+<li><p>在实际应用中，我们并没有严格的将不在窗口中的词定义为负样本，而是根据词频直接随机取负样本，这样的实验结果是更优的。</p>
+</li>
+<li><p><strong>设词典大小为<script type="math/tex">\mathcal{V}</script>，将一根长为1的线段分为<script type="math/tex">\mathcal{V}</script>段，每段分别对应一个词，每个词对应的长度就是上面所写的每个词对应的频率<script type="math/tex">P(w_i)</script>，然后取一个M（M&gt;&gt;<script type="math/tex">\mathcal{V}</script>），论文中M取的是<script type="math/tex">10^8</script>，将长度为1的线段均分为M份（如下图），然后取K个负样本即在该线段上取K个点，取到的点在哪个词的对应线段就取哪个词</strong></p>
+</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211153340493.png" srcset="/img/loading.gif" lazyload alt="image-20220211153340493" style="zoom:67%;" /></p>
+</blockquote>
+<h5 id="1-4-3-层序Softmax（hierarchical-softmax）"><a href="#1-4-3-层序Softmax（hierarchical-softmax）" class="headerlink" title="1.4.3 层序Softmax（hierarchical softmax）"></a>1.4.3 层序Softmax（hierarchical softmax）</h5><ul>
+<li>层序softmax是另⼀种近似训练法。它使⽤了⼆叉树这⼀数据结构，树的每个叶结点代表词典<script type="math/tex">\mathcal{V}</script>中的每个词。</li>
+<li><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220210181128975.png" srcset="/img/loading.gif" lazyload alt="image-20220210181128975" style="zoom: 80%;" /></li>
+</ul>
+<p>假设<script type="math/tex">L(w)</script>为从⼆叉树的根结点到词<script type="math/tex">w</script>的叶结点的路径（包括根结点和叶结点）上的结点数。 设<script type="math/tex">n(w, j)</script>为该路径上第<script type="math/tex">j</script>个结点，并设该结点的背景词向量为<script type="math/tex">u_{n(w,j)}</script>。以上图为例，<script type="math/tex">L(w_3) = 4</script> 层序softmax将跳字模型中的条件概率近似表示为：</p>
+<script type="math/tex; mode=display">
+P\left(w_{o} \mid w_{c}\right)=\prod_{j=1}^{L\left(w_{o}\right)-1} \sigma\left([[ n\left(w_{o}, j+1\right)=\operatorname{leftChild}\left(n\left(w_{o}, j\right)\right) ]] \cdot \boldsymbol{u}_{n\left(w_{o}, j\right)}^{\top} \boldsymbol{v}_{c}\right),</script><p>其中如果判断x为真，[[x]] = 1；反之[[x]] = −1。</p>
+<p>例如让我们计算上图中给定词<script type="math/tex">w_c</script>生成词<script type="math/tex">w_3</script>的条件概率：</p>
+<script type="math/tex; mode=display">
+P\left(w_{3} \mid w_{c}\right)=\sigma\left(\boldsymbol{u}_{n\left(w_{3}, 1\right)}^{\top} \boldsymbol{v}_{c}\right) \cdot \sigma\left(-\boldsymbol{u}_{n\left(w_{3}, 2\right)}^{\top} \boldsymbol{v}_{c}\right) \cdot \sigma\left(\boldsymbol{u}_{n\left(w_{3}, 3\right)}^{\top} \boldsymbol{v}_{c}\right)</script><ul>
+<li><strong>推导过程：</strong></li>
+</ul>
+<blockquote>
+<p>设<script type="math/tex">d_{2}^{w}, d_{3}^{w}, \cdots, d_{l w}^{w} \in\{0,1\}</script>为词<script type="math/tex">w</script>的编码，<script type="math/tex">d_j^w</script>代表<script type="math/tex">w</script>路径上的第<script type="math/tex">j</script>个节点对应的编码（根节点无编码），则：</p>
+<script type="math/tex; mode=display">
+P(w_0|w_c) = \prod_{j=2}^{L(w)} P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right)</script><p>其中的每一项都是一个Logistic回归：</p>
+<script type="math/tex; mode=display">
+P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right) = \left\{\begin{array}{ll}
+\sigma\left(v_c^T u_{n_(w, j)}\right), & d_{j}^{w}=0 \\
+1-\sigma\left(v_c^T u_{n_(w, j)}\right), & d_{j}^{w}=1
+\end{array}\right.</script><p>可以将两式合并，并且由于<script type="math/tex">\sigma(x) + \sigma(-x) = 1</script>，可以将上式转化为：</p>
+<script type="math/tex; mode=display">
+P\left(d_{j}^{w} \mid v_c, u_{n_(w, j)}\right)=\left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]^{1-d_{j}^{w}} \cdot\left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]^{d^{w}}</script><p>我们取目标函数的对数：</p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \sum_{w \in \mathcal{V}}\log P(Context(w) | w) = \sum_{w \in \mathcal{V}} \sum_{j=2}^{L(w)}\left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>要最大化上述目标函数是比较困难的，但是我们可以最大化每一子项（即下式），达到局部最大化的效果，层序Softmax的Softmax其实就是体现在此处</strong>：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}(w, j) = \left\{\left(1-d_{j}^{w}\right) \cdot \log \left[\sigma\left(v_c^T u_{n_(w, j)}\right)\right]+d_{j}^{w} \cdot \log \left[\sigma\left(-v_c^T u_{n_(w, j)}\right)\right]\right\}</script><p><strong>这样就可以将计算复杂度降为<script type="math/tex">O(log_2 |\mathcal{V}|)</script>，当词典<script type="math/tex">\mathcal{V}</script>很大时，层序softmax在训练中每⼀步的梯度计算开销相较未使用近似训练时大幅降低。</strong></p>
+<p>显然，上式的<script type="math/tex">d_j^w</script>是用来<strong>判断下一个节点是否是本节点的左孩子的</strong>，其作用是为了满足给定任意中心词<script type="math/tex">w_c</script>，生成背景词的条件概率和为1：</p>
+<script type="math/tex; mode=display">
+\sum_{w \in \mathcal{V}} P\left(w \mid w_{c}\right)=1</script><p>这样才能使似然函数不至于训练到无穷大（和负采样要添加负样本是一样的原因），并且符合概率和为1</p>
+</blockquote>
+<ul>
+<li><strong>层序Softmax中的二叉树是使用的哈夫曼树，可以使搜索次数达到最小</strong></li>
+</ul>
+<h1 id="2-子词嵌入（fastText）"><a href="#2-子词嵌入（fastText）" class="headerlink" title="2 子词嵌入（fastText）"></a>2 子词嵌入（fastText）</h1><ul>
+<li>英语单词通常有其内部结构和形成⽅式。例如，我们可以从“dog” “dogs”和“dogcatcher”的 字面上推测它们的关系。这些词都有同⼀个词根“dog”，但使⽤不同的后缀来改变词的含义。而 且，这个关联可以推⼴⾄其他词汇。例如，“dog”和“dogs”的关系如同“cat”和“cats”的关 系，“boy”和“boyfriend”的关系如同“girl”和“girlfriend”的关系。这方面的研究称为构词学</li>
+<li><p>在word2vec中，我们并没有直接利⽤构词学中的信息。⽆论是在跳字模型还是连续词袋模型中， 我们都将形态不同的单词⽤不同的向量来表示。例如，“dog”和“dogs”分别⽤两个不同的向量表示，而模型中并未直接表达这两个向量之间的关系。鉴于此，fastText提出了子词嵌⼊（subword embedding）的⽅法，从而试图将构词信息引⼊word2vec中的跳字模型</p>
+</li>
+<li><p>在fastText中，每个中⼼词被表⽰成子词的集合。举个例子，例如单词”where”，⾸先，我们在单词的<strong>⾸尾分别添加特殊字符“&lt;” 和  “&gt;” 以区分作为前后缀的子词</strong>。然后，<strong>将单词当成⼀个由字符构成的序列来提取n元语法</strong>。例如，当n = 3时，我们得到所有⻓度为3的子词：”<wh"、"whe"、"her"、"ere"、"re>“以及特殊子词”where”。</p>
+</li>
+<li>在fastText中，对于⼀个词w，我们将它所有⻓度在3 ∼ 6的子词和特殊子词的并集记为<script type="math/tex">\mathcal{G}_{w}</script>。<strong>那么词典则是所有词的子词集合的并集</strong>。假设词典中子词<script type="math/tex">g</script>的向量为<script type="math/tex">z_g</script>，那么跳字模型中词w的作为中⼼词的向量<script type="math/tex">v_w</script>则表⽰成：</li>
+</ul>
+<script type="math/tex; mode=display">
+v_{w}=\sum_{g \in \mathcal{G}_{w}} z_{g}</script><ul>
+<li>fastText的其余部分同跳字模型⼀致，不在此重复。可以看到，<strong>与跳字模型相⽐，fastText中词典 规模更大，造成模型参数更多</strong>，同时⼀个词的向量需要对所有子词向量求和，继而导致<strong>计算复杂度更高</strong>。但与此同时，<strong>较生僻的复杂单词，甚⾄是词典中没有的单词，可能会从同它结构类似的 其他词那⾥获取更好的词向量表示。</strong></li>
+</ul>
+<h1 id="3-全局向量的词嵌入（GloVe）"><a href="#3-全局向量的词嵌入（GloVe）" class="headerlink" title="3 全局向量的词嵌入（GloVe）"></a>3 全局向量的词嵌入（GloVe）</h1><ul>
+<li>在词嵌入中，交叉熵损失函数有时并不是一个好的选择。一方面，正如上面所说，<strong>会带来整个词典大小的累加项，带来过大的计算开销</strong>。另一方面，<strong>词典中往往有大量生僻词，它们在数据集中出现的次数极少。而有关大量生僻词的条件概率分布在交叉熵损失函数中的最终预测往往并不准确。</strong></li>
+<li>GloVe模型既使用了语料库的全局统计（overall statistics）特征，也使用了局部的上下文特征（即滑动窗口）。为了做到这一点GloVe模型引入了<strong>共现矩阵（Cooccurrence Probabilities Matrix）</strong></li>
+</ul>
+<h3 id="3-1-共现矩阵"><a href="#3-1-共现矩阵" class="headerlink" title="3.1 共现矩阵"></a>3.1 共现矩阵</h3><ul>
+<li><p>假设：</p>
+<blockquote>
+<ol>
+<li>共现矩阵为<script type="math/tex">X</script>，<script type="math/tex">X</script>中的元素<script type="math/tex">X_{ij}</script>为语料库中<script type="math/tex">word_i</script>上下文中出现<script type="math/tex">word_j</script>的次数</li>
+<li><script type="math/tex">X_i = \sum_k X_{ik}</script>是出现在<script type="math/tex">word_i</script>上下文中所有词的总次数</li>
+<li><script type="math/tex">P_{ij} = P(j|i) = \frac{X_{ij}}{X_i}</script>为<script type="math/tex">word_j</script>出现在<script type="math/tex">word_i</script>上下文的概率</li>
+</ol>
+</blockquote>
+</li>
+<li><p>下面我们来举个例子：</p>
+</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235403111.png" srcset="/img/loading.gif" lazyload alt="image-20220211235403111" style="zoom:80%;" /></p>
+<p>设Ratio = <script type="math/tex">\frac{P_{ik}}{P_{jk}}</script>，，从上面的例子中我们可以总结出：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220211235553030.png" srcset="/img/loading.gif" lazyload alt="image-20220211235553030"></p>
+<p><strong>所以Ratio可以反应word之间的相关性，而GloVe就是利用了这个值</strong></p>
+<p>假设<script type="math/tex">i, j, k</script>三者的词向量都已经得到<script type="math/tex">w_i, w_j, w_k</script>，那么我们现在就要找一个函数F，使得：</p>
+<script type="math/tex; mode=display">
+F\left(w_{i}, w_{j}, w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><h3 id="3-2-损失函数推导"><a href="#3-2-损失函数推导" class="headerlink" title="3.2 损失函数推导"></a>3.2 损失函数推导</h3><ul>
+<li><p><strong>上述等式的右边是通过统计得到的已知量，左侧的三个词向量<script type="math/tex">w_i, w_j, w_k</script>是模型要求的量，F是未知的，如果能够将F的形式确定下来， 那么我们就可以通过优化算法求解词向量了，下面是求解过程</strong></p>
+</li>
+<li><p><script type="math/tex">\frac{P_{i k}}{P_{j k}}</script>考察了<script type="math/tex">i,j,k</script>三个词的相关性，不妨先只考虑<script type="math/tex">i,j</script>两个词的词向量<script type="math/tex">w_i, w_j</script>的相关性，向量相关关系的度量可以用两个向量的差，所以上述等式可以先改为：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+F\left((w_{i}-w_{j}), w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ul>
+<li>由于右边是标量，左边是向量，所以可以联想到使用向量的内积转化为标量：</li>
+</ul>
+<script type="math/tex; mode=display">
+F\left(\left(w_{i}-w_{j}\right)^{T} w_{k}\right)=F\left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{P_{i k}}{P_{j k}}</script><ul>
+<li>因为左边是差，右边是商，所以将F设为exp运算，将差转化为商：</li>
+</ul>
+<script type="math/tex; mode=display">
+\exp \left(w_{i}^{T} w_{k}-w_{j}^{T} w_{k}\right)=\frac{\exp \left(w_{i}^{T} w_{k}\right)}{\exp \left(w_{j}^{T} w_{k}\right)}=\frac{P_{i k}}{P_{j k}}</script><ul>
+<li>现在只需让分子分母分别相等就能成立：</li>
+</ul>
+<script type="math/tex; mode=display">
+\exp \left(w_{i}^{T} w_{k}\right)= \alpha P_{i k}, \exp \left(w_{j}^{T} w_{k}\right)= \alpha P_{j k}，\quad  \alpha为常数</script><ul>
+<li>现在只需要在整个词料库中考察<script type="math/tex">\exp \left(w_{i}^{T} w_{k}\right)= \alpha P_{i k}= \alpha \frac{X_{i k}}{X_{i}}</script>，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+w_{i}^{T} w_{k}=\log \left(\alpha \frac{X_{i k}}{X_{i}}\right)=\log X_{i k}-\log X_{i} + log\alpha</script><ul>
+<li>所以我们需要设置一个偏差项<script type="math/tex">b_i</script>来拟合<script type="math/tex">log X_i - log \alpha</script>，由于如果上式<script type="math/tex">i,k</script>位置交换，左式的值不变，但是右式的值会变，所以我们还要设置一个偏差项<script type="math/tex">b_k</script>，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+w_{i}^{T} w_{k}  + b_i + b_k=log X_{ik}</script><ul>
+<li>上面公式只是理想状态下，实际中只能要求两者接近    从而就有了代价函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+J=\sum_{i, k}\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><ul>
+<li>如果两个词共同出现的次数越多，那么其在代价函数中的影响就越大，所以要设计一个权重函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+J=\sum_{i, k} f\left(X_{i k}\right)\left(w_{i}^{T} w_{k}+b_{i}+b_{k}-\log X_{i k}\right)^{2}</script><blockquote>
+<p>对于函数f要满足一下条件：</p>
+<ol>
+<li>如果两个词没有共同出现过，那么权重就是0，即f(0) = 0</li>
+<li>两个词共同出现次数越多，那么权重就越大，所以f是一个递增函数</li>
+<li>由一些于高频词（<script type="math/tex">X_{ij}较大</script>，如”the”）的权重很大，但是实际上作用并不是很大，所以f(x)对于较大的x不能取太大的值</li>
+</ol>
+<p>综合上方条件，论文提出了一下函数：</p>
+<script type="math/tex; mode=display">
+f(x)=\left\{\begin{array}{r}
+\left(\frac{x}{x_{\max }}\right)^{\alpha}, \text { if } x<x_{\max } \\
+1, \text { otherwise }
+\end{array}\right.</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212005820238.png" srcset="/img/loading.gif" lazyload alt="image-20220212005820238" style="zoom:67%;" /></p>
+<p>作者认为<script type="math/tex">x_{max} = 100, \alpha = \frac{3}{4}</script>比较合适</p>
+</blockquote>
+<ul>
+<li>值得强调的是，如果词<script type="math/tex">w_i</script>出现在词<script type="math/tex">w_j</script>的背景窗口里，那么词<script type="math/tex">w_j</script>也会出现在词<script type="math/tex">w_i</script>的背景窗口⾥。也就是说，<script type="math/tex">x_{ij} = x_{ji}</script>。不同于<strong>word2vec中拟合的是非对称的条件概率<script type="math/tex">p_{ij}</script>，GloVe模型拟合的是对称的<script type="math/tex">\log X _{ij}</script></strong>。因此，<strong>任意词的中心词向量和背景词向量在GloVe模型中是等价的。但由于初始化值的不同，同⼀个词最终学习到的两组词向量可能不同</strong>。当学习得到所有词向量以后，GloVe模型使⽤<strong>中心词向量与背景词向量之和作为该词的最终词向量，这样做是为了提高鲁棒性（两者的初始化不同相当于加了不同的随机噪声，所以能提高鲁棒性）</strong></li>
+</ul>
+<h1 id="4-词嵌入应用"><a href="#4-词嵌入应用" class="headerlink" title="4 词嵌入应用"></a>4 词嵌入应用</h1><ul>
+<li>下列应用均为在训练好的预训练模型上进行训练的</li>
+</ul>
+<h3 id="4-1-求近义词和类比词"><a href="#4-1-求近义词和类比词" class="headerlink" title="4.1 求近义词和类比词"></a>4.1 求近义词和类比词</h3><ul>
+<li>求近义词可以运用词向量之间的余弦相似度</li>
+<li>求类比词，例如，“man”（男人）: “woman”（女人）:: “son”（儿子）: “daughter”（女儿）是⼀个类⽐例子。<strong>对于类比关系中的4个词 a : b :: c : d，给定前3个词a、b和c，求d。设词w的词向量为vec(w)。求类比词的思路是vec(a) - vec(b) = vec(c) - vec(d)，来求出vec(d)的近似值，然后寻找和其最相似的几个词向量</strong></li>
+</ul>
+<h3 id="4-2-使用循环神经网络进行文本情感分类"><a href="#4-2-使用循环神经网络进行文本情感分类" class="headerlink" title="4.2 使用循环神经网络进行文本情感分类"></a>4.2 使用循环神经网络进行文本情感分类</h3><ul>
+<li>⽂本分类是⾃然语⾔处理的⼀个常⻅任务，它把⼀段不定⻓的⽂本序列变换为⽂本的类别。本节关 注它的⼀个子问题：使⽤⽂本情感分类来分析⽂本作者的情绪。这个问题也叫<strong>情感分析（sentiment analysis）</strong></li>
+<li>本节我们使用电影评论的情感分析（二分类，positive和negtive的情感），在数据处理的时候，一条评论为一个样本，我们要先对评论进行分词（一般都是<strong>基于空格分词</strong>），并且由于每条评论的长度不一样，无法组成小批量，所以我们需要通过<strong>截断或者补充来使长度定长</strong></li>
+<li>对于模型的设计，先需要一个<strong>嵌入层将文本转化为词向量</strong>，再通过<strong>双向循环网络对特征序列进⼀步编码得到序列信息</strong>，然后将<strong>最初时间步和最终时间步的隐藏状态连结</strong>，再传入全连接层输出</li>
+<li>注意由于是预训练的模型，所以<strong>嵌入层的模型参数是不需要更新的</strong>，直接由训练好的模型参数导入即可。但是<strong>导入的模型的词向量维度要和预先设置的嵌入层词向量维度一致</strong></li>
+</ul>
+<h3 id="4-3-使用卷积神经网络（textCNN）进行文本情感分类："><a href="#4-3-使用卷积神经网络（textCNN）进行文本情感分类：" class="headerlink" title="4.3 使用卷积神经网络（textCNN）进行文本情感分类："></a>4.3 使用卷积神经网络（textCNN）进行文本情感分类：</h3><ul>
+<li><p>我们可以将⽂本数据看作只有⼀个维度的时间序列，并很⾃然地使⽤循环神经⽹络来表征这样的数据。其实，我们也可以将⽂本当作⼀维图像，从而可以⽤⼀维卷积神经⽹络来捕捉临近词之间的关联</p>
+</li>
+<li><p><strong>textCNN基于的假设是：一个词和其相邻的词（即卷积核中的词）是相关的</strong></p>
+</li>
+</ul>
+<h5 id="4-3-1-一维卷积层"><a href="#4-3-1-一维卷积层" class="headerlink" title="4.3.1 一维卷积层"></a>4.3.1 一维卷积层</h5><ul>
+<li>和二维卷积层一样，一维卷积层卷积窗口从输⼊数组的最左⽅开始，按从左往右的顺序，依次在输⼊数组上滑动，举个例子：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155418239.png" srcset="/img/loading.gif" lazyload alt="image-20220212155418239" style="zoom:67%;" /></p>
+<p>输出中的2是由输入的前两个和核逐个相乘得到的：0x1+1x2=2，然后窗口往后滑动一格，以此类推</p>
+<p>对于多通道操作也是和二维卷积层一样的：<br><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212155747478.png" srcset="/img/loading.gif" lazyload alt="image-20220212155747478"></p>
+<p>每个通道分别操作，然后各通道结果相加。如果想要输出多通道，则核还要增加一个维度</p>
+<h5 id="4-3-2-时序最大池化层"><a href="#4-3-2-时序最大池化层" class="headerlink" title="4.3.2 时序最大池化层"></a>4.3.2 时序最大池化层</h5><ul>
+<li>假设输⼊包含多个通道，各通道由不同时间步上的数值组成，<strong>各通道的输出即该通道所有时间步中最⼤的数值</strong>。因此，<strong>时序最⼤池化层的输⼊在各个通道上的时间步数可以不同</strong></li>
+<li>为提升计算性能，我们常常将不同⻓度的时序样本组成⼀个小批量，<strong>并通过在较短序列后附加特殊字符（如0）令批量中各时序样本⻓度相同</strong>。这些⼈为添加的特殊字符当然是⽆意义的。由于时序最⼤池化的主要⽬的是抓取时序中最重要的特征，它通常能<strong>使模型不受⼈为添加字符的影响</strong></li>
+</ul>
+<h5 id="4-3-3-textCNN模型"><a href="#4-3-3-textCNN模型" class="headerlink" title="4.3.3 textCNN模型"></a>4.3.3 textCNN模型</h5><ul>
+<li>textCNN模型主要使⽤了⼀维卷积层和时序最⼤池化层。假设输⼊的⽂本序列由n个词组成，每 个词⽤d维的词向量表⽰。那么输⼊样本的宽为n，⾼为1，输⼊通道数为d。textCNN的计算主要分为以下⼏步：</li>
+</ul>
+<blockquote>
+<ol>
+<li>定义多个⼀维卷积核，并使⽤这些卷积核对输⼊分别做卷积计算。宽度不同的卷积核可能 会捕捉到不同个数的相邻词的相关性</li>
+<li>对输出的所有通道分别做时序最⼤池化，再将这些通道的池化输出值连结为向量。</li>
+<li>通过全连接层将连结后的向量变换为有关各类别的输出。这⼀步可以使⽤丢弃层应对过拟合。</li>
+</ol>
+</blockquote>
+<ul>
+<li>举个例子，这⾥的输⼊是⼀个有11个词的句子，每个词⽤6维词向量表⽰。因此输⼊序列的宽为11，输⼊通道数为6。给定2个⼀维卷积核，核宽分别为2和4，输出 通道数分别设为4和5</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220212161751535.png" srcset="/img/loading.gif" lazyload alt="image-20220212161751535" style="zoom: 67%;" /></p>
+<p><strong>尽管每个通道的宽不同，我们依然可以对各个通道做时序最⼤池化， 并将9个通道的池化输出连结成⼀个9维向量</strong>。最终，使⽤全连接将9维向量变换为2维输出，即正⾯情感和负⾯情感的预测</p>
+<h1 id="5-机器翻译"><a href="#5-机器翻译" class="headerlink" title="5 机器翻译"></a>5 机器翻译</h1><ul>
+<li><p>我们使用seq2seq模型进行机器翻译，原理具体可看<a target="_blank" rel="noopener" href="https://zlkqz.top/2021/12/10/RNN/#7-Seq2Seq%E6%A8%A1%E5%9E%8B">seq2seq</a></p>
+</li>
+<li><p>这里我们只介绍一下如何评价翻译结果。评价机器翻译结果通常使⽤<strong>BLEU（Bilingual Evaluation Understudy）</strong>。对于模型预测序列中任意的子序列，BLEU考察这个子序列是否出现在标签序列中。</p>
+</li>
+<li>具体来说，设词数为n的⼦序列的精度为<script type="math/tex">p_n</script>。它是<strong>预测序列与标签序列匹配词数为n的⼦序列的数量与预测序列中词数为n的⼦序列的数量之⽐</strong>。举个例子，假设标签序列为A、B、C、D、E、F， 预测序列为A、B、B、C、D，那么<script type="math/tex">p_1 = 4/5, p_2 = 3/4, p_3 = 1/3, p_4 = 0</script>。设<script type="math/tex">len_{label}</script>和<script type="math/tex">len_{pred}</script>分 别为标签序列和预测序列的词数，那么，BLEU的定义为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\exp \left(\min \left(0,1-\frac{\text { len }_{\text {label }}}{\text { len }_{\text {pred }}}\right)\right) \prod_{n=1}^{k} p_{n}^{1 / 2^{n}}</script><p>其中k是我们希望匹配的⼦序列的最⼤词数。可以看到当预测序列和标签序列完全⼀致时， BLEU为1。</p>
+<ul>
+<li>设计思想：</li>
+</ul>
+<blockquote>
+<p>因为匹配较⻓⼦序列⽐匹配较短⼦序列更难，BLEU对匹配较⻓⼦序列的精度赋予了更⼤权重，具体是在上式的<script type="math/tex">p_n^{1/2^n}</script>中，当序列较长，即n较大时，由于<script type="math/tex">p_n \in [0, 1]</script>，所以<script type="math/tex">1/2^n</script>后会变大，并且n越大越接近1，即给较长序列更大的权重</p>
+<p>并且由于较短序列一般会有比较大的<script type="math/tex">p_n</script>，所以连乘项前面的系数是为了惩罚较短的输出而设置的。举个例子，当<script type="math/tex">len_{pred}</script>较小时，连乘项前面的系数就会小于1，以此来减少较短序列的权重。</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/08/RNN/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">RNN基本概念</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/08/KNN/">
+                        <span class="hidden-mobile">KNN总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/12/08/NLP%E5%9F%BA%E7%A1%80/';
+          this.page.identifier = '/2022/12/08/NLP%E5%9F%BA%E7%A1%80/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
