@@ -40,7 +40,7 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725143953768.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220725144005108.png">
 <meta property="article:published_time" content="2022-12-08T08:40:30.815Z">
-<meta property="article:modified_time" content="2022-09-15T08:53:16.000Z">
+<meta property="article:modified_time" content="2022-12-19T15:47:41.146Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/20191219223810610.png">
@@ -212,7 +212,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      22k 字
+      23k 字
     </span>
   
 
@@ -221,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      70 分钟
+      73 分钟
     </span>
   
 
@@ -941,7 +941,7 @@ F_{l c s}=\frac{\left(1+\beta^{2}\right) R_{l c s} P_{l c s}}{R_{l c s}+\beta^{2
 <p>metrics：字符串或Metric示例或一个函数</p>
 </blockquote>
 <ul>
-<li><strong>运行模型：model.fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0., validation_data=None, …)</strong></li>
+<li><strong>训练模型：model.fit(x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0., validation_data=None, …)</strong></li>
 </ul>
 <blockquote>
 <p>x/y：可以是numpy数组或者Tensor或list或迭代器等，这样x/y应一一对应。x也可为DataSet、Generator、Sequence，但是这种情况下就不应该指定y，因为y已经在x中了</p>
@@ -961,16 +961,18 @@ F_{l c s}=\frac{\left(1+\beta^{2}\right) R_{l c s} P_{l c s}}{R_{l c s}+\beta^{2
 <blockquote>
 <p>用法和fit基本一样</p>
 </blockquote>
-<h3 id="保存和加载模型"><a href="#保存和加载模型" class="headerlink" title="保存和加载模型"></a>保存和加载模型</h3><ul>
-<li><strong>model.save(filepath, overwrite=True, include_optimizer=True, save_format=None, …)</strong></li>
+<ul>
+<li><strong>采用另一种方法训练模型：</strong></li>
 </ul>
 <blockquote>
-<p>filepath后缀可为.h5</p>
-<p>save_format可为”tf”或”h5”，TF 1.X默认”h5”，TF 2.X默认”tf”</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> tf.GradientTape() <span class="hljs-keyword">as</span> tape:<br>    predictions = model(inputs, training = <span class="hljs-literal">True</span>)<br>    loss = loss_func(labels, predictions)<br>gradients = tape.gradient(loss, model.trainable_variables)<br>optimizer.apply_gradients(<span class="hljs-built_in">zip</span>(gradients, model.trainable_variables))<br></code></pre></td></tr></table></figure>
 </blockquote>
-<ul>
-<li><strong>加载模型：tf.keras.models.load_model(filepath, custom_objects=None, compile=True)</strong></li>
+<h3 id="保存和加载模型"><a href="#保存和加载模型" class="headerlink" title="保存和加载模型"></a>保存和加载模型</h3><ul>
+<li>既有keras保存方式，也有tf原生方式保存方式，<strong>但是前者仅仅适合使用Python环境恢复模型，后者则可以跨平台进行模型部署</strong>。既可以直接保存整个模型，也可以分别保存模型的权重和结构</li>
 </ul>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 直接保存</span><br>model.save(<span class="hljs-string">&quot;model.h5&quot;</span>, save_format = <span class="hljs-string">&quot;h5&quot;</span>)<br>model = tf.keras.models.load_model(<span class="hljs-string">&quot;model.h5&quot;</span>)<br><br><span class="hljs-comment"># 分别保存模型的权重和结构</span><br>json_str = model.to_json()<br>model.save_weights(<span class="hljs-string">&quot;model_weights.h5&quot;</span>, save_format = <span class="hljs-string">&quot;h5&quot;</span>)<br>model = tf.keras.models.model_from_json(json_str)<br>model.<span class="hljs-built_in">compile</span>(...)    <span class="hljs-comment"># 这种方法重新加载后需要重新配置优化器</span><br>model.load_weights（<span class="hljs-string">&quot;model_weights.h5&quot;</span>）<br><br><span class="hljs-comment"># 上面演示的是keras保存方式</span><br><span class="hljs-comment"># 要使用tf原生方式，需要在model.save()和model.save_weights()时添加参数save_format=&quot;tf&quot;，并且更改文件后缀</span><br><span class="hljs-comment"># 演示一下：</span><br>model.save_weights(<span class="hljs-string">&#x27;tf_model_weights.ckpt&#x27;</span>,save_format=<span class="hljs-string">&quot;tf&quot;</span>)<br>model.save(<span class="hljs-string">&#x27;tf_model_savedmodel&#x27;</span>, save_format=<span class="hljs-string">&quot;tf&quot;</span>)<br></code></pre></td></tr></table></figure>
+</blockquote>
 <h3 id="模型的反馈"><a href="#模型的反馈" class="headerlink" title="模型的反馈"></a>模型的反馈</h3><ul>
 <li><strong>设置Early Stop：tf.keras.callbacks.EarlyStopping(monitor=’val_loss’, min_delta=0, patience=0, …, restore_best_weights=False)</strong></li>
 </ul>
