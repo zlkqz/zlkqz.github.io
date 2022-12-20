@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 卷积层1.1 互相关运算 在⼆维卷积层中，⼀个⼆维输⼊数组和⼀个⼆维核（kernel）数组通过互相 关运算输出⼀个⼆维数组，如下图：   卷积窗口从输⼊数组的最左上⽅开始，按从左往右、从上往下的顺序，依 次在输⼊数组上滑动。当卷积窗口滑动到某⼀位置时，窗口中的输⼊⼦数组与核数组按元素相乘 并求和，得到输出数组中相应位置的元素  ⼆维卷积层将输⼊和卷积核做互相关运算，并加上⼀个标量偏差来得到输出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CNN基本概念">
+<meta property="og:url" content="https://zlkqz.github.io/2021/11/26/CNN/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 卷积层1.1 互相关运算 在⼆维卷积层中，⼀个⼆维输⼊数组和⼀个⼆维核（kernel）数组通过互相 关运算输出⼀个⼆维数组，如下图：   卷积窗口从输⼊数组的最左上⽅开始，按从左往右、从上往下的顺序，依 次在输⼊数组上滑动。当卷积窗口滑动到某⼀位置时，窗口中的输⼊⼦数组与核数组按元素相乘 并求和，得到输出数组中相应位置的元素  ⼆维卷积层将输⼊和卷积核做互相关运算，并加上⼀个标量偏差来得到输出">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/11/24/8amf1EYbuU7JPKd.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/24/Uro3neFEKigbCd2.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/24/kuH17Ef3p8Rbjdi.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/24/YE4p8vg31IaWbuK.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/24/iNGt96JXUlSAEKZ.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/BuGFLnhli2NJPCv.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/26/HBjoOyvEcqxSna6.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/28/NH5zDmge7RiwaGA.png">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-3f5a7ab9bcb15004d5a08fdf71e6a775_b.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/11/28/tTvmMekgd81PJX6.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/NjfabGRcVe8ysZk.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/28/2eiOxQsw4XoBFN9.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/Q4sfSlhjntDaXFM.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/28/rdpGSFRzuKZeTs2.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/zADLUxHm7wS8Z9Q.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-bd76d0f10f84d74f90505eababd3d4a1_720w.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/9aypGjvX1ESYtrM.png">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-862e1c2dcb24f10d264544190ad38142_720w.jpg">
+<meta property="og:image" content="https://i.loli.net/2021/11/26/YecToJs5xNf6H24.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/NTajCiqAydPvoVt.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/hfHF7BLySM1swZG.png">
+<meta property="og:image" content="https://i.loli.net/2021/11/25/DqcGv6FtMioNez1.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-c81da515c8fa9796601fde82e4d36f61_720w.jpg">
+<meta property="article:published_time" content="2021-11-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-20T06:16:18.204Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/11/24/8amf1EYbuU7JPKd.png">
+  
+  <title>CNN基本概念 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="CNN基本概念">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-26 00:00" pubdate>
+        2021年11月26日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">CNN基本概念</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-卷积层"><a href="#1-卷积层" class="headerlink" title="1 卷积层"></a>1 卷积层</h1><h3 id="1-1-互相关运算"><a href="#1-1-互相关运算" class="headerlink" title="1.1 互相关运算"></a>1.1 互相关运算</h3><ul>
+<li><strong>在⼆维卷积层中，⼀个⼆维输⼊数组和⼀个⼆维核（kernel）数组通过互相 关运算输出⼀个⼆维数组</strong>，如下图：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/24/8amf1EYbuU7JPKd.png" srcset="/img/loading.gif" lazyload alt="image-20211124131936578"></p>
+<p>卷积窗口从输⼊数组的最左上⽅开始，按从左往右、从上往下的顺序，依 次在输⼊数组上滑动。当卷积窗口滑动到某⼀位置时，窗口中的输⼊⼦数组与核数组按元素相乘 并求和，得到输出数组中相应位置的元素</p>
+<ul>
+<li><strong>⼆维卷积层将输⼊和卷积核做互相关运算，并加上⼀个标量偏差来得到输出</strong></li>
+<li><strong>使用互相关运算做边缘检测：</strong></li>
+</ul>
+<p>比如我们把kernel设为[1, -1]，要识别的图像为单通道，只有黑白：<img src="https://i.loli.net/2021/11/24/Uro3neFEKigbCd2.png" srcset="/img/loading.gif" lazyload alt="image-20211124132335469"></p>
+<p>则进行互相关运算之后可以变为：<img src="https://i.loli.net/2021/11/24/kuH17Ef3p8Rbjdi.png" srcset="/img/loading.gif" lazyload alt="image-20211124132405678"></p>
+<p>由此我们可以看出边缘是在第2和第6列</p>
+<ul>
+<li><strong>卷积运算：</strong>其实就是把核数组左右翻转并 上下翻转，再与输⼊数组做互相关运算。但因为我们的参数都是学习出来的，而不是一开始设定好的，<strong>所以卷积层⽆论使⽤互相关运算或卷积运算都不影响模型预测时的输出</strong>，而我们一般使用的也是互相关运算</li>
+</ul>
+<h3 id="1-2-特征图和感受野"><a href="#1-2-特征图和感受野" class="headerlink" title="1.2 特征图和感受野"></a>1.2 特征图和感受野</h3><ul>
+<li><strong>⼆维卷积层输出的⼆维数组可以看作输⼊在空间维度（宽和⾼）上某⼀级的表征，也叫特征图（feature map）</strong></li>
+<li><strong>影响元素x的前向计算的所有可能输⼊区域叫做x的感受野（receptive field）</strong>，用上图距离，阴影中19的感受野就是输入的四个阴影，如果输入的元素又是另一个卷积运算的输出，则我们还可以将19的感受野扩大</li>
+<li>可⻅，我们可以通过更深的卷积神经⽹络使特征 图中单个元素的感受野变得更加⼴阔，从而捕捉输⼊上更⼤尺⼨的特征</li>
+</ul>
+<h3 id="1-3-填充和步幅"><a href="#1-3-填充和步幅" class="headerlink" title="1.3 填充和步幅"></a>1.3 填充和步幅</h3><ul>
+<li><strong>填充（padding）是指在输⼊⾼和宽的两侧填充元素（通常是0元素）</strong>，如下图就是对3$\times$3数组进行填充，填充为1：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/24/YE4p8vg31IaWbuK.png" srcset="/img/loading.gif" lazyload alt="image-20211124133849360"></p>
+<ul>
+<li><p><strong>我们将每次滑动的⾏数和列数称为步幅（stride）</strong></p>
+</li>
+<li><p><strong>一般来说输出的高宽为：</strong></p>
+<script type="math/tex; mode=display">
+[(n_h - k_h + p_h + s_h) / s_h] \times [(n_w - k_w + p_w + s_w) / s_w]</script><p>其中：$n为输入，k为核，p为填充，s为步幅$</p>
+</li>
+<li><p>步幅为1时，很多情况下，我们会设置$p_h = k_h−1$和$p_w = k_w −1$来使输⼊和输出具有相同的⾼和宽</p>
+</li>
+</ul>
+<h3 id="1-4-多输入通道和多输出通道"><a href="#1-4-多输入通道和多输出通道" class="headerlink" title="1.4 多输入通道和多输出通道"></a>1.4 多输入通道和多输出通道</h3><ul>
+<li>当输入通道 $c_i &gt; 1$ 时，我们为每个输入通道都分配一个核数组，则得到一个形状为$c_i \times k_h \times k_w$的卷积核，最后再将每个通道上的卷积结果相加，就得到输出，如下图：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/24/iNGt96JXUlSAEKZ.png" srcset="/img/loading.gif" lazyload alt="image-20211124140843742"></p>
+<ul>
+<li>可是按上面的方法，无论输入通道是多少，输出通道总为1，我们设输入、输出通道分别为$c_i, c_o$，如果我们想要多通道的输出，则可以给每个输出通道都创建一个形状为$c_i \times k_h \times k_w$的核，则可以得到形状为$c_o \times c_i \times k_h \times k_w$的卷积核</li>
+</ul>
+<h3 id="1-5-1-times-1卷积层"><a href="#1-5-1-times-1卷积层" class="headerlink" title="1.5 1$\times$1卷积层"></a>1.5 1$\times$1卷积层</h3><ul>
+<li>卷积窗口形状为1 × 1的多通道卷积层。我们通常称之为1 × 1卷 积层，并将其中的卷积运算称为1 × 1卷积</li>
+<li>因为使⽤了最小窗口，1 × 1卷积失去了卷积层可以 识别⾼和宽维度上相邻元素构成的模式的功能。<strong>实际上，1 × 1卷积的主要计算发⽣在通道维上， 1 × 1卷积层通常⽤来调整⽹络层之间的通道数，并控制模型复杂度</strong></li>
+<li><strong>假设我们将通道维当作特征维，将⾼和宽维度上的元素当成数据样本，那 么1 × 1卷积层的作⽤与全连接层等价</strong></li>
+</ul>
+<h3 id="1-6-卷积层相对于全连接层的优点"><a href="#1-6-卷积层相对于全连接层的优点" class="headerlink" title="1.6 卷积层相对于全连接层的优点"></a>1.6 卷积层相对于全连接层的优点</h3><ul>
+<li><strong>卷积层使图像的像素在⾼和宽两个⽅向上的相关性均可能被有效识别</strong>，用全连接层举例，全连接层就相当于一个很大的卷积核，但是过大的卷积核带来的问题是我们可能无法提取到有效特征，并且像素在高宽方向上的相关性可能提取不到，如果选择合适的卷积核大小才更可能提取到</li>
+<li>卷积层通过滑动窗口将同⼀卷积核与不同位置的输⼊重复计算，同一输入通道使用同一卷积核，<strong>实现参数共享</strong>，从而<strong>避免参数过多</strong>。同时参数共享也具有物理意义，他使卷积层<strong>具有平移等特性</strong>，比如图像中有一只猫，那么无论他在图像的任何位置，我们都能提取到他的主要特征，将他识别为猫</li>
+<li>对于全连接层，<strong>任意一对输入和输出之间都会产生交互</strong>，形成稠密的连接结构</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/25/BuGFLnhli2NJPCv.png" srcset="/img/loading.gif" lazyload alt="image-20211125234024022"></p>
+<p>而在卷积神经网络中，卷积核尺度远小于输入的维度，<strong>这样每个输出神经元仅与前一层部分神经元产生交互</strong></p>
+<p><img src="https://i.loli.net/2021/11/26/HBjoOyvEcqxSna6.png" srcset="/img/loading.gif" lazyload alt="image-20211125234143051"></p>
+<p>我们将这种特性称为<strong>稀疏交互</strong>，这样我们可以将<strong>优化过程的时间复杂度减少好几个数量级，并且缓解过拟合</strong></p>
+<p>稀疏交互的物理意义是<strong>许多现实中的数据都具有局部的特征结构，我们可以先学习局部的特征，然后再将局部的特征组合起来形成更复杂和抽象的特征</strong></p>
+<h1 id="2-池化层"><a href="#2-池化层" class="headerlink" title="2 池化层"></a>2 池化层</h1><ul>
+<li><strong>池化层的提出是为了缓解卷积层对位置的过度敏感性</strong>。不同于卷积层⾥计算输⼊和核的互相关性，池化层直接计算池化窗口内元素的最⼤值或者平均值。该运算也分别叫做<strong>最⼤池化</strong>或<strong>平均池化</strong></li>
+<li><strong>池化层没有参数</strong></li>
+<li>Pooling 层说到底还是一个特征选择，信息过滤的过程。也就是说我们损失了一部分信息，这是一个和计算性能的一个妥协，随着运算速度的不断提高，这个妥协会越来越小，下面介绍几种常用的池化层</li>
+</ul>
+<h3 id="2-1-平均池化层（mean-pooling）"><a href="#2-1-平均池化层（mean-pooling）" class="headerlink" title="2.1 平均池化层（mean-pooling）"></a>2.1 平均池化层（mean-pooling）</h3><ul>
+<li>即对邻域内特征点只求平均</li>
+<li>优缺点：<strong>抑制邻域大小受限造成的估计值方差增大</strong>，能很好的保留背景，但容易使得图片变模糊</li>
+</ul>
+<h3 id="2-2-最大池化层（max-pooling）"><a href="#2-2-最大池化层（max-pooling）" class="headerlink" title="2.2 最大池化层（max-pooling）"></a>2.2 最大池化层（max-pooling）</h3><ul>
+<li>即对邻域内特征点取最大</li>
+<li>优缺点：<strong>抑制积层参数误差造成估计均值的偏移</strong>，能很好的保留纹理特征，一般现在都用max-pooling而很少用mean-pooling</li>
+</ul>
+<h3 id="2-3-全局平均池化（global-average-pooling）"><a href="#2-3-全局平均池化（global-average-pooling）" class="headerlink" title="2.3 全局平均池化（global average pooling）"></a>2.3 全局平均池化（global average pooling）</h3><ul>
+<li>对每个通道中所有元素求平均并直接⽤于分类</li>
+<li>优点：大幅度减少网络参数，理所当然的减少了过拟合现象</li>
+</ul>
+<h3 id="2-4-池化层的作用"><a href="#2-4-池化层的作用" class="headerlink" title="2.4 池化层的作用"></a>2.4 池化层的作用</h3><ol>
+<li><strong>对特征进行压缩，保留主要特征的同时减少参数和计算量，减少模型复杂度，防止过拟合。</strong>用池化层做互相关运算，本身就能减少特征的个数。并且对于全局平均优化，如果我们要进行图像分类，我们需要使用参数很多的全连接层，最后再导入Softmax，而如果我们使用全局平均优化，则可以规避全连接庞大的参数量，减少过拟合</li>
+<li><strong>实现不变性</strong>，包括平移不变性、旋转不变性和尺度不变性。</li>
+</ol>
+<h3 id="2-5-池化层的多通道"><a href="#2-5-池化层的多通道" class="headerlink" title="2.5 池化层的多通道"></a>2.5 池化层的多通道</h3><ul>
+<li>和卷积层有区别， 在处理多通道输⼊数据时，<strong>池化层对每个输⼊通道分别池化，而不是像卷积层那样将各通道的输 ⼊按通道相加。这意味着池化层的输出通道数与输⼊通道数相等</strong></li>
+</ul>
+<h1 id="3-LeNet"><a href="#3-LeNet" class="headerlink" title="3 LeNet"></a>3 LeNet</h1><ul>
+<li>分为卷积层块和全连接层块两个部分</li>
+</ul>
+<h3 id="3-1-卷积层块"><a href="#3-1-卷积层块" class="headerlink" title="3.1 卷积层块"></a>3.1 卷积层块</h3><ul>
+<li>卷积层块⾥的基本单位是卷积层后接最⼤池化层，卷积层⽤来识别图像⾥的空间模式，如线条和 物体局部，之后的最⼤池化层则⽤来降低卷积层对位置的敏感性</li>
+<li>在卷积层块中，每个卷积层都使⽤5 × 5的窗口，并在输出上使⽤sigmoid激活函数。第⼀个卷积层输出通道数为6，第⼆个卷积层输出通道数则增加到16。这是因为第⼆个卷积层⽐第⼀个卷积层的输⼊的⾼和宽要小，所以增加输出通道使两个卷积层的参数尺⼨类似</li>
+<li>卷积层块的两个最⼤池化层的窗口形状均为2 × 2，且步幅为2</li>
+</ul>
+<h3 id="3-2-全连接层块"><a href="#3-2-全连接层块" class="headerlink" title="3.2 全连接层块"></a>3.2 全连接层块</h3><ul>
+<li>当卷积层块的输出传⼊全连接层块时，全连接 层块会将小批量中每个样本变平（flatten）。也就是说，全连接层的输⼊形状将变成⼆维，其中第⼀维是小批量中的样本，第⼆维是每个样本变平后的向量表⽰，且向量⻓度为通道、⾼和宽的乘积</li>
+<li>全连接层块含3个全连接层。它们的输出个数分别是120、84和10，其中10为输出的类别个数</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/28/NH5zDmge7RiwaGA.png" srcset="/img/loading.gif" lazyload alt="20150903212346407"></p>
+<h1 id="4-AlexNet（相对于LeNet较深）"><a href="#4-AlexNet（相对于LeNet较深）" class="headerlink" title="4 AlexNet（相对于LeNet较深）"></a>4 AlexNet（相对于LeNet较深）</h1><ul>
+<li>相对于较小的LeNet，AlexNet包含8层变换，其中有5层卷积和2层全连接隐藏层，以及1个全连接输出层</li>
+<li>AlexNet第⼀层中的卷积窗口形状是11 × 11，步幅为4。因为ImageNet中绝⼤多数图像的⾼和宽均 ⽐MNIST图像的⾼和宽⼤10倍以上，ImageNet图像的物体占⽤更多的像素，所以需要更⼤的卷积窗口来捕获物体。第⼆层中的卷积窗口形状减小到5 × 5，之后全采⽤3 × 3</li>
+<li>第⼀、第⼆和第五个卷积层之后都使⽤了窗口形状为3 × 3、步幅为2的最⼤池化层</li>
+<li>AlexNet使⽤的卷积通道数也⼤于LeNet中的卷积通道数数⼗倍，5层的输出通道数分别为96，256，384，384，256</li>
+<li>紧接着最后⼀个卷积层的是两个输出个数为4096的全连接层</li>
+<li>AlexNet将sigmoid激活函数改成了更加简单的ReLU激活函数</li>
+<li>AlexNet使用了Dropout和图像增广</li>
+<li>AlexNet相比于LeNet有更小的学习率</li>
+<li><strong>AlexNet的一个很大的意义就是在图像识别上AI超越人工，并且首次使用了GPU加速</strong></li>
+</ul>
+<p><img src="https://pic2.zhimg.com/v2-3f5a7ab9bcb15004d5a08fdf71e6a775_b.jpg" srcset="/img/loading.gif" lazyload alt="v2-3f5a7ab9bcb15004d5a08fdf71e6a775_b"></p>
+<h1 id="5-VGG（使用重复元素）"><a href="#5-VGG（使用重复元素）" class="headerlink" title="5 VGG（使用重复元素）"></a>5 VGG（使用重复元素）</h1><h3 id="5-1-VGG块"><a href="#5-1-VGG块" class="headerlink" title="5.1 VGG块"></a>5.1 VGG块</h3><ul>
+<li>连续使⽤<strong>数个相同的填充为1、窗口形状为3 × 3的卷积层后接上⼀个步幅为2、窗口形状为2 × 2的最⼤池化层</strong>。卷积层保持输⼊的⾼和宽不变，而池化层则对其减半。可以指定卷积层的数量num_convs和输出通道数num_channels</li>
+</ul>
+<h3 id="5-2-VGG网络"><a href="#5-2-VGG网络" class="headerlink" title="5.2 VGG网络"></a>5.2 VGG网络</h3><ul>
+<li>我们构造⼀个VGG⽹络。它有5个卷积块，前2块使⽤单卷积层，而后3块使⽤双卷积层。第⼀块的输出通道是64，之后每次对输出通道数翻倍，直到变为512。因为这个⽹络使⽤了8个卷积层和3个全连接层，所以经常被称为VGG-11</li>
+<li>之后的3个全连接层神经元个数分别为：4096，4096，10（最后一层为类别个数）</li>
+<li>使用VGG后，每次输⼊的⾼和宽将减半，直到最终⾼和宽变成7后传⼊全连接层。与此同时，输出通道数每次翻倍，直到变成512。VGG这种⾼和宽减半以及通道翻倍的设计使多数卷积层都有相同的模型参数尺⼨和计算复杂度</li>
+</ul>
+<ul>
+<li><strong>VGG的一个很大的意义就是VGG用数个小卷积核代替大卷积核，使参数量减少</strong></li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/28/tTvmMekgd81PJX6.png" srcset="/img/loading.gif" lazyload alt="20180205192403250"></p>
+<h1 id="6-NiN（网络中的网络）"><a href="#6-NiN（网络中的网络）" class="headerlink" title="6 NiN（网络中的网络）"></a>6 NiN（网络中的网络）</h1><ul>
+<li>的LeNet、AlexNet和VGG在设计上的共同之处是：先以由卷积层构成的模块充分抽取空间特征，再以由全连接层构成的模块来输出分类结果。其中，AlexNet和VGG对LeNet的改进主要在于如何对这两个模块加宽（增加通道数）和加深</li>
+<li>但是NiN有所不同，由于1$\times$1卷积层可以替代全连接层，所以NiN中就进行了替换：</li>
+<li><strong>NiN之所以被称为网络中的网络是因为：NiN串联多个由卷积层和“准全连接层”（1X1的网络）的小网络来构成一个深层网络</strong></li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/25/NjfabGRcVe8ysZk.png" srcset="/img/loading.gif" lazyload alt="image-20211125152432130"></p>
+<h3 id="6-1-NiN块"><a href="#6-1-NiN块" class="headerlink" title="6.1 NiN块"></a>6.1 NiN块</h3><ul>
+<li>NiN块是NiN中的基础块。它由⼀个卷积层加两个充当全连接层的1 × 1卷积层串联而成。其中<strong>第⼀个卷积层的超参数可以⾃⾏设置，而第⼆和第三个卷积层的超参数⼀般是固定的</strong></li>
+<li>三个卷积层的通道数是相同的</li>
+</ul>
+<h3 id="6-2-NiN模型"><a href="#6-2-NiN模型" class="headerlink" title="6.2 NiN模型"></a>6.2 NiN模型</h3><ul>
+<li>NiN使⽤卷积窗口形状分别为11 × 11、5 × 5和3 × 3的卷积层，相应的输出通道数也与AlexNet中的⼀致。每个NiN块后接⼀ 个步幅为2、窗口形状为3 × 3的最⼤池化层</li>
+<li>除使⽤NiN块以外，NiN还有⼀个设计与AlexNet显著不同：NiN去掉了AlexNet最后的3个全连接层，取而代之地，NiN使⽤了输出通道数等于标签类别数的NiN块，然后使⽤<strong>全局平均池化层</strong>对每个通道中所有元素求平均并直接⽤于分类。<strong>这个设计的好处是可以显著减小模型参数尺⼨，从而缓解过拟合，然而，该设计有时会造成获得有效模型的训练时间的增加</strong></li>
+<li>NiN的学习率一般比AlexNet和VGG大</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/28/2eiOxQsw4XoBFN9.png" srcset="/img/loading.gif" lazyload alt="image-20211128200750143"></p>
+<h1 id="7-GoogLeNet（含并行连接的网络）"><a href="#7-GoogLeNet（含并行连接的网络）" class="headerlink" title="7 GoogLeNet（含并行连接的网络）"></a>7 GoogLeNet（含并行连接的网络）</h1><h3 id="7-1-Inception块"><a href="#7-1-Inception块" class="headerlink" title="7.1 Inception块"></a>7.1 Inception块</h3><p><img src="https://i.loli.net/2021/11/25/Q4sfSlhjntDaXFM.png" srcset="/img/loading.gif" lazyload alt="image-20211125155525157"></p>
+<ul>
+<li><p>Inception块⾥有4条并⾏的线路。前3条线路使⽤窗口⼤小分别是1 × 1、3 × 3和5 × 5的卷积层来<strong>抽取不同空间尺⼨下的信息</strong></p>
+</li>
+<li><p>其中中间2个线路会对输⼊先做1 × 1卷积来减少输⼊通道数，<strong>以降低模型复杂度</strong>。第四条线路则使⽤3 × 3最⼤池化层，后接1 × 1卷积层来改变通道数</p>
+</li>
+<li><p>4条线路都使⽤了合适的填充来使<strong>输⼊与输出的⾼和宽⼀致</strong>。最后我们将每条线路的输出<strong>在通道维上连结</strong>，并输⼊接下来的层中去</p>
+</li>
+</ul>
+<h3 id="7-2-GoogLeNet模型"><a href="#7-2-GoogLeNet模型" class="headerlink" title="7.2 GoogLeNet模型"></a>7.2 GoogLeNet模型</h3><ul>
+<li>在主体卷积部分中使⽤5个模块（block），<strong>每个模块之间使⽤步幅为2的3× 3最⼤池化层来减小输出⾼宽</strong></li>
+<li>第⼀模块使⽤⼀个64通道的7 × 7卷积层，步幅为2</li>
+</ul>
+<ul>
+<li>第⼆模块使⽤2个卷积层：⾸先是64通道的1 × 1卷积层，然后是将通道增⼤3倍（变为192）的3 × 3卷积层</li>
+</ul>
+<ul>
+<li><p>第三模块串联2个完整的Inception块。第⼀个Inception块的输出通道数为64+128+32+32 = 256（4个加数对应4条线路的通道数），其中第⼆、第三条线路由于有两个卷积层，所以两条线路的第一个<script type="math/tex">1 \times 1</script>卷积层先将输出通道减少为96和16，再接上第⼆层卷积层。</p>
+<p>第⼆个Inception块 输出通道数增⾄128 + 192 + 96 + 64 = 480。其中第⼆、第三条线路<script type="math/tex">1 \times 1</script>卷积层的输出通道分别为128和32</p>
+</li>
+</ul>
+<ul>
+<li><p>第四模块更加复杂。它串联了5个Inception块，其输出通道数分别是192 + (96,208) + (16,48) + 64 = 512、 160+(112,224)+(24,64)+64 = 512、128+(128,256)+(24,64)+64 = 512、112+(144,288)+(32,64)+64 = 528和 256+(160,320)+(32,128)+128 = 832</p>
+<p>其中括号里的第一个数字为二三条通道的第一个卷积核输出通道数</p>
+</li>
+</ul>
+<ul>
+<li>第五模块有输出通道数为256 + (160,320) + (32,128) + 128 = 832和384 + (192,384) + (48,128) + 128 = 1024的两个Inception块，<strong>然后再接上一个全局平均池化层</strong></li>
+</ul>
+<ul>
+<li><strong>五个模块相连之后最后再接上一个全连接层，神经元个数为类别个数</strong></li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/28/rdpGSFRzuKZeTs2.jpg" srcset="/img/loading.gif" lazyload alt="142051802f8de8513fe61601277f03c8"></p>
+<h1 id="8-批量归一化"><a href="#8-批量归一化" class="headerlink" title="8 批量归一化"></a>8 批量归一化</h1><ul>
+<li>我们一般在前向传播开始之前会对数据进行归一化，<strong>使不同特征之间具有可比性，并且更快收敛</strong></li>
+<li>通常来说，数据标准化预处理对于浅层模型就⾜够有效了，<strong>但对深层神经网络来说，即使输⼊数据已做标准化，训练中模型参数的更新依然很容易造成靠近输出层输出的剧烈变化。</strong>这种计算数值的不稳定性通常令我们难以训练出有效的深度模型</li>
+<li>而批量归一化则是对每一层的输出都做一次归一化，<strong>使均值永远为0，方差永远为1</strong></li>
+</ul>
+<h3 id="8-1-批量归一化层"><a href="#8-1-批量归一化层" class="headerlink" title="8.1 批量归一化层"></a>8.1 批量归一化层</h3><ul>
+<li><strong>通常，我们将批量归⼀化层置于全连接层中的仿射变换和激活函数之间</strong></li>
+<li>首先要对小批量求均值和方差：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+\boldsymbol{\mu}_{\mathcal{B}} \leftarrow \frac{1}{m} \sum_{i=1}^{m} \boldsymbol{x}^{(i)} \\
+\boldsymbol{\sigma}_{\mathcal{B}}^{2} \leftarrow \frac{1}{m} \sum_{i=1}^{m}\left(\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{\mathcal{B}}\right)^{2}
+\end{array}</script><p>得到的均值和方差是两个向量，维度为特征个数</p>
+<ul>
+<li>然后：</li>
+</ul>
+<script type="math/tex; mode=display">
+\hat{\boldsymbol{x}}^{(i)} \leftarrow \frac{\boldsymbol{x}^{(i)}-\boldsymbol{\mu}_{\mathcal{B}}}{\sqrt{\boldsymbol{\sigma}_{\mathcal{B}}^{2}+\epsilon}}</script><ul>
+<li>$\epsilon$ 为一个很小的数，一般取$10^{-8}$ ，是为了保证分母大于0</li>
+<li><strong>但是我们不确定是否一定是所有层都进行批量归一化才是最好的情况，所以我们要给予一个能变回归一化前的值的可能性，所以引入拉伸参数（scale）$\gamma$ 和  偏移参数（shift）$\beta$</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\boldsymbol{y}^{(i)} \leftarrow \gamma \odot \hat{\boldsymbol{x}}^{(i)}+\boldsymbol{\beta}</script><p>将$\gamma$ 和 $\beta$ 作为两个可变化参数，然后通过学习来决定拉伸多少和偏移多少</p>
+<h3 id="8-2-对卷积层做批量归一化"><a href="#8-2-对卷积层做批量归一化" class="headerlink" title="8.2 对卷积层做批量归一化"></a>8.2 对卷积层做批量归一化</h3><ul>
+<li>批量归⼀化发⽣在卷积计算之后、应⽤激活函数之前</li>
+<li><p>如果卷积计算输出多个通道，我们需要<strong>对这些通道的输出分别做批量归⼀化，且每个通道都拥有独立的拉伸和偏移参数</strong></p>
+</li>
+<li><p>设小批量中有m个样本。在单个通道上，假设卷积计算输出的⾼和宽分别为p和q。我们需要对该通道中m × p × q个元素同时做批量归⼀化</p>
+</li>
+</ul>
+<h3 id="8-3-预测时的批量归一化"><a href="#8-3-预测时的批量归一化" class="headerlink" title="8.3 预测时的批量归一化"></a>8.3 预测时的批量归一化</h3><ul>
+<li><strong>批量归一化在训练模式和预测模式的计算结果是不⼀样的</strong>。确定均值和方差时，单个样本的输出不应取决于批量归⼀化所需要的随机小批量中的均值和⽅差。⼀种常⽤的⽅法是<strong>通过移动平均（指数加权平均）估算整个训练数据集的样本均值和方差</strong>，并在预测时使⽤它们得到确定的输出</li>
+</ul>
+<h1 id="9-残差网络（ResNet）"><a href="#9-残差网络（ResNet）" class="headerlink" title="9 残差网络（ResNet）"></a>9 残差网络（ResNet）</h1><h3 id="9-1-残差块"><a href="#9-1-残差块" class="headerlink" title="9.1 残差块"></a>9.1 残差块</h3><p><img src="https://i.loli.net/2021/11/25/zADLUxHm7wS8Z9Q.png" srcset="/img/loading.gif" lazyload alt="image-20211125221657826"></p>
+<ul>
+<li>左图是一般形式的映射，右图为残差映射，是将输入x加权-&gt;激活-&gt;再加权后，再和原输入x相加，再送入激活函数</li>
+<li>这样的结构中，输⼊可通过跨层的数据线路更快地向前传播</li>
+<li>残差块⾥⾸先有2个有相同输出通道数的3 × 3卷积层。每个卷积层后接⼀个批量归⼀化层和ReLU激活函数。然后我们<strong>将输⼊跳过这2个卷积运算后直接加在最后的ReLU激活函数前</strong></li>
+<li>这样的设计要求2个卷积层的输出与输⼊形状⼀样，从而可以相加。如果想改变通道数，就需要引⼊⼀个额外的1 × 1卷积层来将输⼊变换成需要的形状后再做相加运算</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-bd76d0f10f84d74f90505eababd3d4a1_720w.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="9-2-ResNet模型"><a href="#9-2-ResNet模型" class="headerlink" title="9.2 ResNet模型"></a>9.2 ResNet模型</h3><ul>
+<li>ResNet的前两层跟之前介绍的GoogLeNet中的⼀样：在输出通道数为64、步幅为2的7 × 7卷积层后接步幅为2的3 × 3的最⼤池化层。不同之处在于<strong>ResNet每个卷积层（对应上图每一次加权运算）后增加的批量归⼀化层</strong></li>
+</ul>
+<ul>
+<li><strong>后接4个由残差块组成的模块，每个模块使用若干个同样输出通道数的残差块</strong></li>
+<li>第⼀个模块的通道数同输⼊通道数⼀致。由于之前已经使⽤了步幅为2的最⼤池化层，所以⽆须减小⾼和宽。<strong>之后的每个模块在第⼀个残差块⾥将上⼀个模块的通道数翻倍，并将高和宽减半</strong></li>
+</ul>
+<ul>
+<li>接着我们为ResNet加⼊所有残差块。这⾥每个模块的残差块个数可以自行定义</li>
+</ul>
+<ul>
+<li>最后，与GoogLeNet⼀样，加⼊全局平均池化层后接上全连接层输出</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/25/9aypGjvX1ESYtrM.png" srcset="/img/loading.gif" lazyload alt="image-20211125223902681"></p>
+<p>其中10为类别个数</p>
+<p><img src="https://pic3.zhimg.com/80/v2-862e1c2dcb24f10d264544190ad38142_720w.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="9-3-ResNet的作用"><a href="#9-3-ResNet的作用" class="headerlink" title="9.3 ResNet的作用"></a>9.3 ResNet的作用</h3><ul>
+<li>在深度神经网络中，如果我们进行反向传播，那么由链式求导法则可知，我们会<strong>涉及到非常多参数和导数的连乘</strong>，这时误差很容易产生消失或膨胀，通过实验也可以发现，层数更深的神经网络结果反而没有浅层的好</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/26/YecToJs5xNf6H24.png" srcset="/img/loading.gif" lazyload alt="image-20211125235804507"></p>
+<p>这种结果很大程度归结于深度神经网络的<strong>梯度消失问题</strong></p>
+<ul>
+<li>而ResNet的提出就是为了解决梯度消失的问题，<strong>既然离输入近的神经网络层较难训练，那么我们可以将他短接到更接近输出的层</strong>，并且这种方法并不会对结果产生影响，假设输入为X，我们在一般网络中想要拟合f(X)，放到残差网络中就只需要拟合f(X) - X 即可</li>
+<li><strong>残差网络的设计思想不仅仅局限于卷积网络，实际上很多其他的网络也用到了残差，也取得了很不错的效果，都是为了解决深度神经网络的梯度消失问题</strong></li>
+</ul>
+<h1 id="10-稠密连接网络（DenseNet）"><a href="#10-稠密连接网络（DenseNet）" class="headerlink" title="10 稠密连接网络（DenseNet）"></a>10 稠密连接网络（DenseNet）</h1><p><img src="https://i.loli.net/2021/11/25/NTajCiqAydPvoVt.png" srcset="/img/loading.gif" lazyload alt="image-20211125224307704"></p>
+<ul>
+<li>DenseNet里模块B的输出不是像ResNet那样和模块A的输出相加，而是<strong>在通道维上连结</strong></li>
+<li>DenseNet的主要构建模块是<strong>稠密块（dense block）</strong>和<strong>过渡层（transition layer）</strong>。前者定义了输⼊和输出是如何连结的，后者则⽤来控制通道数，使之不过⼤</li>
+</ul>
+<h3 id="10-1-稠密块"><a href="#10-1-稠密块" class="headerlink" title="10.1 稠密块"></a>10.1 稠密块</h3><ul>
+<li>我们将批量归⼀化、激活和卷积组合到一起形成一种块：</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/25/hfHF7BLySM1swZG.png" srcset="/img/loading.gif" lazyload alt="image-20211125225431518"></p>
+<ul>
+<li><strong>稠密块由多个conv_block组成，每块使⽤相同的输出通道数。但在前向计算时，我们将每块的输⼊和输出在通道维上连结</strong></li>
+</ul>
+<h3 id="10-2-过渡层"><a href="#10-2-过渡层" class="headerlink" title="10.2 过渡层"></a>10.2 过渡层</h3><ul>
+<li>由于每个稠密块都会带来通道数的增加，使⽤过多则会带来过于复杂的模型。过渡层⽤来控制模型复杂度。它<strong>通过1 × 1卷积层来减小通道数，并使⽤步幅为2的平均池化层减半高和宽</strong>，并且也要进行激活和BN运算</li>
+</ul>
+<h3 id="10-3-DenseNet模型"><a href="#10-3-DenseNet模型" class="headerlink" title="10.3 DenseNet模型"></a>10.3 DenseNet模型</h3><ul>
+<li>DenseNet⾸先使⽤同ResNet⼀样的单卷积层和最⼤池化层</li>
+</ul>
+<p><img src="https://i.loli.net/2021/11/25/DqcGv6FtMioNez1.png" srcset="/img/loading.gif" lazyload alt="image-20211125230039527"></p>
+<ul>
+<li>接着使用4个稠密块，同ResNet⼀样，我们可以设置每个稠密块使⽤多少个卷积层</li>
+</ul>
+<ul>
+<li><p>在稠密块之间我们使用过渡层来减半高宽，并减半通道数</p>
+<p>注意最后一层是不使用过渡层进行减半的</p>
+</li>
+<li><p>最后再和ResNet一样，接上全局平均池化层和全连接层来输出</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-c81da515c8fa9796601fde82e4d36f61_720w.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/12/06/RNN/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">RNN基本概念</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/23/%E4%B8%8D%E5%90%8Cbatch%20size%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%9A%84%E5%BD%B1%E5%93%8D/">
+                        <span class="hidden-mobile">不同batch size梯度下降的影响</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2021/11/26/CNN/';
+          this.page.identifier = '/2021/11/26/CNN/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
