@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://i.loli.net/2021/11/10/TUMHuC3N9rX18iz.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/10/xG1TrPNfyimzq7Q.png">
 <meta property="article:published_time" content="2021-11-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-20T06:15:42.813Z">
+<meta property="article:modified_time" content="2023-01-08T06:26:05.500Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png">
@@ -376,8 +376,13 @@ J_{\text {hinge }}=\sum_{i=1}^{N} \max \left(0,1-\operatorname{sgn}\left(y_{i}\r
 <p><img src="https://i.loli.net/2021/11/09/KngeQOwp54JZRMf.png" srcset="/img/loading.gif" lazyload alt="image-20211109225642368"></p>
 <ul>
 <li>可以看到当$y$为正类时，模型输出负值会有较大的惩罚，当模型输出为正值且在$(0, 1)$区间时还会有一个较小的惩罚。即合页损失不仅惩罚预测错的，并且对于预测对了但是置信度不高的也会给一个惩罚，只有置信度高的才会有零损失。<strong>使用合页损失直觉上理解是要找到一个决策边界，使得所有数据点被这个边界正确地、高置信地被分类</strong></li>
-<li><strong>Hinge Loss常用在支持向量机（SVM）中，在SVM的软间隔中替换数学性质不好的0/1损失</strong></li>
+<li><p><strong>Hinge Loss常用在支持向量机（SVM）中，在SVM的软间隔中替换数学性质不好的0/1损失</strong></p>
+</li>
+<li><p><strong>Hinge Loss变种：</strong>有些时候我们关注的并不是单个样本的分类结果，而是两个样本之间的相似性，所以会使用：</p>
+</li>
 </ul>
+<script type="math/tex; mode=display">
+\ell= \max(0, m + score(pos\_pair) - score(neg\_pair))</script><p>其中两个score分别为正负样本对的得分，m是间隔参数margin，目的是<strong>希望正样本分数越高越好，负样本分数越低越好，但二者得分之差最多到m就足够了，差距增大并不会有任何奖励。这样能够拉开正负样本间的差距，更好区分正负样本</strong></p>
 <h1 id="2-评估模型的指标"><a href="#2-评估模型的指标" class="headerlink" title="2 评估模型的指标"></a>2 评估模型的指标</h1><h3 id="2-1-基本概念"><a href="#2-1-基本概念" class="headerlink" title="2.1 基本概念"></a>2.1 基本概念</h3><p><img src="https://i.loli.net/2021/11/09/OCNnaMs2ceBQIJz.png" srcset="/img/loading.gif" lazyload alt="image-20211109233859657"></p>
 <h3 id="2-2-查准率和查全率"><a href="#2-2-查准率和查全率" class="headerlink" title="2.2 查准率和查全率"></a>2.2 查准率和查全率</h3><script type="math/tex; mode=display">
 查准率 P（Precision） = \frac{TP}{TP + FP}</script><script type="math/tex; mode=display">
