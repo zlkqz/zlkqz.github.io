@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/QEBb3gUVxmuDS7O.png">
 <meta property="og:image" content="https://s2.loli.net/2021/12/10/5kGV8uqeaYn3wlF.png">
 <meta property="article:published_time" content="2021-12-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-20T06:16:36.992Z">
+<meta property="article:modified_time" content="2023-03-29T16:13:33.246Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://s2.loli.net/2021/12/10/oAbwO43tDSTWpVg.png">
@@ -362,7 +362,7 @@ PP(w_1, ..., w_t) = P(w_1, ..., w_t)^{-\frac{1}{N}} = \sqrt[N]{\frac{1}{P\left(w
 </ol>
 </blockquote>
 <ul>
-<li>而在RNN中，由于每个时间步的预测是相互独立的，所以：</li>
+<li>采用unigram，假设每个时间步的预测是相互独立的：</li>
 </ul>
 <script type="math/tex; mode=display">
 PP(w_1, ..., w_t) = \sqrt[N]{\frac{1}{\prod_{i=1}^NP(w_i)}}</script><p>这是uni-gram（即当前词不取决于前面的词）的困惑度计算公式，针对不同近似的N元语法又不同的计算公式，比如bi-gram、tri-gram等。另外，里面的<script type="math/tex">P(w_i)</script>直接取输出层经过Softmax的概率值即可</p>
