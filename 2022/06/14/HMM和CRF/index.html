@@ -1,0 +1,916 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 隐马尔可夫模型 隐马尔可夫模型（Hidden Markov Model, HMM）常用于序列标注问题，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于概率图模型（用图结构来描述变量之间的关系，属于生成式模型） HMM属于贝叶斯网，其两个基本假设其实就是贝叶斯网的假设：给定父节点集，贝叶斯网假设每个属性与他的非后裔属性独立  1.1 模型定义 设Q&#x3D;  \{q_1, ..., q_N\}是所有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HMM和CRF">
+<meta property="og:url" content="https://zlkqz.github.io/2022/06/14/HMM%E5%92%8CCRF/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 隐马尔可夫模型 隐马尔可夫模型（Hidden Markov Model, HMM）常用于序列标注问题，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于概率图模型（用图结构来描述变量之间的关系，属于生成式模型） HMM属于贝叶斯网，其两个基本假设其实就是贝叶斯网的假设：给定父节点集，贝叶斯网假设每个属性与他的非后裔属性独立  1.1 模型定义 设Q&#x3D;  \{q_1, ..., q_N\}是所有">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028120947404.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028122410576.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028132201642.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028132500929.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029144742544.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029152606453.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029152749755.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-0650e1511e7d4419c9528a8d08ea61fd_720w.webp">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-2064e34cece3be4e852b1ace6bbca2ba_720w.webp">
+<meta property="article:published_time" content="2022-06-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-30T04:42:40.971Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028120947404.png">
+  
+  <title>HMM和CRF - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="HMM和CRF">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-06-14 00:00" pubdate>
+        2022年6月14日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      12k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      36 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HMM和CRF</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-隐马尔可夫模型"><a href="#1-隐马尔可夫模型" class="headerlink" title="1 隐马尔可夫模型"></a>1 隐马尔可夫模型</h1><ul>
+<li>隐马尔可夫模型（Hidden Markov Model, HMM）常用于序列标注问题，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于<strong>概率图模型</strong>（用图结构来描述变量之间的关系，属于生成式模型）</li>
+<li>HMM属于<a target="_blank" rel="noopener" href="https://zlkqz.site/2022/09/28/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/#6-EM%E7%AE%97%E6%B3%95">贝叶斯网</a>，其两个基本假设其实就是贝叶斯网的假设：<strong>给定父节点集，贝叶斯网假设每个属性与他的非后裔属性独立</strong></li>
+</ul>
+<h3 id="1-1-模型定义"><a href="#1-1-模型定义" class="headerlink" title="1.1 模型定义"></a>1.1 模型定义</h3><ul>
+<li>设<script type="math/tex">Q=  \{q_1, ..., q_N\}</script>是所有可能的状态的集合，<script type="math/tex">V = \{v_1, ..., v_M\}</script>是所有可能的观测的集合。而<script type="math/tex">I = (i_1, ..., i_T)</script>是状态序列，<script type="math/tex">O = (o_1, ..., o_T)</script>是对应的观测序列，模型定义了三种参数：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>状态转移矩阵A：</strong></li>
+</ol>
+<script type="math/tex; mode=display">
+A = [a_{ij}]_{N \times N}</script><p>其中<script type="math/tex">a_{ij}</script>指在时刻t处于状态<script type="math/tex">q_i</script>的条件下转移到在t+1时刻状态为<script type="math/tex">q_j</script>的概率：</p>
+<script type="math/tex; mode=display">
+a_{ij} = P(i_{t+1}=q_j|i_t=q_i)</script><ol>
+<li><strong>观测概率矩阵B：</strong></li>
+</ol>
+<script type="math/tex; mode=display">
+B = [b_j(k)]_{N\times N}</script><p>其中<script type="math/tex">b_j(k)</script>指在t时刻处于状态<script type="math/tex">q_j</script>时生成观测<script type="math/tex">v_k</script>的概率：</p>
+<script type="math/tex; mode=display">
+b_j(k) = P(o_t = v_k|i_t =  q_j)</script><ol>
+<li><strong>初始状态概率向量<script type="math/tex">\pi</script>：</strong></li>
+</ol>
+<script type="math/tex; mode=display">
+\pi = (\pi_i)</script><p>其中<script type="math/tex">\pi_i</script>是<script type="math/tex">t=1</script>时处于状态<script type="math/tex">q_i</script>的概率：</p>
+<script type="math/tex; mode=display">
+\pi = P(i_1 = q_i)</script></blockquote>
+<ul>
+<li>一般使用一个三元组表示HMM的参数：</li>
+</ul>
+<script type="math/tex; mode=display">
+\lambda = (A,B,\pi)</script><ul>
+<li>上面对参数的定义中，隐含了HMM的两个基本假设：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>齐次马尔可夫性假设：</strong>假设隐藏的马尔可夫链在任意时刻t的状态只依赖于前一时刻的状态，与其他时刻的状态及观测无关，也与时刻t无关：</li>
+</ol>
+<script type="math/tex; mode=display">
+P\left(i_{t} \mid i_{t-1}, o_{t-1}, \cdots, i_{1}, o_{1}\right)=P\left(i_{t} \mid i_{t-1}\right), \quad t=1,2, \cdots, T</script><ol>
+<li><strong>观测独立性假设：</strong>假设任意时刻的观测只依赖于该时刻的马尔可夫链的状态，与其他观测及状态无关：</li>
+</ol>
+<script type="math/tex; mode=display">
+P\left(o_{t} \mid i_{T}, o_{T}, i_{T-1}, o_{T-1}, \cdots, i_{t+1}, o_{t+1}, i_{t}, i_{t-1}, o_{t-1}, \cdots, i_{1}, o_{1}\right)=P\left(o_{t} \mid i_{t}\right)</script><p><strong>其实这两个假设就是贝叶斯网的假设，只不过结构特殊一点，是一个线性结构</strong></p>
+</blockquote>
+<h3 id="1-2-概率计算"><a href="#1-2-概率计算" class="headerlink" title="1.2 概率计算"></a>1.2 概率计算</h3><ul>
+<li>概率计算即给定模型<script type="math/tex">\lambda = (A,B,\pi)</script>和观测序列<script type="math/tex">O=(o_1, ..., o_T)</script>，计算该观测序列出现的概率<script type="math/tex">P(O|\lambda)</script></li>
+</ul>
+<h4 id="1-2-1-直接计算"><a href="#1-2-1-直接计算" class="headerlink" title="1.2.1 直接计算"></a>1.2.1 直接计算</h4><ul>
+<li>直接计算即列举所有可能的状态序列<script type="math/tex">I</script>，计算：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+P(O \mid \lambda) &=\sum_{I} P(O \mid I, \lambda) P(I \mid \lambda) \\
+&=\sum_{i_{1}, i_{2}, \cdots, i_{T}} \pi_{i_{1}} b_{i_{1}}\left(o_{1}\right) a_{i_{1} i_{2}} b_{i_{2}}\left(o_{2}\right) \cdots a_{i_{T-i} i_{T}} b_{i_{T}}\left(o_{T}\right)
+\end{aligned}</script><ul>
+<li>但是这种方法计算量过大，复杂度为<script type="math/tex">O(TN^T)</script>，所以是不可行的</li>
+</ul>
+<h4 id="1-2-2-前向计算"><a href="#1-2-2-前向计算" class="headerlink" title="1.2.2 前向计算"></a>1.2.2 前向计算</h4><ul>
+<li>给定模型<script type="math/tex">\lambda</script>，定义在时刻t时观测序列为<script type="math/tex">o_1, ..., o_t</script>，且当前状态为<script type="math/tex">q_i</script>的概率为前向概率：</li>
+</ul>
+<script type="math/tex; mode=display">
+\alpha_t(i) = P(o_1, ..., o_t, i_t=q_i|\lambda)</script><ul>
+<li>算法流程：</li>
+</ul>
+<p>给定模型<script type="math/tex">\lambda</script>和观测序列<script type="math/tex">O=(o_1, ..., o_T)</script></p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028120947404.png" srcset="/img/loading.gif" lazyload alt="image-20221028120947404" style="zoom:80%;" /></p>
+<h4 id="1-2-3-后向计算"><a href="#1-2-3-后向计算" class="headerlink" title="1.2.3 后向计算"></a>1.2.3 后向计算</h4><ul>
+<li>给定模型<script type="math/tex">\lambda</script>，定义在时刻t时刻状态为<script type="math/tex">q_i</script>的条件下，从t+1到T的部分观测序列为<script type="math/tex">o_{t+1}, ..., o_T</script>的概率为后向概率：</li>
+</ul>
+<script type="math/tex; mode=display">
+\beta_{t}(i)=P\left(o_{t+1}, o_{t+2}, \cdots, o_{T} \mid i_{t}=q_{i}, \lambda\right)</script><ul>
+<li>算法流程：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028122410576.png" srcset="/img/loading.gif" lazyload alt="image-20221028122410576" style="zoom:75%;" /></p>
+<h4 id="1-2-4-常用概率的计算"><a href="#1-2-4-常用概率的计算" class="headerlink" title="1.2.4 常用概率的计算"></a>1.2.4 常用概率的计算</h4><ol>
+<li><strong>计算给定模型<script type="math/tex">\lambda</script>和观测<script type="math/tex">O</script>，在t时刻处于<script type="math/tex">q_i</script>的概率：</strong></li>
+</ol>
+<script type="math/tex; mode=display">
+\gamma_t(i) = P(i_t = q_i|O, \lambda)</script><blockquote>
+<ul>
+<li>首先运用贝叶斯公式：</li>
+</ul>
+<script type="math/tex; mode=display">
+\gamma_{t}(i)=P\left(i_{t}=q_{i} \mid O, \lambda\right)=\frac{P\left(i_{t}=q_{i}, O \mid \lambda\right)}{P(O \mid \lambda)}</script><ul>
+<li>由上述的前向后向概率的定义可得：</li>
+</ul>
+<script type="math/tex; mode=display">
+\alpha_t(i)\beta_t(i) = P(i_t=q_i,O|\lambda)</script><ul>
+<li>于是得到：</li>
+</ul>
+<script type="math/tex; mode=display">
+\gamma_{t}(i)=\frac{\alpha_{t}(i) \beta_{t}(i)}{P(O \mid \lambda)}=\frac{\alpha_{t}(i) \beta_{t}(i)}{\sum_{j=1}^{N} \alpha_{t}(j) \beta_{t}(j)}</script></blockquote>
+<ol>
+<li><strong>计算给定模型<script type="math/tex">\lambda</script>和观测<script type="math/tex">O</script>，在t时刻处于状态<script type="math/tex">q_i</script>并且在t+1时刻处于状态<script type="math/tex">q_j</script>的概率：</strong></li>
+</ol>
+<script type="math/tex; mode=display">
+\xi_{t}(i, j)=P\left(i_{t}=q_{i}, i_{t+1}=q_{j} \mid O, \lambda\right)</script><blockquote>
+<ul>
+<li>同样先运用贝叶斯公式：</li>
+</ul>
+<script type="math/tex; mode=display">
+\xi_{t}(i, j)=\frac{P\left(i_{t}=q_{i}, i_{t+1}=q_{j}, O \mid \lambda\right)}{P(O \mid \lambda)}=\frac{P\left(i_{t}=q_{i}, i_{t+1}=q_{j}, O \mid \lambda\right)}{\sum_{i=1}^{N} \sum_{j=1}^{N} P\left(i_{t}=q_{i}, i_{t+1}=q_{j}, O \mid \lambda\right)}</script><ul>
+<li>其中：</li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(i_{t}=q_{i}, i_{t+1}=q_{j}, O \mid \lambda\right)=\alpha_{t}(i) a_{i j} b_{j}\left(o_{t+1}\right) \beta_{t+1}(j)</script><ul>
+<li>所以：</li>
+</ul>
+<script type="math/tex; mode=display">
+\xi_{t}(i, j)=\frac{\alpha_{t}(i) a_{i j} b_{j}\left(o_{t+1}\right) \beta_{t+1}(j)}{\sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{t}(i) a_{i j} b_{j}\left(o_{t+1}\right) \beta_{t+1}(j)}</script></blockquote>
+<h3 id="1-3-学习算法"><a href="#1-3-学习算法" class="headerlink" title="1.3 学习算法"></a>1.3 学习算法</h3><ul>
+<li>在观测序列和状态序列都给定的时候，训练集足够大时，可以直接通过极大似然估计来估计模型参数，即<strong>直接通过频数来估计概率</strong></li>
+<li><p>我们主要讨论的是只给定观测序列时的情况，<strong>此时状态序列为隐变量</strong>，所以使用<a target="_blank" rel="noopener" href="https://zlkqz.site/2022/09/28/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/#6-EM%E7%AE%97%E6%B3%95">EM算法</a></p>
+</li>
+<li><p>首先是E步，即计算Q函数：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+Q(\lambda, \bar{\lambda}) = \sum_{I}\log P(O,I|\lambda)P(I|O,\bar{\lambda}) = \sum_{I}\log P(O,I|\lambda)\frac{P(O,I|\bar{\lambda})}{P(O|\bar{\lambda})}</script><p>其中<script type="math/tex">\bar{\lambda}</script>是HMM参数的当前估计值，<script type="math/tex">\lambda</script>是要极大化的值，作为下次迭代的新参数</p>
+<ul>
+<li>由于分母中的<script type="math/tex">P(O|\bar{\lambda})</script>和要更新的参数<script type="math/tex">\lambda</script>无关，所以直接去掉，Q函数直接化为：</li>
+</ul>
+<script type="math/tex; mode=display">
+Q(\lambda, \bar{\lambda})=\sum_{I} \log P(O, I \mid \lambda) P(O, I \mid \bar{\lambda})</script><ul>
+<li>其中：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(O, I \mid \lambda)=\pi_{i_{1}} b_{i_{1}}\left(o_{1}\right) a_{i_{i} i_{2}} b_{i_{2}}\left(o_{2}\right) \cdots a_{i_{T-1} i_{T}} b_{i_{T}}\left(o_{T}\right)</script><ul>
+<li>所以：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+Q(\lambda, \bar{\lambda})=& \sum_{I} \log \pi_{i} P(O, I \mid \bar{\lambda}) +\sum_{I}\left(\sum_{t=1}^{T-1} \log a_{i, i_{i}+1}\right) P(O, I \mid \bar{\lambda})+\sum_{I}\left(\sum_{t=1}^{T} \log b_{i_{i}}\left(o_{t}\right)\right) P(O, I \mid \bar{\lambda})
+\end{aligned}</script><ul>
+<li>然后是M步，即最大化Q函数，而最大化Q函数的问题，可以化为分别最大化上式中Q函数中的三项：</li>
+</ul>
+<blockquote>
+<ol>
+<li>最大化<script type="math/tex">\sum_{I} \log \pi_{i} P(O, I \mid \bar{\lambda})</script>，可以先将其化为：</li>
+</ol>
+<script type="math/tex; mode=display">
+\sum_{I} \log \pi_{i_{0}} P(O, I \mid \bar{\lambda})=\sum_{i=1}^{N} \log \pi_{i} P\left(O, i_{1}=i \mid \bar{\lambda}\right)</script><p>由于存在约束<script type="math/tex">\sum_{i=1}^N\pi_i =1</script>，所以可以使用拉格朗日乘子法进行求解，最后得到：</p>
+<script type="math/tex; mode=display">
+\pi_{i}=\frac{P\left(O, i_{1}=i \mid \bar{\lambda}\right)}{P(O \mid \bar{\lambda})}</script><ol>
+<li>最大化<script type="math/tex">\sum_{I}\left(\sum_{t=1}^{T-1} \log a_{i, i_{i}+1}\right) P(O, I \mid \bar{\lambda})</script>，化为：</li>
+</ol>
+<script type="math/tex; mode=display">
+\sum_{I}\left(\sum_{t=1}^{T-1} \log a_{i_{i} i_{t+1}}\right) P(O, I \mid \bar{\lambda})=\sum_{i=1}^{N} \sum_{j=1}^{N} \sum_{t=1}^{T-1} \log a_{i j} P\left(O, i_{t}=i, i_{t+1}=j \mid \bar{\lambda}\right)</script><p>运用拉格朗日乘子法，最后得到：</p>
+<script type="math/tex; mode=display">
+a_{i j}=\frac{\sum_{t=1}^{T-1} P\left(O, i_{t}=i, i_{t+1}=j \mid \bar{\lambda}\right)}{\sum_{t=1}^{T-1} P\left(O, i_{t}=i \mid \bar{\lambda}\right)}</script><ol>
+<li>最大化<script type="math/tex">\sum_{I}\left(\sum_{t=1}^{T} \log b_{i_{i}}\left(o_{t}\right)\right) P(O, I \mid \bar{\lambda})</script>，化为：</li>
+</ol>
+<script type="math/tex; mode=display">
+\sum_{I}\left(\sum_{t=1}^{T} \log b_{i_{i}}\left(o_{t}\right)\right) P(O, I \mid \bar{\lambda})=\sum_{j=1}^{N} \sum_{t=1}^{T} \log b_{j}\left(o_{t}\right) P\left(O, i_{t}=j \mid \bar{\lambda}\right)</script><p>运用拉格朗日乘子法，最后得到：</p>
+<script type="math/tex; mode=display">
+b_{j}(k)=\frac{\sum_{t=1}^{T} P\left(O, i_{t}=j \mid \bar{\lambda}\right) I\left(o_{t}=v_{k}\right)}{\sum_{t=1}^{T} P\left(O, i_{t}=j \mid \bar{\lambda}\right)}</script></blockquote>
+<ul>
+<li>算法流程：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028132201642.png" srcset="/img/loading.gif" lazyload alt="image-20221028132201642" style="zoom:67%;" /></p>
+<h3 id="1-4-预测算法"><a href="#1-4-预测算法" class="headerlink" title="1.4 预测算法"></a>1.4 预测算法</h3><ul>
+<li>序列模型常用<strong>维特比算法</strong>来进行预测，算法流程如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221028132500929.png" srcset="/img/loading.gif" lazyload alt="image-20221028132500929" style="zoom:67%;" /></p>
+<h1 id="2-条件随机场"><a href="#2-条件随机场" class="headerlink" title="2 条件随机场"></a>2 条件随机场</h1><ul>
+<li>条件随机场（Conditional Random Field, CRF）和HMM一样，同样属于概率图模型，是给定一组输入随机变量条件下，另一组输出是随机变量的条件概率分布模型</li>
+<li>有一种特殊且最常用的CRF为线性链条件随机场，其结构和数学推导和HMM十分相似，但是仍有一些区别，稍后介绍</li>
+</ul>
+<h3 id="2-1-马尔可夫随机场"><a href="#2-1-马尔可夫随机场" class="headerlink" title="2.1 马尔可夫随机场"></a>2.1 马尔可夫随机场</h3><ul>
+<li><p><strong>概率图模型</strong>是由图结构来描述变量之间的关系的模型，而采用有向无环图结构被称为<strong>贝叶斯网</strong>，采用无向图则被称为<strong>概率无向图模型或马尔可夫随机场</strong></p>
+</li>
+<li><p>设有联合概率分布<script type="math/tex">P(Y)</script>，<script type="math/tex">Y \in \mathcal{Y}</script>是一组随机变量。由无向图<script type="math/tex">G = (V,E)</script>表示概率分布<script type="math/tex">P(Y)</script>，即在G中，结点<script type="math/tex">v \in V</script>表示一个随机变量<script type="math/tex">Y_v</script>，<script type="math/tex">Y = (Y_v)_{v \in V}</script>，而边<script type="math/tex">e \in E</script>表示随机变量间的概率依赖关系</p>
+</li>
+<li>首先定义无向图模型内的马尔可夫性：</li>
+</ul>
+<blockquote>
+<ol>
+<li><strong>成对马尔可夫性：</strong>设u和v是图中任意两个没有边连接的结点，其对应的随机变量分别为<script type="math/tex">Y_u, Y_v</script>，其他所有结点为O，对应随机变量<script type="math/tex">Y_O</script>。成对马尔可夫性指给定<script type="math/tex">Y_O</script>的条件下，<script type="math/tex">Y_u, Y_v</script>是条件独立的：</li>
+</ol>
+<script type="math/tex; mode=display">
+P\left(Y_{u}, Y_{v} \mid Y_{o}\right)=P\left(Y_{u} \mid Y_{o}\right) P\left(Y_{v} \mid Y_{o}\right)</script><ol>
+<li><strong>局部马尔可夫性：</strong>设v为图中任意一个结点，W是与v相连的所有结点，O是除v和W之外的所有结点。局部马尔可夫性指给定<script type="math/tex">Y_W</script>的条件下<script type="math/tex">Y_v, Y_O</script>是条件独立的：</li>
+</ol>
+<script type="math/tex; mode=display">
+P\left(Y_{v}, Y_{o} \mid Y_{W}\right)=P\left(Y_{v} \mid Y_{W}\right) P\left(Y_{o} \mid Y_{W}\right)</script><p>也可以为表示为：</p>
+<script type="math/tex; mode=display">
+P(Y_v|Y_W) = P(Y_v|Y_W, Y_O)</script><ol>
+<li><strong>全局马尔可夫性：</strong>A、B是在图中被结点集合C分开的任意结点集合（如下图所示）。全局马尔可夫性指给定<script type="math/tex">Y_C</script>条件下<script type="math/tex">Y_A,Y_B</script>条件独立：</li>
+</ol>
+<script type="math/tex; mode=display">
+P\left(Y_{A}, Y_{B} \mid Y_{C}\right)=P\left(Y_{A} \mid Y_{C}\right) P\left(Y_{B} \mid Y_{C}\right)</script><p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029144742544.png" srcset="/img/loading.gif" lazyload alt="image-20221029144742544" style="zoom:67%;" /></p>
+<p><strong>上述三种马尔可夫性是等价的</strong></p>
+</blockquote>
+<ul>
+<li>而马尔可夫随机场，不仅要满足使用无向图，还需要满足马尔可夫性。显然，CRF属于马尔可夫随机场</li>
+</ul>
+<h3 id="2-2-团和极大团"><a href="#2-2-团和极大团" class="headerlink" title="2.2 团和极大团"></a>2.2 团和极大团</h3><ul>
+<li><p>无向图中的任意一个强连通子集都称为<strong>团（clique）</strong>，而一个团不能再加任意一个结点使其仍为团，则这种团为<strong>极大团（maximal clique）</strong></p>
+</li>
+<li><p>联合概率分布可以用每个团的<strong>势函数（potential function）</strong>的乘积来表示，但是一个图中的团很多，且有些随机变量同时属于多个团，所以简化来说，可以直接使用<strong>极大团的势函数成绩</strong>：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+P(Y)=\frac{1}{Z} \prod_{C} \Psi_{C}\left(Y_{C}\right)</script><p>其中C为极大团集，Z为规范化因子，<script type="math/tex">\Psi</script>为势函数，要求势函数是严格正的，一般定义为指数函数：</p>
+<script type="math/tex; mode=display">
+\Psi_{C}\left(Y_{C}\right)=\exp \left\{-E\left(Y_{C}\right)\right\}</script><h3 id="2-3-模型定义"><a href="#2-3-模型定义" class="headerlink" title="2.3 模型定义"></a>2.3 模型定义</h3><ul>
+<li>设随机变量<script type="math/tex">X,Y</script>，如果对任意结点v满足马尔可夫性（下式为局部马尔可夫性）：</li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(Y_{v} \mid X, Y_{w}, w \neq v\right)=P\left(Y_{v} \mid X, Y_{w}, w \sim v\right)</script><p>则称条件概率<script type="math/tex">P(Y|X)</script>为条件随机场</p>
+<ul>
+<li>另外有CRF的特例：<strong>线性链条件随机场</strong>，满足马尔可夫性：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+P\left(Y_{i} \mid X, Y_{1}, \cdots, Y_{i-1}, Y_{i+1}, \cdots, Y_{n}\right)=P\left(Y_{i} \mid X, Y_{i-1}, Y_{i+1}\right) \\
+i=1,2, \cdots, n \text { (在 } i=1 \text { 和 } n \text { 时只考虑单边) }
+\end{array}</script><p>则称条件概率<script type="math/tex">P(Y|X)</script>为条件随机场，图结构如下：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029152606453.png" srcset="/img/loading.gif" lazyload alt="image-20221029152606453" style="zoom: 67%;" /></p>
+<ul>
+<li>CRF定义中没有要求X的结构，但是一般假设X和Y有相同的图结构，比如线性链条件随机场：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221029152749755.png" srcset="/img/loading.gif" lazyload alt="image-20221029152749755" style="zoom:67%;" /></p>
+<p>在标注问题中（如NER），X表示输入观测序列，Y表示对应的输出标记序列或状态序列</p>
+<h3 id="2-4-CRF的参数"><a href="#2-4-CRF的参数" class="headerlink" title="2.4 CRF的参数"></a>2.4 CRF的参数</h3><ul>
+<li>现在开始介绍的CRF都默认为线性链CRF</li>
+<li>前面说过，马尔科夫场的概率可以用极大团的势函数来表示：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(Y)=\frac{1}{Z} \prod_{C} \Psi_{C}\left(Y_{C}\right) = \frac{1}{Z}\exp \sum_C-E\left(Y_{C}\right) = \frac{1}{Z}\exp \sum_CF_C\left(Y_{C}\right)</script><ul>
+<li>对于线性链CRF，每一个<script type="math/tex">y_{i-1}, y_i</script>构成一个极大团，所以：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(Y|X) = \frac{1}{Z}\exp \sum_{t=1}^TF_t(y_{t-1},y_t,x)</script><p>其中T为时间步数，<script type="math/tex">x</script>为X的取值，是整个观测序列。<strong>由于每个极大团的结构都相同</strong>，所以可以<strong>简化为每个极大团的势函数都一样</strong>：</p>
+<script type="math/tex; mode=display">
+P(Y|X) = \frac{1}{Z}\exp \sum_{t=1}^TF(y_{t-1},y_t,x)</script><ul>
+<li>而对于每个<script type="math/tex">F(y_{t-1},y_t,x)</script>，可以表示为三个函数的和：</li>
+</ul>
+<script type="math/tex; mode=display">
+F(y_{t-1},y_t,x) = F_1(y_{t-1}, x) + F_1(y_t, x) + F_2(y_{t-1}, y_t, x)</script><p>其中<script type="math/tex">F_1</script>就称为<strong>状态函数</strong>，<script type="math/tex">F_2</script>称为<strong>转移函数</strong>。由于<script type="math/tex">F_1(y_{t-1},x)</script>在上一个时间步已经出现过了，所以可以直接去掉：</p>
+<script type="math/tex; mode=display">
+F(y_{t-1},y_t,x) = F_1(y_t, x) + F_2(y_{t-1}, y_t, x)</script><ul>
+<li>那么可以引入特征函数来定义<script type="math/tex">F_1, F_2</script>：</li>
+</ul>
+<script type="math/tex; mode=display">
+F_1 = \sum_{l=1}^{K_2}\mu_ls_l(y_t, x) \\
+F_2 = \sum_{k=1}^{K_1}\lambda_kt_k(y_{t-1}, y_t, x)</script><ul>
+<li>所以条件概率就表示为：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(Y|X) = \frac{1}{Z}\exp \sum_{t=1}^T(\sum_{k=1}^{K_1}\lambda_kt_k(y_{t-1}, y_t, x) + \sum_{l=1}^{K_2}\mu_ls_l(y_t, x))</script><ul>
+<li>而可以把关于时间步的求和放入括号中：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(Y|X) = \frac{1}{Z}\exp(\sum_{k=1}^{K_1}\lambda_k\sum_{t=1}^Tt_k(y_{t-1}, y_t, x)+\sum_{l=1}^{K_2}\mu_l\sum_{t=1}^Ts_l(y_t, x))</script><ul>
+<li>将两种特征函数和其权重合起来：</li>
+</ul>
+<script type="math/tex; mode=display">
+f_{k}\left(y_{t-1}, y_{t}, x\right)=\left\{\begin{array}{l}
+t_{k}\left(y_{t-1}, y_{t}, x\right), \quad k=1,2, \cdots, K_{1} \\
+s_{l}\left(y_{t}, x\right), \quad k=K_{1}+l ; l=1,2, \cdots, K_{2}
+\end{array}\right.  \\
+w_{k}=\left\{\begin{array}{ll}
+\lambda_{k}, & k=1,2, \cdots, K_{1} \\
+\mu_{l}, & k=K_{1}+l ; l=1,2, \cdots, K_{2}
+\end{array}\right.</script><p>然后对特征函数在各个时间步进行求和，记作：</p>
+<script type="math/tex; mode=display">
+f_{k}(y, x)=\sum_{t=1}^{T} f_{k}\left(y_{t-1}, y_{t}, x\right), \quad k=1,2, \cdots, K</script><ul>
+<li>所以条件概率化简为：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(y \mid x)=\frac{1}{Z(x)} \exp \sum_{k=1}^{K} w_{k} f_{k}(y, x)</script><ul>
+<li>上式采用向量化表示，引入：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+w=\left(w_{1}, w_{2}, \cdots, w_{K}\right)^{\mathrm{T}} \\
+F(y, x)=\left(f_{1}(y, x), f_{2}(y, x), \cdots, f_{K}(y, x)\right)^{\mathrm{T}}
+\end{array}</script><p>所以条件概率的向量化表示为：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+P_{w}(y \mid x)=\frac{\exp (w \cdot F(y, x))}{Z_{w}(x)} \\
+Z_{w}(x)=\sum_{y} \exp (w \cdot F(y, x))
+\end{array}</script><p><strong>其中特征函数<script type="math/tex">F(y,x)</script>是事先设计好给出的，而学习的目标即学习权重<script type="math/tex">w</script>，最大化特征函数的总得分</strong></p>
+<h3 id="2-5-概率计算"><a href="#2-5-概率计算" class="headerlink" title="2.5 概率计算"></a>2.5 概率计算</h3><ul>
+<li>和前面HMM一样，同样运用前向后向算法的变量来进行概率计算，首先定义一个矩阵，<strong>为了方便讨论，我们又引入了两个时间步的状态序列<script type="math/tex">y_0 = start, y_{T+1} = stop</script>，实际前文的讨论中也隐含了<script type="math/tex">y_0 = start</script>：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{c}
+M_{t}(x)=\left[M_{t}\left(y_{t-1}, y_{t} \mid x\right)\right] \\
+M_{t}\left(y_{t-1}, y_{t} \mid x\right)=\exp \sum_{k=1}^{K} w_{k} f_{k}\left(y_{t-1}, y_{t}, x\right)
+\end{array}</script><p>设<script type="math/tex">y_t</script>有m个取值，则矩阵<script type="math/tex">M_t(x)</script>里面的<script type="math/tex">y_t,y_{t-1}</script>分别取不同的m个值，所以<script type="math/tex">M_t(x)</script>是一个<script type="math/tex">m \times m</script>阶矩阵</p>
+<ul>
+<li>有了上述定义，可以将条件概率进一步写为矩阵形式：</li>
+</ul>
+<script type="math/tex; mode=display">
+P_{w}(y \mid x)=\frac{1}{Z_{w}(x)} \prod_{t=1}^{T} M_{t}\left(y_{t-1}, y_{t} \mid x\right)</script><p>其中<script type="math/tex">Z_w(x)</script>是T+1个矩阵乘积的第(start, end)元素：</p>
+<script type="math/tex; mode=display">
+Z_{w}(x)=\left(M_{1}(x) M_{2}(x) \cdots M_{T+1}(x)\right)_{\text {start,stop }}</script><ul>
+<li>现在来定义<strong>前向概率，<script type="math/tex">\alpha_t(y_t|x)</script>为在时刻t时观测序列为<script type="math/tex">x_1, ..., x_t</script>，且当前状态为<script type="math/tex">y_t</script>的概率</strong>：</li>
+</ul>
+<script type="math/tex; mode=display">
+\alpha_{t}\left(y_{t} \mid x\right)=\alpha_{t-1}\left(y_{t-1} \mid x\right) M_{t}\left(y_{t-1}, y_{t} \mid x\right) \quad t=1,...,T+1 \\
+\alpha_{0}(y \mid x)=\left\{\begin{array}{ll}
+1, & y=\operatorname{start} \\
+0, & \text { 否则 }
+\end{array}\right.</script><p>因为<script type="math/tex">y_t</script>有m个取值，所以可以定义m维向量<script type="math/tex">\alpha_t(x)</script>：</p>
+<script type="math/tex; mode=display">
+\alpha_{t}^{\mathrm{T}}(x)=\alpha_{t-1}^{\mathrm{T}}(x) M_{t}(x) \\
+\alpha_0(x) = \mathbb{1}（单位向量）</script><ul>
+<li>同样可以定义<strong>后向概率，<script type="math/tex">\beta_t(y_t|x)</script>为在时刻t观测序列为<script type="math/tex">x_{t+1}, ..., x_T</script>，且当前状态为<script type="math/tex">y_t</script>的概率：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+\beta_{t}\left(y_{t} \mid x\right)=M_{t}\left(y_{t}, y_{t+1} \mid x\right) \beta_{t+1}\left(y_{t+1} \mid x\right) \\
+\beta_{t+1}\left(y \mid x\right)=\left\{\begin{array}{ll}
+1, & y=\text { stop } \\
+0, & \text { 否则 }
+\end{array}\right.</script><p>同样有向量形式：</p>
+<script type="math/tex; mode=display">
+\beta_{t}(x)=M_{t+1}(x) \beta_{t+1}(x) \\
+\beta_{T+1}(x) = \mathbb{1}  (单位向量)</script><ul>
+<li>得到了前后向概率，就可以得到<strong>在时刻t状态是<script type="math/tex">y_t</script>的概率：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(Y_{t}=y_{t} \mid x\right)=\frac{\alpha_{t}\left(y_{t} \mid x\right) \beta_{t}\left(y_{t} \mid x\right)}{Z(x)}</script><ul>
+<li>以及<strong>在时刻t-1状态是<script type="math/tex">y_{t-1}</script>并且在时刻t状态是<script type="math/tex">y_t</script>的概率：</strong></li>
+</ul>
+<script type="math/tex; mode=display">
+P\left(Y_{t-1}=y_{t-1}, Y_{t}=y_{t} \mid x\right)=\frac{\alpha_{t-1}\left(y_{t-1} \mid x\right) M_{t}\left(y_{t-1}, y_{t} \mid x\right) \beta_{t}\left(y_{t} \mid x\right)}{Z(x)}</script><ul>
+<li>上述两个式子的<script type="math/tex">Z(x)</script>可以用更简单的形式表达：</li>
+</ul>
+<script type="math/tex; mode=display">
+Z(x) = \alpha_n^T(x)\mathbb{1} = \mathbb{1}\beta_1(x)</script><h3 id="2-6-学习和预测"><a href="#2-6-学习和预测" class="headerlink" title="2.6 学习和预测"></a>2.6 学习和预测</h3><ul>
+<li><p>预测算法和HMM一样，使用<strong>维特比算法</strong></p>
+</li>
+<li><p>学习算法其实就是<a target="_blank" rel="noopener" href="https://zlkqz.site/2022/10/27/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/#3-%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95">最大熵模型的学习</a></p>
+</li>
+</ul>
+<h1 id="3-HMM和CRF的区别"><a href="#3-HMM和CRF的区别" class="headerlink" title="3 HMM和CRF的区别"></a>3 HMM和CRF的区别</h1><ul>
+<li>CRF和HMM的数学推导几乎是一样的，但是差异在于：</li>
+</ul>
+<blockquote>
+<ol>
+<li>HMM属于贝叶斯网络，而CRF属于马尔可夫场，前者的假设和约束更加的严格，比如CRF并没有像HMM一样完全依赖上一步的状态，HMM的观测变量的生成是独立的</li>
+<li>上述我们讨论的仅仅只是线性链CRF，但是CRF还可以有其他的图结构，并且<strong>实际上可以任意选定特征函数的个数和形式，特征函数的不确定也是CRF能和深度学习融合的最主要原因，模型可以自己学习特征函数，并且不用显示地表达出来</strong></li>
+</ol>
+</blockquote>
+<h1 id="4-CRF和深度学习模型的结合"><a href="#4-CRF和深度学习模型的结合" class="headerlink" title="4 CRF和深度学习模型的结合"></a>4 CRF和深度学习模型的结合</h1><ul>
+<li><p>以BiLSTM+CRF做NER任务举例</p>
+</li>
+<li><p>如果不用CRF而是直接在模型的后面接一个Softmax，鉴于所选取的基模型的强大的特征抽取能力，这已经可以有比较好的分类效果，<strong>但是NER任务是存在一些约束的</strong>，比如BIO格式中，B-Person后面不可能跟I-Organization。<strong>Softmax的分类是每个时间步相互独立的，所以可能会出现上述的问题</strong></p>
+</li>
+<li><p><strong>而CRF层可以加入一些约束来保证最终预测结果是有效的，这些约束可以在训练数据时被CRF层自动学习得到</strong></p>
+</li>
+<li><p>首先介绍一下模型结构：</p>
+</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-0650e1511e7d4419c9528a8d08ea61fd_720w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
+<p>BiLSTM的输出经过Dense层，<strong>转化为每个Label对应的score（图中浅黄色部分），这个score即CRF中的状态得分<script type="math/tex">\sum \mu s</script></strong>，然后将其输入CRF，CRF层维护了一个转移矩阵（Transition Matrix），这也是CRF层中需要学习的参数，假设总共有包括START和END在内的7个label，则转移矩阵为：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-2064e34cece3be4e852b1ace6bbca2ba_720w.webp" srcset="/img/loading.gif" lazyload alt="img" style="zoom:67%;" /></p>
+<p><strong>每个元素代表了相邻时间步之间进行状态转移的score，这个score即CRF中的转移得分<script type="math/tex">\sum\lambda t</script></strong>，并且上述矩阵已经学到了一些有用的约束：</p>
+<blockquote>
+<ol>
+<li>句子的第一个单词应该是“B-” 或 “O”，而不是“I”。（从“START”-&gt;“I-Person 或 I-Organization”的转移分数很低）</li>
+<li>“B-label1 I-label2 I-label3…”，在该模式中，类别1,2,3应该是同一种实体类别。比如，“B-Person I-Person” 是正确的，而“B-Person I-Organization”则是错误的。（“B-Organization” -&gt; “I-Person”的分数很低）</li>
+<li>O I-label”是错误的，命名实体的开头应该是“B-”而不是“I-”</li>
+</ol>
+</blockquote>
+<ul>
+<li>每个输入有N中可能的结果，即N条路径，比如（加粗的为真实路径）：</li>
+</ul>
+<blockquote>
+<ol>
+<li>START B-Person B-Person B-Person B-Person B-Person END</li>
+<li>START B-Person I-Person B-Person B-Person B-Person END</li>
+<li><strong>START B-Person I-Person O B-Organization O END</strong></li>
+</ol>
+<p>……</p>
+<p>   N. O O O O O O O</p>
+</blockquote>
+<ul>
+<li>训练目标即最大化真实路径的得分，可得损失函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+Loss
+ =-\log \frac{P_{\text {Real Path }}}{P_{1}+P_{2}+\ldots+P_{N}} 
+ =-\log \frac{e^{s_{\text {Realpath }}}}{e^{s_{1}+e^{s_{2}}+\ldots+e^{s_{N}}}}  \\
+ =-\left(S_{\text {RealPath }}-\log \left(e^{S_{1}}+e^{S_{2}}+\ldots+e^{S_{N}}\right)\right)</script><p>其中<script type="math/tex">S_i</script>为一条路径对应的得分，是通过Softmax实现最大化的</p>
+<ul>
+<li><p>值得一提的是，计算分母中的所有路径的得分和<script type="math/tex">-\log (e^{S_1} + ... + e^{S_N})</script>不需要列举所有可能路径，可以用一种动态规划的方法降低计算复杂度</p>
+</li>
+<li><p>另外，在进行预测的时候，同样是使用维特比算法</p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/07/17/%E4%BB%A3%E7%A0%81%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">代码总结（持续更新）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/26/%E6%9C%80%E5%A4%A7%E7%86%B5%E6%A8%A1%E5%9E%8B/">
+                        <span class="hidden-mobile">最大熵模型</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/06/14/HMM%E5%92%8CCRF/';
+          this.page.identifier = '/2022/06/14/HMM%E5%92%8CCRF/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

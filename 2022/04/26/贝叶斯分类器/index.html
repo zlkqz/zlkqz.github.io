@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="bia">
+  <meta name="author" content="zlk">
+  <meta name="keywords" content="">
+  <meta name="description" content="1 贝叶斯决策论 假设有N个可能的类别\mathcal{Y} &#x3D; \{c_1, ..., c_N\}，$\lambda_{ij}$是将一个$c_i$类样本误分类为$c_j$类的损失，则在样本x上的条件风险为：   R\left(c_{i} \mid \boldsymbol{x}\right)&#x3D;\sum_{j&#x3D;1}^{N} \lambda_{i j} P\left(c_{j} \mid \bolds">
+<meta property="og:type" content="article">
+<meta property="og:title" content="贝叶斯分类器">
+<meta property="og:url" content="https://zlkqz.github.io/2022/04/26/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/index.html">
+<meta property="og:site_name" content="ZLK">
+<meta property="og:description" content="1 贝叶斯决策论 假设有N个可能的类别\mathcal{Y} &#x3D; \{c_1, ..., c_N\}，$\lambda_{ij}$是将一个$c_i$类样本误分类为$c_j$类的损失，则在样本x上的条件风险为：   R\left(c_{i} \mid \boldsymbol{x}\right)&#x3D;\sum_{j&#x3D;1}^{N} \lambda_{i j} P\left(c_{j} \mid \bolds">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220926174528428.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927112128167.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927161634626.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927213559671.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-4e19d89b47e21cf284644b0576e9af0f_720w.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-caa896173185a8f527c037c122122258_720w.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-b325de65a5bcac196fc0939f346410d7_720w.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-9b6e8c50c0761c6ac19909c26e0a71d4_720w.jpg">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221021194004500.png">
+<meta property="article:published_time" content="2022-04-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-30T04:42:40.995Z">
+<meta property="article:author" content="zlk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220926174528428.png">
+  
+  <title>贝叶斯分类器 - ZLK</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"zlkqz.github.io","root":"/","version":"1.8.12","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ZLK</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="贝叶斯分类器">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-26 00:00" pubdate>
+        2022年4月26日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      11k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      35 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">贝叶斯分类器</h1>
+            
+            <div class="markdown-body">
+              <h1 id="1-贝叶斯决策论"><a href="#1-贝叶斯决策论" class="headerlink" title="1 贝叶斯决策论"></a>1 贝叶斯决策论</h1><ul>
+<li>假设有N个可能的类别<script type="math/tex">\mathcal{Y} = \{c_1, ..., c_N\}</script>，$\lambda_{ij}$是将一个$c_i$类样本误分类为$c_j$类的损失，则在样本x上的条件风险为：</li>
+</ul>
+<script type="math/tex; mode=display">
+R\left(c_{i} \mid \boldsymbol{x}\right)=\sum_{j=1}^{N} \lambda_{i j} P\left(c_{j} \mid \boldsymbol{x}\right)</script><ul>
+<li>我们的任务是寻找一个判定准则<script type="math/tex">h: \mathcal{X} \mapsto \mathcal{Y}</script>以最小化总体风险：</li>
+</ul>
+<script type="math/tex; mode=display">
+R(h)=\mathbb{E}_{\boldsymbol{x}}[R(h(\boldsymbol{x}) \mid \boldsymbol{x})]</script><ul>
+<li>显然，对每个样本x，若能最小化条件风险<script type="math/tex">R(h(x) | x)</script>，则总体风险$R(h)$也被最小化。这就产生了<strong>贝叶斯判定准则（Bayes decision rule）</strong>：为最小化总体风险，只需在每个样本上选择那个能使条件风险最小的类别标记，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+h^{*}(\boldsymbol{x})=\underset{c \in \mathcal{Y}}{\arg \min } R(c \mid \boldsymbol{x})</script><p><strong>此时，$h^*$称为贝叶斯最优分类器</strong></p>
+<ul>
+<li>具体来说，若目标是最小化分类错误率，则误判损失可以写为0/1损失：</li>
+</ul>
+<script type="math/tex; mode=display">
+\lambda_{ij}  = \begin{cases}
+0, if \quad i = j \\
+1, otherwise
+\end {cases}</script><ul>
+<li>则此时条件风险为：</li>
+</ul>
+<script type="math/tex; mode=display">
+R(c|x) = 1 - P(c|x)</script><ul>
+<li>所以贝叶斯最优分类器为：</li>
+</ul>
+<script type="math/tex; mode=display">
+h^*(x) = arg\ max_{c \in \mathcal{Y}}P(c|x)</script><p><strong>即对每个样本x，选择能使后验概率$P(c|x)$最大的类别标记</strong></p>
+<ul>
+<li>所以首先要获得后验概率，然而这在现实任务中难以直接获得，所以机器学习的任务是<strong>基于有限的训练样本集尽可能准确地估计出后验概率</strong>，大体有两种策略：</li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>判别式模型（discriminative models）：</strong>直接建模后验概率$P(c|x)$来预测c，决策树、SVM、神经网络等都是判别式模型</li>
+<li><strong>生成式模型（generative models）：</strong>先对联合概率分布$P(x, c)$建模，再由此得到后验概率$P(c|x)$</li>
+</ul>
+</blockquote>
+<ul>
+<li>对于生成式模型，必然考虑贝叶斯定理：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(c|x) = \frac{P(x, c)}{P(x)} \\ = \frac{P(c)P(x|c)}{P(x)}</script><p>其中，$P(c)$是先验概率，$P(x|c)$是似然，$P(x)$是用于归一化的证据因子，与类标记无关，所以建模的时候都是把分母$P(x)$直接去掉。所以现在，<strong>估计后验概率$P(c|x)$的任务就会转化为如何基于训练集D来估计先验概率$P(c)$和似然$P(x|c)$ </strong>。在训练集足够大的时候可以直接用样本频率代替$P(c)$。而$P(x|c)$显然是无法通过频率估计的（不同属性的组合结果太多）</p>
+<blockquote>
+<p>基于有限训练样本直接估计联合概率，在计算上将会遭遇组合爆炸问题，在数据上将会遭遇样本稀疏问题。属性数越多，问题越严重</p>
+</blockquote>
+<h1 id="2-极大似然估计"><a href="#2-极大似然估计" class="headerlink" title="2 极大似然估计"></a>2 极大似然估计</h1><ul>
+<li><p>求解$P(x|c)$的一个方法就是使用极大似然估计（MLE），这需要先假定其<strong>具有一种确定的概率分布形式</strong>，再基于训练样本对概率分布的参数进行估计</p>
+</li>
+<li><p>具体来说，记关于类别c的似然为$P(x|c)$，假设$P(x|c)$具有确定的形式并且被参数向量$\theta_c$唯一确定，我们的任务就是通过训练集估计参数$\theta_c$，为明确起见，将$P(x|c)$记为$P(x|\theta_c)$。令$D_c$为数据集D中第c类样本的集合，假设这些样本独立同分布，则参数$\theta_c$关于$D_c$的似然是：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+P(D_c|\theta_c) = \prod_{x \in D_c}P(x|\theta_c)</script><ul>
+<li>然后再对上式取负对数得到$LL(\theta_c)$，最后得到极大估计值<script type="math/tex">\hat{\theta_c}</script>：</li>
+</ul>
+<script type="math/tex; mode=display">
+\hat{\boldsymbol{\theta}}_{c}=\underset{\boldsymbol{\theta}_{c}}{\arg \max } L L\left(\boldsymbol{\theta}_{c}\right)</script><h1 id="3-朴素贝叶斯分类器"><a href="#3-朴素贝叶斯分类器" class="headerlink" title="3 朴素贝叶斯分类器"></a>3 朴素贝叶斯分类器</h1><h3 id="3-1-基本概念"><a href="#3-1-基本概念" class="headerlink" title="3.1 基本概念"></a>3.1 基本概念</h3><ul>
+<li><p>上面已经说过最大的困难在于$P(x|c)$难以从有限的样本中估计而得。而朴素贝叶斯采用了<strong>属性条件独立性假设：对已知类别，假设所有属性相互独立</strong></p>
+</li>
+<li><p>则生成式模型的目标可以重写为：</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+P(c \mid \boldsymbol{x})=\frac{P(c) P(\boldsymbol{x} \mid c)}{P(\boldsymbol{x})}=\frac{P(c)}{P(\boldsymbol{x})} \prod_{i=1}^{d} P\left(x_{i} \mid c\right)</script><p>其中d为属性个数，$x_i$为样本$x$在第$i$个属性上的取值</p>
+<ul>
+<li>所以朴素贝叶斯分类器的表达式为：</li>
+</ul>
+<script type="math/tex; mode=display">
+h_{n b}(\boldsymbol{x})=\underset{c \in \mathcal{Y}}{\arg \max } P(c) \prod_{i=1}^{d} P\left(x_{i} \mid c\right)</script><ul>
+<li>上式的概率都可以通过统计频率获得：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(c) = \frac{|D_c|}{|D|} \\ P(x_i|c) = \frac{|D_{c, x_i}|}{|D_c|}</script><p>其中<script type="math/tex">D_c</script>为类别为c的样本集，<script type="math/tex">D_{c, x_i}</script>为类别为c并在第<script type="math/tex">i</script>个属性上取值<script type="math/tex">x_i</script>的样本集。若是对于连续属性可考虑概率密度函数，比如<script type="math/tex">p\left(x_{i} \mid c\right) \sim \mathcal{N}\left(\mu_{c, i}, \sigma_{c, i}^{2}\right)</script>，<script type="math/tex">\mu_{c, i}</script>和<script type="math/tex">\sigma^2_{c, i}</script>分别是第c类样本在第<script type="math/tex">i</script>个属性上取值的均值和方差</p>
+<h3 id="3-2-引入先验分布"><a href="#3-2-引入先验分布" class="headerlink" title="3.2 引入先验分布"></a>3.2 引入先验分布</h3><ul>
+<li>在上面计算概率时，若某个属性值在训练集中没有与某个类同时出现过，则会导致0乘，频率估计将会出现问题。所以要进行平滑处理，常用<strong>拉普拉斯修正（Laplacian correction）</strong></li>
+<li>具体来说，令N表示可能的类别数，$N_i$表示第$i$个属性可能的取值数，则上面的概率计算式可以修正为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\hat{P}(c) &=\frac{\left|D_{c}\right|+1}{|D|+N} \\
+\hat{P}\left(x_{i} \mid c\right) &=\frac{\left|D_{c, x_{i}}\right|+1}{\left|D_{c}\right|+N_{i}}
+\end{aligned}</script><ul>
+<li>显然，拉普拉斯是<strong>引入了一个均匀分布的先验分布</strong>，避免了上述的0乘问题，并且在训练集变大时，修正过程索隐入的先验分布的影响也会逐渐变得可忽略，使得估值逐渐趋于实际概率值</li>
+</ul>
+<h1 id="4-半朴素贝叶斯分类器"><a href="#4-半朴素贝叶斯分类器" class="headerlink" title="4 半朴素贝叶斯分类器"></a>4 半朴素贝叶斯分类器</h1><ul>
+<li>朴素贝叶斯是采用了属性条件独立性假设，但是在现实任务中往往很难成立，于是尝试对这种假设进行一定的放松，由此产生了半朴素贝叶斯分类器。<strong>基本思想是适当考虑一部分属性间的相互依赖信息，从而既不需进行完全联合概率计算，又不至于彻底忽略了比较强的属性依赖关系</strong></li>
+<li><strong>独依赖估计（One-Dependent Estimator, OED）</strong>是半朴素贝叶斯分类器最常用的一种策略，就是<strong>假设每个属性在类别之外最多仅依赖一个其他属性</strong>，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(c \mid \boldsymbol{x}) \propto P(c) \prod_{i=1}^{d} P\left(x_{i} \mid c, p a_{i}\right)</script><p>其中$pa_i$为$x_i$的父属性，若$pa_i$已知，则可以通过前面的方法计算<script type="math/tex">P(x_i|c, pa_i)</script>，所以问题就转化为如何确定每个属性的父属性</p>
+<h3 id="4-1-SPODE"><a href="#4-1-SPODE" class="headerlink" title="4.1 SPODE"></a>4.1 SPODE</h3><ul>
+<li>SPODE（Super-Parent ODE）方法是<strong>假设所有属性都依赖于同一个属性，成为超父，然后通过交叉验证等模型选择方法来确定超父属性</strong></li>
+</ul>
+<h3 id="4-2-TAN"><a href="#4-2-TAN" class="headerlink" title="4.2 TAN"></a>4.2 TAN</h3><ul>
+<li>TAN（Tree Augmented naive Bayes）是在最大带权生成树的基础上构建的依赖关系，具体步骤如下：</li>
+</ul>
+<blockquote>
+<ol>
+<li>计算任意两个属性之间的条件互信息（conditional mutual information）：</li>
+</ol>
+<script type="math/tex; mode=display">
+I\left(x_{i}, x_{j} \mid y\right)=\sum_{x_{i}, x_{j} ; c \in \mathcal{Y}} P\left(x_{i}, x_{j} \mid c\right) \log \frac{P\left(x_{i}, x_{j} \mid c\right)}{P\left(x_{i} \mid c\right) P\left(x_{j} \mid c\right)}</script><ol>
+<li>以属性作为结点构建完全图，每两个节点之间边的权重为<script type="math/tex">I(x_i, x_j|y)</script></li>
+<li>构建此完全图的最大带权生成树，挑选根节点，并将边置为有向</li>
+<li>加入类别结点y，增加y到每个属性的有向边</li>
+</ol>
+</blockquote>
+<ul>
+<li>以下是朴素贝叶斯（NB）和两种ODE的对比：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220926174528428.png" srcset="/img/loading.gif" lazyload alt="image-20220926174528428" style="zoom:80%;" /></p>
+<h3 id="4-3-AODE"><a href="#4-3-AODE" class="headerlink" title="4.3 AODE"></a>4.3 AODE</h3><ul>
+<li>AODE（Averaged One-Dependent Estimator）是一种基于集成学习的ODE，与SPODE通过模型选择确定超父属性不同，<strong>AODE尝试将每个属性作为超父来构建SPODE，然后将那些具有足够训练数据支撑的SPODE集成起来作为最终结果</strong>，即：</li>
+</ul>
+<script type="math/tex; mode=display">
+P(c \mid \boldsymbol{x}) \propto \sum_{\substack{i=1 \\\left|D_{x_{i}}\right| \geqslant m^{\prime}}}^{d} P\left(c, x_{i}\right) \prod_{j=1}^{d} P\left(x_{j} \mid c, x_{i}\right)</script><p>其中<script type="math/tex">D_{x_i}</script>是在第$i$个属性上取值为$x_i$的样本集合，$m^{\prime}$为阈值（默认为30）</p>
+<ul>
+<li>概率统计公式如下：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\hat{P}\left(c, x_{i}\right) &=\frac{\left|D_{c, x_{i}}\right|+1}{|D|+ N \times N_{i}} \\
+\hat{P}\left(x_{j} \mid c, x_{i}\right) &=\frac{\left|D_{c, x_{i}, x_{j}}\right|+1}{\left|D_{c, x_{i}}\right|+N_{j}}
+\end{aligned}</script><ul>
+<li>注意：SPODE是假设类别和超父属性相互独立，所以连乘项前面是乘$P(c)$；而AODE则没有假设两者独立，所以连乘项前是乘$P(c|x_i)$</li>
+</ul>
+<h1 id="5-贝叶斯网"><a href="#5-贝叶斯网" class="headerlink" title="5 贝叶斯网"></a>5 贝叶斯网</h1><ul>
+<li><p>贝叶斯网亦称信念网，借助有向无环图（DAG）来刻画属性之间的依赖关系，并使用条件概率表（CPT）来描述属性间的联合概率分布</p>
+</li>
+<li><p>具体来说，一个贝叶斯网B由结构G和参数<script type="math/tex">\Theta</script>构成，即<script type="math/tex">B = <G, \Theta></script>。G是一个有向无环图，每个节点对应一个属性，若两个属性有直接依赖关系，则由一条边连接起来。<script type="math/tex">\Theta</script>定量描述这种依赖关系，假设属性<script type="math/tex">x_i</script>的父节点集为<script type="math/tex">\pi_i</script>，则<script type="math/tex">\Theta</script>包含了每个属性的条件概率表<script type="math/tex">\theta_{x_i|\pi_i} = P_B(x_i|\pi_i)</script>。如下图：</p>
+</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927112128167.png" srcset="/img/loading.gif" lazyload alt="image-20220927112128167"  /></p>
+<h3 id="5-1-结构"><a href="#5-1-结构" class="headerlink" title="5.1 结构"></a>5.1 结构</h3><ul>
+<li>贝叶斯网有效的表达了属性间的条件独立性，<strong>给定父节点集，贝叶斯网假设每个属性与他的非后裔属性独立</strong>，那么属性<script type="math/tex">x_1, ...,x_d</script>的联合概率分布为：</li>
+</ul>
+<script type="math/tex; mode=display">
+P_{B}\left(x_{1}, x_{2}, \ldots, x_{d}\right)=\prod_{i=1}^{d} P_{B}\left(x_{i} \mid \pi_{i}\right)=\prod_{i=1}^{d} \theta_{x_{i} \mid \pi_{i}}</script><ul>
+<li>贝叶斯网中有3种典型的依赖关系：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927161634626.png" srcset="/img/loading.gif" lazyload alt="image-20220927161634626"></p>
+<p>1、同父结构中，给定父节点$x_1$的值，则$x_3$和$x_4$条件独立</p>
+<blockquote>
+<p><strong>证明：</strong></p>
+<script type="math/tex; mode=display">
+P(x_1, x_3, x_4) = P(x_1)P(x_3|x_1)P(x_4|x_1) \\
+P(x_3, x_4| x_1) = P(x_1, x_3, x_4) / P(x_1)</script><p>联立上述两式：</p>
+<script type="math/tex; mode=display">
+P(x_3, x_4| x_1) = P(x_3|x_1)P(x_4|x_1)</script></blockquote>
+<p>2、顺序结构中，给定x的值，则y和z条件独立</p>
+<blockquote>
+<p><strong>证明：</strong></p>
+<script type="math/tex; mode=display">
+P(x, y, z) = P(z)P(x|z)P(y|x) = P(x)P(z|x)P(y|x) \\
+P(z, y | x) = P(x, y, z) / P(x)</script><p>联立上述两式：</p>
+<script type="math/tex; mode=display">
+P(z, y | x) = P(z|x)P(y|x)</script></blockquote>
+<p>3、V型结构中，给定$x_4$的取值，则$x_1$和$x_2$必不独立；但是若$x_4$取值完全未知，则$x_1$和$x_2$却是相互独立的（<strong>边际独立性</strong>）</p>
+<blockquote>
+<p><strong>证明：</strong></p>
+<script type="math/tex; mode=display">
+P(x_1, x_2) = \sum_{x_4}P(x_1, x_2, x_4) = \sum_{x_4}P(x_1)P(x_2)P(x_4|x_1, x_2) = P(x_1)P(x_2)</script></blockquote>
+<h3 id="5-2-有向分离"><a href="#5-2-有向分离" class="headerlink" title="5.2 有向分离"></a>5.2 有向分离</h3><ul>
+<li>可以使用<strong>有向分离（D-separation）</strong>分析有向图中变量间的条件独立性</li>
+<li>首先要把有向图转化为无向图，由此产生的无向图称为道德图：</li>
+</ul>
+<blockquote>
+<ol>
+<li>找出有向图中的所有V型结构，在V型结构的两个父节点之间加上一条无向边</li>
+<li>然后将所有有向边改为无向边</li>
+</ol>
+</blockquote>
+<ul>
+<li>基于道德图能直观迅速地找到变量间地条件独立性。假定道德图中有变量$x,y$和变量集合<script type="math/tex">z = \{z_i\}</script>。若变量x和y能在图上被z分开，即从道德图中将变量集合z去除后，x和y分属两个连通分支，则称x和y被有向分离，<script type="math/tex">x \perp y | z</script>成立</li>
+</ul>
+<h3 id="5-3-学习"><a href="#5-3-学习" class="headerlink" title="5.3 学习"></a>5.3 学习</h3><ul>
+<li><p>贝叶斯网学习的首要任务是根据训练数据来找出结构最恰当的贝叶斯网。<strong>评分搜索</strong>是求解的常用方法，具体来说，先定义一个评分函数，以此来评估贝叶斯网与训练数据的契合程度，然后基于这个评分函数来寻找结构最优的贝叶斯网</p>
+</li>
+<li><p>常用评分函数通常基于信息论准则，此类准则将学习问题看作一个数据压缩任务，学习的目标是找到一个能以最短编码长度描述训练数据的模型，此时<strong>编码的长度包括了描述模型自身所需的字节长度和使用该模型描述数据所需的字节长度</strong>。对贝叶斯网学习而言,模型就是一个贝叶斯网</p>
+</li>
+<li>每个贝叶斯网描述了一个在训练数据上的概率分布，<strong>自有一套编码机制能使那些经常出现的样本有更短的编码</strong>。于是应<strong>选择那个综合编码长度(包括描述网络和编码数据)最短的贝叶斯网</strong>，这就是<strong>最小描述长度(Minimal Description Length,MDL)准则</strong></li>
+<li>若给定训练集<script type="math/tex">D = \{x_1, ..., x_m\}</script>（每个样本向量中是包含了类别的），则贝叶斯网<script type="math/tex">B = <G, \Theta></script>在D上的评分函数可以写为：</li>
+</ul>
+<script type="math/tex; mode=display">
+s(B \mid D)=f(\theta)|B|-L L(B \mid D)</script><p>其中|B|是贝叶斯网络的参数个数，$f(\theta)$表示描述每个参数$\theta$所需的编码位数；而第二项<script type="math/tex">L L(B \mid D)=\sum_{i=1}^{m} \log P_{B}\left(x_{i}\right)</script>是贝叶斯网B的对数似然。<strong>显然第一项是计算编码贝叶斯网B所需的编码位数，第二项是计算B所对应的概率分布$P_B$对D描述的有多好</strong></p>
+<blockquote>
+<ul>
+<li>若$f(\theta)=1$，则得到AIC评分函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+\operatorname{AIC}(B \mid D)=|B|-L L(B \mid D)</script><ul>
+<li>若$f(\theta) = \frac{1}{2}\log m$，则得到BIC评分函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+\operatorname{BIC}(B \mid D)=\frac{\log m}{2}|B|-L L(B \mid D)</script></blockquote>
+<ul>
+<li>若贝叶斯网B的网络结构G固定，则评分函数第一项为常数，那么最小化$s(B|D)$等价于对参数$\Theta$的极大似然估计，而此时每个参数<script type="math/tex">\theta_{x_i|\pi_i}</script>可以直接从D中通过频率统计获得。<strong>所以，要最小化评分函数，只需对网络每种结构进行搜索，而候选结构的最优参数可直接在训练数据D上计算得到</strong></li>
+</ul>
+<blockquote>
+<p>但是搜索所有可能的结构是一个NP难问题。但是可以采用一些策略求得近似解，比如：</p>
+<ol>
+<li>贪心法，从某个网络结构出发，每次调整一条边（增加、删除、调整方向），直到评分函数不再降低</li>
+<li>添加约束，比如将网络结构限定为树形结构（比如TAN）</li>
+</ol>
+</blockquote>
+<h3 id="5-4-推断"><a href="#5-4-推断" class="headerlink" title="5.4 推断"></a>5.4 推断</h3><ul>
+<li><p>贝叶斯网训练好之后就能用来回答“查询”（query），即通过一些属性变量的观测值来推测其他属性变量的取值（类别也算作一个变量）。例如在西瓜问题中，若我们观测到西瓜色泽青绿、敲声浊响、根蒂蜷缩，想知道它是否成熟、甜度如何。<strong>这样通过已知变量观测值来推测待查询变量的过程称为“推断”（inference），已知变量观测值称为“证据”（evidence）</strong></p>
+</li>
+<li><p>理想情况下是直接通过贝叶斯网定义的联合概率分布来计算后验概率，但是在节点多、连接稠密时，难以进行这样的精确推断，这时需借助<strong>近似推断</strong>，尝试用<strong>吉布斯采样（Gibbs sampling）</strong></p>
+</li>
+<li><p>具体来说，<script type="math/tex">Q = \{Q_1, ..., Q_n\}</script>表示带查询变量，<script type="math/tex">E = \{E_1, ..., E_k\}</script>表示证据变量，其取值为<script type="math/tex">e = \{e_1, ..., e_k\}</script>。我们的任务是计算后验概率<script type="math/tex">P(Q=q|E=e)</script>，其中<script type="math/tex">q = \{q_1, ..., q_n\}</script>代表查询变量的一组取值</p>
+</li>
+<li><p>吉布斯采样步骤如下：</p>
+</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20220927213559671.png" srcset="/img/loading.gif" lazyload alt="image-20220927213559671" style="zoom:80%;" /></p>
+<blockquote>
+<p>一开始先产生一个与证据$E = e$一致的样本$q^0$作为初始点，然后经过T次迭代，每次迭代都对非证据变量（即Z）逐个采样，然后由贝叶斯的概率分布推断其取值。若经过T次采样得到的与q一致的样本共有$n_q$个，则可近似估算出后验概率：</p>
+<script type="math/tex; mode=display">
+P(\mathbf{Q}=\mathbf{q} \mid \mathbf{E}=\mathbf{e}) \simeq \frac{n_{q}}{T}</script></blockquote>
+<h1 id="6-EM算法"><a href="#6-EM算法" class="headerlink" title="6 EM算法"></a>6 EM算法</h1><ul>
+<li>上面的讨论中，都是认定训练样本是完整的，但是现实应用中往往有的属性值未知，这些未观测变量称为<strong>隐变量（latent variable）</strong>，在这种存在隐变量的情况下进行参数估计，可使用EM算法</li>
+</ul>
+<h3 id="6-1-基本思想"><a href="#6-1-基本思想" class="headerlink" title="6.1 基本思想"></a>6.1 基本思想</h3><ul>
+<li>EM 算法的核心思想非常简单，分为两步：Expectation-Step 和 Maximization-Step。E-Step 主要通过观察数据和现有模型来估计参数，然后用这个估计的参数值来计算似然函数的期望值；而 M-Step 是寻找似然函数最大化时对应的参数。由于算法会保证在每次迭代之后似然函数都会增加，所以函数最终会收敛</li>
+<li>于是以随机初始值$\Theta^0$为起点，执行以下步骤直至收敛：</li>
+</ul>
+<blockquote>
+<ol>
+<li>基于$\Theta^t$推断隐变量Z的期望，记为$Z^t$</li>
+<li>基于已观测变量X和$Z^t$对参数$\Theta$做最大似然估计，记为<script type="math/tex">\Theta^{t+1}</script></li>
+</ol>
+</blockquote>
+<h3 id="6-2-举个栗子"><a href="#6-2-举个栗子" class="headerlink" title="6.2 举个栗子"></a>6.2 举个栗子</h3><ul>
+<li>有两枚硬币A、B，随机抛掷结果如下：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-4e19d89b47e21cf284644b0576e9af0f_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
+<p>很容易估计出两枚硬币抛掷正面的概率：</p>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+\theta_{A}=24 / 30=0.8 \\
+\theta_{B}=9 / 20=0.45
+\end{array}</script><ul>
+<li>现在加入隐变量，抹去每次投掷的硬币标记，即不知道这次投的是A还是B：</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-caa896173185a8f527c037c122122258_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
+<p>这种情况又如何估计$\theta_A, \theta_B$呢。我们多出了一个隐变量<script type="math/tex">Z = \{z_1, ..., z_5\}</script>，代表每次投掷的硬币类型。我们需要Z才能估计参数$\theta_A, \theta_B$，而又需要$\theta_A, \theta_B$才能估计Z。其解决方法就是先随机初始化$\theta_A, \theta_B$ ，然后用去估计 Z， 然后基于 Z 按照最大似然概率去估计新的$\theta_A, \theta_B$，循环至收敛。</p>
+<ul>
+<li>现在随机初始化<script type="math/tex">\theta_A = 0.6, \theta_B = 0.5</script>，以第一轮投掷来说，硬币A投出5H5T结果的概率是<script type="math/tex">C_{10}^5 0.6^5 * 0.4^5</script>，而B投出5H5T的概率为<script type="math/tex">C_{10}^5 0.5^5 * 0.5^5</script>，由此可以算出本次使用A或B硬币的概率：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+P_{A}=\frac{0.6^{5} * 0.4^{5}}{\left(0.6^{5} * 0.4^{5}\right)+\left(0.5^{5} * 0.5^{5}\right)}=0.45 \\
+P_{B}=\frac{0.5^{5} * 0.5^{5}}{\left(0.6^{5} * 0.4^{5}\right)+\left(0.5^{5} * 0.5^{5}\right)}=0.55
+\end{array}</script><p>对其他轮进行同样的操作，得到：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-b325de65a5bcac196fc0939f346410d7_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
+<p><strong>这一步我们实际上是估计出了 Z 的概率分布，这部就是 E-Step</strong></p>
+<ul>
+<li>结合硬币 A 的概率和上一张投掷结果，我们利用期望可以求出硬币 A 和硬币 B 的贡献。以第二轮硬币 A 为例子，计算方式为：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{array}{l}
+H: 0.80 * 9=7.2 \\
+T: 0.80 * 1=0.8
+\end{array}</script><p>对其他轮和硬币B进行同样的操作，得到：</p>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/v2-9b6e8c50c0761c6ac19909c26e0a71d4_720w.jpg" srcset="/img/loading.gif" lazyload alt="img" style="zoom:80%;" /></p>
+<ul>
+<li>然后用极大似然估计来估计新的$\theta_A, \theta_B$：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\theta_{A} &=\frac{21.3}{21.3+8.6}=0.71 \\
+\theta_{B} &=\frac{11.7}{11.7+8.4}=0.58
+\end{aligned}</script><p><strong>这步就对应了 M-Step，重新估计出了参数值。</strong></p>
+<ul>
+<li>如此反复迭代，我们就可以算出最终的参数值。</li>
+</ul>
+<h3 id="6-3-算法流程"><a href="#6-3-算法流程" class="headerlink" title="6.3 算法流程"></a>6.3 算法流程</h3><ul>
+<li>给定观测变量Y、隐变量Z，模型参数为<script type="math/tex">\theta</script></li>
+</ul>
+<blockquote>
+<ol>
+<li>首先选定参数的初始值<script type="math/tex">\theta^{(0)}</script>，开始迭代</li>
+<li>E步：在第<script type="math/tex">i+1</script>次迭代时，已知<script type="math/tex">\theta^{(i)}</script>，计算：</li>
+</ol>
+<script type="math/tex; mode=display">
+\begin{aligned}
+Q\left(\theta, \theta^{(i)}\right) &=E_{Z}\left[\log P(Y, Z \mid \theta) \mid Y, \theta^{(i)}\right] \\
+&=\sum_{Z} \log P(Y, Z \mid \theta) P\left(Z \mid Y, \theta^{(i)}\right)
+\end{aligned}</script><ol>
+<li>M步：求得使<script type="math/tex">Q(\theta, \theta^{(i)})</script>最大化的<script type="math/tex">\theta</script>，作为<script type="math/tex">\theta^{(i+1)}</script>：</li>
+</ol>
+<script type="math/tex; mode=display">
+\theta^{(i+1)}=\arg \max _{\theta} Q\left(\theta, \theta^{(i)}\right)</script><ol>
+<li>重复上述的E步和M步，直至收敛</li>
+</ol>
+</blockquote>
+<ul>
+<li><strong>注意：</strong>初始值是可以随机选择的，但是<strong>EM算法对初值敏感</strong>，EM有可能收敛到局部最优点</li>
+</ul>
+<h3 id="6-4-算法推导"><a href="#6-4-算法推导" class="headerlink" title="6.4 算法推导"></a>6.4 算法推导</h3><ul>
+<li>面对一个含隐变量的概率模型，目标是最大化：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L(\theta) &=\log P(Y \mid \theta)=\log \sum_{Z} P(Y, Z \mid \theta) \\
+&=\log \left(\sum_{Z} P(Y \mid Z, \theta) P(Z \mid \theta)\right)
+\end{aligned}</script><ul>
+<li>在第<script type="math/tex">i+1</script>次迭代时，我们是希望有所提升，即得到的<script type="math/tex">\theta</script>的似然<script type="math/tex">L(\theta)</script>要大于当前的似然<script type="math/tex">L(\theta^{(i)})</script>，所以将两者相减：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+L(\theta)-L\left(\theta^{(i)}\right) &= \log \left(\sum_{Z} P(Y \mid Z, \theta) P(Z \mid \theta)\right)-\log P\left(Y \mid \theta^{(i)}\right)\\
+& =\log \left(\sum_{Z} P\left(Y \mid Z, \theta^{(i)}\right) \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Y \mid Z, \theta^{(i)}\right)}\right)-\log P\left(Y \mid \theta^{(i)}\right) \\
+& \geqslant \sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right)}-\log P\left(Y \mid \theta^{(i)}\right) \\
+&=\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}
+\end{aligned}</script><p>上述放缩用到了<strong>Jensen不等式</strong></p>
+<ul>
+<li>令：</li>
+</ul>
+<script type="math/tex; mode=display">
+B\left(\theta, \theta^{(i)}\right) \hat{=} L\left(\theta^{(i)}\right)+\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}</script><p>那么：</p>
+<script type="math/tex; mode=display">
+L(\theta) \geqslant B\left(\theta, \theta^{(i)}\right)</script><p>即<script type="math/tex">B(\theta, \theta^{(i)})</script>为<script type="math/tex">L(\theta)</script>的下界，并且在<script type="math/tex">\theta=\theta^{(i)}</script>时取等号：</p>
+<script type="math/tex; mode=display">
+L\left(\theta^{(i)}\right)=B\left(\theta^{(i)}, \theta^{(i)}\right)</script><ul>
+<li>所以，增大下界<script type="math/tex">B(\theta, \theta^{(i)})</script>，同样可以使得<script type="math/tex">L(\theta)</script>增大，而为了<script type="math/tex">L(\theta)</script>增大得最多，选择<script type="math/tex">\theta^{(i+1)}</script>使得<script type="math/tex">B(\theta, \theta^{(i)})</script>达到极大：</li>
+</ul>
+<script type="math/tex; mode=display">
+\theta^{(i+1)}=\arg \max _{\theta} B\left(\theta, \theta^{(i)}\right)</script><ul>
+<li>由上式就可以推出<script type="math/tex">Q(\theta, \theta^{(i)})</script>函数：</li>
+</ul>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\theta^{(i+1)} &=\arg \max _{\theta}\left(L\left(\theta^{(i)}\right)+\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log \frac{P(Y \mid Z, \theta) P(Z \mid \theta)}{P\left(Z \mid Y, \theta^{(i)}\right) P\left(Y \mid \theta^{(i)}\right)}\right) \\
+&=\arg \max _{\theta}\left(\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log (P(Y \mid Z, \theta) P(Z \mid \theta))\right) \\
+&=\arg \max _{\theta}\left(\sum_{Z} P\left(Z \mid Y, \theta^{(i)}\right) \log P(Y, Z \mid \theta)\right) \\
+&=\arg \max _{\theta} Q\left(\theta, \theta^{(i)}\right)
+\end{aligned}</script><h3 id="6-5-直观解释"><a href="#6-5-直观解释" class="headerlink" title="6.5 直观解释"></a>6.5 直观解释</h3><ul>
+<li>上方曲线为<script type="math/tex">L(\theta)</script>，下方曲线为<script type="math/tex">B(\theta, \theta^{(i)})</script>，两者在<script type="math/tex">\theta=\theta^{(i)}</script>处相等，此时执行M步：找到<script type="math/tex">\theta^{(i+1)}=\arg \max _{\theta} B\left(\theta, \theta^{(i)}\right)</script>。函数<script type="math/tex">B(\theta, \theta^{(i)})</script>的增加同时也造成了<script type="math/tex">L(\theta)</script>的增加。得到<script type="math/tex">\theta^{(i+1)}</script>后再执行E步：在<script type="math/tex">\theta = \theta^{(i+1)}</script>点重新计算Q函数，然后进行下一次迭代</li>
+</ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20221021194004500.png" srcset="/img/loading.gif" lazyload alt="image-20221021194004500"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/07/%E5%86%B3%E7%AD%96%E6%A0%91/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">决策树总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/06/SVM/">
+                        <span class="hidden-mobile">SVM总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'https://zlkqz.github.io/2022/04/26/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/';
+          this.page.identifier = '/2022/04/26/%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%88%86%E7%B1%BB%E5%99%A8/';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          load: ['ui/lazy']
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
