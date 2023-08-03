@@ -162,7 +162,7 @@ $$
 ### 2.3 模型结构
 
 - 大体结构还是和GPT1一样，但是做了如下改动：
-1. Layer Norm由每个sub-block之后，移到了之前：
+1. Layer Norm由每个sub-block（Attention block和MLP block）之后，移到了之前：
 
 <img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/IMG_11.png" alt="IMG_11" style="zoom:50%;" />
 
@@ -171,7 +171,7 @@ $$
 4. 词汇量增加到50257，上下文大小从512增加到1024，batch size增加到512
 - 模型结构大致如下：
 
-<img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/IMG_10.png" alt="IMG_10" style="zoom:40%;" />
+<img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230802140419199.png" alt="image-20230802140419199" style="zoom:50%;" />
 
 
 
