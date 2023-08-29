@@ -238,13 +238,3 @@ $$
 > 1. 两倍的工作量
 > 2. 对于有些任务是不直观的，如QA
 > 3. BERT在每层都可以实现双向，而ELMo只会在最后连结
-
-
-
-
-
-# 6 BERT的变体
-
-- [RoBERTa](https://zlkqz.top/2022/08/09/RoBERTa%E6%80%BB%E7%BB%93/)
-
-- [BART](https://zlkqz.top/2022/08/10/BART%E6%80%BB%E7%BB%93/)

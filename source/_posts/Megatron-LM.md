@@ -96,7 +96,9 @@ date: 2023-08-02
 - 即一台机器输入一批micro-batch，然后一台机器上的多张卡来做模型并行
 - 这样做的好处是：**对于TP，每次每张卡分别算了一部分参数的梯度后，需要做All-Reduce操作才能继续上一层的backward，所以对于带宽要求较高，理应放在同一台机器中；而对于DP，算完属于自己micro-batch的部分梯度后，直接把这部分梯度传出去就可以了，可以同时进行上一层的backward，所以不需要等待，对带宽要求不高**
 
+- 值得一提的是，同样有3D-Parallelism，体系如下，同样是在多机之间做DP：
 
+<img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230804180339179.png" alt="image-20230804180339179" style="zoom:50%;" />
 
 
 
