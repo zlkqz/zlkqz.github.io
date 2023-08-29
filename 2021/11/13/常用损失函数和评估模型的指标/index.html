@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://i.loli.net/2021/11/10/TUMHuC3N9rX18iz.png">
 <meta property="og:image" content="https://i.loli.net/2021/11/10/xG1TrPNfyimzq7Q.png">
 <meta property="article:published_time" content="2021-11-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-07-30T04:42:40.989Z">
+<meta property="article:modified_time" content="2023-08-28T06:05:15.342Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.loli.net/2021/11/08/yWY3hI4ioKpADRF.png">
@@ -205,7 +205,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.5k 字
+      3.6k 字
     </span>
   
 
@@ -348,8 +348,10 @@ J_{C E}=-\sum_{i=1}^{N}\left(y_{i} \log \left(\hat{y}_{i}\right)+\left(1-y_{i}\r
 </ul>
 <p>在二分类中我们通常将输出结果用sigmoid映射到区间$(0, 1)$，并将其作为该类的概率，由于只有两类，所以给定$x_i$求出类别为1或0的概率分别为：</p>
 <script type="math/tex; mode=display">
+\begin{gather}
 p(y_i = 1|x_i) = \hat{y_i} \\
-p(y_i = 0|x_i) = 1 - \hat{y_i}</script><p>合并成一个式子：</p>
+p(y_i = 0|x_i) = 1 - \hat{y_i}
+\end{gather}</script><p>合并成一个式子：</p>
 <script type="math/tex; mode=display">
 p(y_i|x_i) = (\hat{y_i})^{y_i}(1 - \hat{y_i})^{1 - y_i}</script><p>由于各数据点独立同分布，则似然可以表示为：</p>
 <script type="math/tex; mode=display">
@@ -427,8 +429,10 @@ F_{\beta} = \frac{(1 + \beta ^2)PR}{\beta ^2P + R}</script><ul>
 <li>首先介绍真正例率和假正例率：</li>
 </ul>
 <script type="math/tex; mode=display">
+\begin{gather}
 TPR = \frac{TP}{TP + FN}, \\
-FPR = \frac{FP}{TN + FP}</script><ul>
+FPR = \frac{FP}{TN + FP}
+\end{gather}</script><ul>
 <li>ROC曲线：</li>
 </ul>
 <p>首先将分类阈值设最大，则所有类都被分类为负类，TPR和FPR都为0，然后每次将分类阈值设为下一个样本点的预测值（按预测值由大到小进行排序），记录每次的TPR和FPR，组成ROC曲线</p>
@@ -457,18 +461,22 @@ A U C=\frac{1}{2} \sum_{i=1}^{m-1}\left(x_{i+1}-x_{i}\right)\left(y_{i}+y_{i+1}\
 <p>设$t = FPR(c)$， 则$c = F_Y^{-1}(1 - t)$，则$ROC(t) = 1 - F_X(F_Y^{-1}(1 - t))$</p>
 <p>则：</p>
 <script type="math/tex; mode=display">
+\begin{gather}
 AUC = \int_0^1ROC(t)dt \\
 =\int_0^1 [1 - F_X(F_Y^{-1}(1 - t))] dt \\
 =\int_0^1 [1 - F_X(F_Y^{-1}(t))] dt \\
 =\int_{-\infty}^{+\infty} [1 - F_X(y)] dF_Y(y) \\
 =\int_{-\infty}^{+\infty}P(X > y)f_Y(y)dy \\
 =\int_{-\infty}^{+\infty}P(X > y, Y = y)dy \\
-=P(X > Y)</script><h5 id="2-6-4-使用ROC和AUC的优点"><a href="#2-6-4-使用ROC和AUC的优点" class="headerlink" title="2.6.4 使用ROC和AUC的优点"></a>2.6.4 使用ROC和AUC的优点</h5><ul>
+=P(X > Y)
+\end{gather}</script><h5 id="2-6-4-使用ROC和AUC的优点"><a href="#2-6-4-使用ROC和AUC的优点" class="headerlink" title="2.6.4 使用ROC和AUC的优点"></a>2.6.4 使用ROC和AUC的优点</h5><ul>
 <li><strong>AUC的计算方法同时考虑了学习器对于正例和负例的分类能力，在样本不平衡（正负类样本不相同）的情况下，依然能够对分类器做出合理的评价</strong></li>
 </ul>
 <script type="math/tex; mode=display">
+\begin{gather}
 TPR = P(\hat{Y} = 1 | Y = 1), \\
-FPR = P(\hat{Y} = 1 | Y = 0)</script><p><strong>由上式可得：无论Y的真实概率是多少， 都不会影响TPR和FPR</strong></p>
+FPR = P(\hat{Y} = 1 | Y = 0)
+\end{gather}</script><p><strong>由上式可得：无论Y的真实概率是多少， 都不会影响TPR和FPR</strong></p>
 <p>而PR曲线更关注正例</p>
 <ul>
 <li>ROC曲线能很容易的查出任意阈值对学习器的泛化性能影响，有助于选择最佳的阈值。ROC曲线越靠近左上角，模型的查全率就越高。最靠近左上角的ROC曲线上的点是分类错误最少的最好阈值，其假正例和假反例总数最少</li>

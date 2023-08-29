@@ -27,9 +27,10 @@
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803130712170.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803134548873.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803143148059.png">
+<meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230804180339179.png">
 <meta property="og:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803143930235.png">
 <meta property="article:published_time" content="2023-08-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-08-03T06:40:58.882Z">
+<meta property="article:modified_time" content="2023-08-04T10:04:32.091Z">
 <meta property="article:author" content="zlk">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803125202209.png">
@@ -318,8 +319,12 @@
 <p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230803143148059.png" srcset="/img/loading.gif" lazyload alt="image-20230803143148059" style="zoom:40%;" /></p>
 <ul>
 <li>即一台机器输入一批micro-batch，然后一台机器上的多张卡来做模型并行</li>
-<li>这样做的好处是：<strong>对于TP，每次每张卡分别算了一部分参数的梯度后，需要做All-Reduce操作才能继续上一层的backward，所以对于带宽要求较高，理应放在同一台机器中；而对于DP，算完属于自己micro-batch的部分梯度后，直接把这部分梯度传出去就可以了，可以同时进行上一层的backward，所以不需要等待，对带宽要求不高</strong></li>
+<li><p>这样做的好处是：<strong>对于TP，每次每张卡分别算了一部分参数的梯度后，需要做All-Reduce操作才能继续上一层的backward，所以对于带宽要求较高，理应放在同一台机器中；而对于DP，算完属于自己micro-batch的部分梯度后，直接把这部分梯度传出去就可以了，可以同时进行上一层的backward，所以不需要等待，对带宽要求不高</strong></p>
+</li>
+<li><p>值得一提的是，同样有3D-Parallelism，体系如下，同样是在多机之间做DP：</p>
+</li>
 </ul>
+<p><img src="https://zlkqzimg-1310374208.cos.ap-chengdu.myqcloud.com/image-20230804180339179.png" srcset="/img/loading.gif" lazyload alt="image-20230804180339179" style="zoom:50%;" /></p>
 <h1 id="3-实验效果"><a href="#3-实验效果" class="headerlink" title="3 实验效果"></a>3 实验效果</h1><ul>
 <li>要评测采用TP或者DP+TP是否降低了训练效率，最直观的方法就是看每张卡的吞吐量：</li>
 </ul>
@@ -344,6 +349,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/08/18/LoRA%20&amp;&amp;%20QLoRA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">LoRA && QLoRA</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
